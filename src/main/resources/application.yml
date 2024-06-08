@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: marketplace
+
+  profiles:
+    active: prod
