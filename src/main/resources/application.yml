@@ -3,4 +3,4 @@ spring:
     name: marketplace
 
   profiles:
-    active: prod
+    active: local
