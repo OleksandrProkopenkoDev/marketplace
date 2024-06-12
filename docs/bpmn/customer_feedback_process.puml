@@ -1,0 +1,13 @@
+@startuml
+title Customer Feedback Process
+left to right direction
+skinparam packageStyle rectangle
+
+actor CustomerService as CS
+rectangle  {
+  [Receive Customer Feedback] --> [Register and Classify Requests]
+  [Register and Classify Requests] --> [Problem Solving]
+  [Problem Solving] --> [Respond to Customer]
+}
+CS --> [Receive Customer Feedback]
+@enduml

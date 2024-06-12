@@ -1,0 +1,16 @@
+@startuml
+title Registration Process
+left to right direction
+skinparam packageStyle rectangle
+
+actor User as U
+rectangle  {
+  [Enter Personal Information] --> [Verify Email]
+  [Verify Email] --> [Successful Registration]
+}
+U --> [Enter Personal Information]
+@enduml
+
+
+
+
