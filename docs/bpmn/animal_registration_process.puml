@@ -1,0 +1,17 @@
+@startuml
+title Animal Registration Process
+left to right direction
+skinparam packageStyle rectangle
+
+actor Shelter as S
+rectangle  {
+  [Add New Animal] --> [Enter Animal Information]
+  [Enter Animal Information] --> [Medical Check-up and Vaccination]
+  [Medical Check-up and Vaccination] --> [Available for Adoption]
+}
+S --> [Add New Animal]
+@enduml
+
+
+
+
