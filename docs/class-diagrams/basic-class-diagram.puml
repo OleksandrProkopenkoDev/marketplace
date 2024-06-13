@@ -3,115 +3,66 @@ class User {
   Long id
   String email
   String password
-  String userType
-  String name
-  String profilePicture
-  String contactInfo
-  Date createdAt
-  Date updatedAt
-  +createUser()
-  +updateUser()
-  +deleteUser()
-  +getUserDetails()
+  Enum userRole
+  String firstName
+  String lastName (optional)
+  Photo profilePicture
+  ContactInfo contactInfo
+  List<Ad> favorites
+  DateTime createdAt
+  DateTime updatedAt
 }
 
-class Shelter extends User {
-  String shelterName
-  String address
+class ContactInfo{
   String phone
-  String website
-  +publishAd()
-  +editAd()
-  +deleteAd()
 }
 
-class Individual extends User {
-  String adoptionPreferences
-  List<Ad> favoriteAds
-  +searchForPets()
-  +addAd()
-  +editAd()
-  +deleteAd()
-  +addToFavorites()
-}
 
 class Ad {
   Long id
+  User author
   String title
+  BigDecimal price
   List<Photo> photos
-  int age
-  String size
-  String color
-  String address
-  String petName
-  String gender
-  String description
-  String furLength
-  String health
+  Photo thumbnail
   Category category
   Date createdAt
   Date updatedAt
-  +createAd()
-  +updateAd()
-  +deleteAd()
-  +getAdDetails()
+}
+
+class ClassificationAttribute {
+  Long id
+  String name
+  String valueType (enum)
 }
 
 class Category {
   Long id
   String name
-  +createCategory()
-  +updateCategory()
-  +deleteCategory()
+  List<ClassificationAttribute> classificationAttributes
 }
 
 class Photo {
   Long id
-  String url
-  boolean isMainPhoto
-  Long adId
-  +uploadPhoto()
-  +deletePhoto()
-  +setAsMainPhoto()
+  String path
+  PhotoMetadata metadata
 }
 
-class Favorite {
+class PhotoMetadata {
   Long id
-  Long userId
-  Long adId
-  +addToFavorites()
-  +removeFromFavorites()
-  +getUserFavorites()
+  Integer width
+  Integer height
+  String extension
+  Float size
 }
 
-class Comment {
-  Long id
-  Long userId
-  Long adId
-  String content
-  Date createdAt
-  Date updatedAt
-  +addComment()
-  +editComment()
-  +deleteComment()
-}
 
-class History {
-  Long id
-  Long userId
-  Long adId
-  String story
-  Date createdAt
-  +addStory()
-  +getStory()
-}
-
-User <|-- Shelter
-User <|-- Individual
 Ad "1" -- "*" Photo
 Ad "1" -- "1" Category
 User "1" -- "*" Ad
-Individual "1" -- "*" Favorite
-Ad "1" -- "*" Comment
-User "1" -- "*" History
+PhotoMetadata "1" -- "1" Photo
+User "1" -- "*" Photo
+ClassificationAttribute "*" -- "*" Category
+User "1" -- "1" ContactInfo
+
 @enduml
