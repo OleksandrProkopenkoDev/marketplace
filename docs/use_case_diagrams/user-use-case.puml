@@ -1,0 +1,22 @@
+@startuml
+
+!define RECTANGLE node
+actor "Приватна особа" as User
+actor "Притулок" as Shelter
+actor "Потенційний власник" as PotentialOwner
+
+rectangle "Маркетплейс для тварин" as PetMarketplace {
+    usecase "Розміщення оголошення" as PostAdvertisement
+    usecase "Перегляд оголошень" as ViewAdvertisements
+    usecase "Зв'язок з розміщувачем" as ContactPoster
+}
+
+User --> PostAdvertisement
+Shelter --> PostAdvertisement
+PotentialOwner --> ViewAdvertisements
+PotentialOwner --> ContactPoster
+
+PostAdvertisement --|> ViewAdvertisements : include
+ContactPoster --|> ViewAdvertisements : include
+
+@enduml

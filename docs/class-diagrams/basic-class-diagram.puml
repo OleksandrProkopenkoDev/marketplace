@@ -1,0 +1,68 @@
+@startuml
+class User {
+  Long id
+  String email
+  String password
+  Enum userRole
+  String firstName
+  String lastName (optional)
+  Photo profilePicture
+  ContactInfo contactInfo
+  List<Ad> favorites
+  DateTime createdAt
+  DateTime updatedAt
+}
+
+class ContactInfo{
+  String phone
+}
+
+
+class Ad {
+  Long id
+  User author
+  String title
+  BigDecimal price
+  List<Photo> photos
+  Photo thumbnail
+  Category category
+  Date createdAt
+  Date updatedAt
+}
+
+class ClassificationAttribute {
+  Long id
+  String name
+  String valueType (enum)
+}
+
+class Category {
+  Long id
+  String name
+  List<ClassificationAttribute> classificationAttributes
+}
+
+class Photo {
+  Long id
+  String path
+  PhotoMetadata metadata
+}
+
+class PhotoMetadata {
+  Long id
+  Integer width
+  Integer height
+  String extension
+  Float size
+}
+
+
+Ad "1" -- "*" Photo
+Ad "1" -- "1" Category
+User "1" -- "*" Ad
+PhotoMetadata "1" -- "1" Photo
+User "1" -- "*" Photo
+ClassificationAttribute "*" -- "*" Category
+User "1" -- "1" ContactInfo
+
+@enduml
