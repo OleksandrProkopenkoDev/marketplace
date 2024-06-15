@@ -5,11 +5,5 @@ spring:
   profiles:
     active: local
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    flyway:
-      enabled: true
-      baseline-on-migrate: true
-      validate-on-migrate: true
+
+
