@@ -1,5 +1,5 @@
 spring:
   datasource:
-    url: jdbc:postgresql://roundhouse.proxy.rlwy.net:12990/marketplace
+    url: jdbc:postgresql://localhost:5435/marketplace
     username: postgres
-    password: idegjXbWyQrddEjPWenOhTSNTPDTDjuI
+    password: password
