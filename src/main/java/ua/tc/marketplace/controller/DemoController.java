@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tc.marketplace.model.dto.DemoRequest;
@@ -26,5 +27,11 @@ public class DemoController {
   @GetMapping("/all")
   public ResponseEntity<Page<DemoRequest>> getAllDemo(@PageableDefault Pageable pageable) {
     return ResponseEntity.ok(demoService.findAll(pageable));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<DemoRequest> getById(@PathVariable("id") Integer id){
+    DemoRequest demoRequest = demoService.findById(id);
+    return ResponseEntity.ok(demoRequest);
   }
 }
