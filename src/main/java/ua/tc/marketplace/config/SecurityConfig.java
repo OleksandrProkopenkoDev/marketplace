@@ -15,6 +15,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig {
+  private static final String[] WHITELIST = {"/api/v1/**", "/v3/api-docs/**",  "/swagger-ui/**"};
+
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -22,7 +24,9 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
         .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(config -> config.requestMatchers("/api/v1/**").permitAll());
+        .authorizeHttpRequests(
+            config ->
+                config.requestMatchers(WHITELIST).permitAll());
     return http.build();
   }
 
