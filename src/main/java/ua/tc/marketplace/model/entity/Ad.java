@@ -36,6 +36,8 @@ public class Ad {
 
   private String title;
 
+  private String description;
+
   private BigDecimal price;
 
   @OneToMany(cascade = CascadeType.ALL)
