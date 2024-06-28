@@ -11,4 +11,8 @@ public class PhotoFileNotFoundException extends CustomRuntimeException {
   public PhotoFileNotFoundException(String filename) {
     super(ERROR_MESSAGE.formatted(filename), STATUS);
   }
+
+  public PhotoFileNotFoundException(String filename, Throwable cause) {
+    super(ERROR_MESSAGE.formatted(filename), cause, STATUS);
+  }
 }
