@@ -3,6 +3,7 @@ package ua.tc.marketplace.config;
 import jakarta.annotation.Nonnull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
@@ -18,12 +19,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
-  private static final String[] WHITELIST = {"/api/v1/**", "/v3/api-docs/**",  "/swagger-ui/**"};
+
+  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**"};
+  private static final String CREATE_USER_POST_URL = "/api/v1/user";
 
   @Bean
   public UserDetailsService userDetailsService() {
@@ -38,8 +42,10 @@ public class SecurityConfig {
         .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             config ->
-                config.requestMatchers(WHITELIST).permitAll())
-    .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+                config.requestMatchers(WHITELIST).permitAll()
+                    .requestMatchers(HttpMethod.POST, CREATE_USER_POST_URL).permitAll()
+                    .anyRequest().authenticated())
+        .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
     return http.build();
   }
 

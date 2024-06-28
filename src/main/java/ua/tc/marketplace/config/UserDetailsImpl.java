@@ -3,6 +3,7 @@ package ua.tc.marketplace.config;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ua.tc.marketplace.model.entity.User;
 import java.util.Arrays;
@@ -28,7 +29,7 @@ public class UserDetailsImpl implements UserDetails {
 
   @Override
   public String getUsername() {
-    return user.getName();
+    return user.getEmail();
   }
 
   @Override

@@ -6,7 +6,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ua.tc.marketplace.config.UserDetailsImpl;
 import ua.tc.marketplace.model.entity.User;
+import ua.tc.marketplace.repository.UserRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -14,9 +16,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository repository;
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-      Optional<User> user = repository.findByName(username);
-      return user.map(MyUserDetails::new)
-          .orElseThrow(() -> new UsernameNotFoundException(username + " not found"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+      //Let email be unique
+      //TODO make changes in flyway migration
+      Optional<User> user = repository.findByEmail(email);
+      return user.map(UserDetailsImpl::new)
+          .orElseThrow(() -> new UsernameNotFoundException(email + " not found"));
     }
 }
