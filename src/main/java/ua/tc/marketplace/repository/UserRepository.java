@@ -6,4 +6,5 @@ import ua.tc.marketplace.model.entity.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
   Optional<User> findByEmail(String username);
+  Optional<User> findById(Long id);
 }

@@ -30,14 +30,14 @@ public class UserController {
     return ResponseEntity.status(HttpStatus.OK).body(userService.findAll(pageable));
   }
 
-  @PostMapping()
-      public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.createUser(userDto));
-  }
-
   @GetMapping("/{id}")
   public ResponseEntity<UserDto> getAllUsers(@PathVariable Long id) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.findById(id));
+  }
+
+  @PostMapping()
+      public ResponseEntity<UserDto> createUser(@RequestBody UserDto userDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(userService.createUser(userDto));
   }
 
   @PutMapping()
