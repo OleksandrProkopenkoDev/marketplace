@@ -19,6 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
 import ua.tc.marketplace.exception.photo.FailedStoreFileException;
 import ua.tc.marketplace.exception.photo.FailedToListFilesInDirectoryException;
@@ -30,11 +31,14 @@ import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
+import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.PhotoStorageService;
 
 @Service
 @RequiredArgsConstructor
 public class PhotoStorageServiceImpl implements PhotoStorageService {
+
+  private final AdRepository adRepository;
 
   private static final String AD = "ad";
   private static final String DOT = ".";
@@ -128,13 +132,18 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   @Override
   public List<String> deletePhotos(AdPhotoPaths adPhotoPaths) {
     Long adId = adPhotoPaths.adId();
-    List<String> paths = Arrays.stream(adPhotoPaths.paths()).map(s -> uploadDir + s).toList();
-    if (adId == null || paths.isEmpty()) {
-      throw new IllegalArgumentException("Invalid adId or paths");
-    }
 
     String folder = AD + SLASH + adId;
     Path basePath = Paths.get(uploadDir).resolve(folder);
+
+    if (!adRepository.existsById(adId)) {
+      throw new AdNotFoundException(adId);
+    }
+
+    List<String> paths =
+        Arrays.stream(adPhotoPaths.paths())
+            .map(filename -> uploadDir + SLASH + folder + SLASH + filename)
+            .toList();
 
     // List to keep track of successfully deleted files
     List<String> deletedFiles = new ArrayList<>();
