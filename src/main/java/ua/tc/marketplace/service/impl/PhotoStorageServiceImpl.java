@@ -12,30 +12,38 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
 import ua.tc.marketplace.exception.photo.FailedStoreFileException;
 import ua.tc.marketplace.exception.photo.FailedToListFilesInDirectoryException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
 import ua.tc.marketplace.exception.photo.WrongFilePathException;
+import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
 import ua.tc.marketplace.model.dto.photo.AdPhotos;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
+import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
+import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.PhotoStorageService;
 
 @Service
+@RequiredArgsConstructor
 public class PhotoStorageServiceImpl implements PhotoStorageService {
 
-  public static final String AD = "ad";
-  public static final String DOT = ".";
-  public static final String SLASH = File.separator;
+  private final AdRepository adRepository;
+
+  private static final String AD = "ad";
+  private static final String DOT = ".";
+  private static final String SLASH = File.separator;
 
   @Value("${file.upload-dir}")
   private String uploadDir;
@@ -120,6 +128,20 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     Path path = Paths.get(uploadDir).resolve(folder);
 
     return getFileResponse(filename, path);
+  }
+
+  @Override
+  public FilesResponse addPhotos(AdPhotos adPhotos) {
+    Ad ad = adRepository
+        .findById(adPhotos.adId())
+        .orElseThrow(() -> new AdNotFoundException(adPhotos.adId()));
+
+    return null;
+  }
+
+  @Override
+  public FilesResponse deletePhotos(AdPhotoPaths adPhotoPaths) {
+    return null;
   }
 
   @NotNull
