@@ -19,7 +19,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
 import ua.tc.marketplace.exception.photo.FailedStoreFileException;
 import ua.tc.marketplace.exception.photo.FailedToListFilesInDirectoryException;
@@ -29,17 +28,13 @@ import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
 import ua.tc.marketplace.model.dto.photo.AdPhotos;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
-import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
-import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.PhotoStorageService;
 
 @Service
 @RequiredArgsConstructor
 public class PhotoStorageServiceImpl implements PhotoStorageService {
-
-  private final AdRepository adRepository;
 
   private static final String AD = "ad";
   private static final String DOT = ".";
@@ -131,17 +126,40 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   }
 
   @Override
-  public FilesResponse addPhotos(AdPhotos adPhotos) {
-    Ad ad = adRepository
-        .findById(adPhotos.adId())
-        .orElseThrow(() -> new AdNotFoundException(adPhotos.adId()));
+  public List<String> deletePhotos(AdPhotoPaths adPhotoPaths) {
+    Long adId = adPhotoPaths.adId();
+    List<String> paths = Arrays.stream(adPhotoPaths.paths()).map(s -> uploadDir + s).toList();
+    if (adId == null || paths.isEmpty()) {
+      throw new IllegalArgumentException("Invalid adId or paths");
+    }
 
-    return null;
-  }
+    String folder = AD + SLASH + adId;
+    Path basePath = Paths.get(uploadDir).resolve(folder);
 
-  @Override
-  public FilesResponse deletePhotos(AdPhotoPaths adPhotoPaths) {
-    return null;
+    // List to keep track of successfully deleted files
+    List<String> deletedFiles = new ArrayList<>();
+
+    paths.stream()
+        .map(basePath::resolve)
+        .filter(
+            filePath -> {
+              if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
+                return true;
+              } else {
+                throw new PhotoFileNotFoundException(filePath.toString());
+              }
+            })
+        .forEach(
+            filePath -> {
+              try {
+                Files.delete(filePath);
+                deletedFiles.add(filePath.toString());
+              } catch (IOException e) {
+                throw new FailedRetrieveFileException(filePath.toAbsolutePath().toString(), e);
+              }
+            });
+
+    return deletedFiles;
   }
 
   @NotNull

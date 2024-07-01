@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
 import ua.tc.marketplace.model.dto.photo.AdPhotos;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
@@ -35,5 +36,11 @@ public class FileController {
       @PathVariable Long adId, @PathVariable String filename) {
     FileResponse fileResponse = fileStorageService.retrieveAdPhoto(adId, filename);
     return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
+  }
+
+  @DeleteMapping("/ad")
+  public ResponseEntity<List<String>> deletePhotos(@RequestBody AdPhotoPaths adPhotoPaths) {
+    List<String> deletedFiles = fileStorageService.deletePhotos(adPhotoPaths);
+    return ResponseEntity.ok(deletedFiles);
   }
 }

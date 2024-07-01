@@ -15,7 +15,5 @@ public interface PhotoStorageService {
 
   FileResponse retrieveAdPhoto(Long adId, String filename);
 
-  FilesResponse addPhotos(AdPhotos adPhotos);
-
-  FilesResponse deletePhotos(AdPhotoPaths adPhotoPaths);
+  List<String> deletePhotos(AdPhotoPaths adPhotoPaths);
 }
