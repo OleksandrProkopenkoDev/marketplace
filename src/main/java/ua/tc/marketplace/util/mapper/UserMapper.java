@@ -15,7 +15,7 @@ import ua.tc.marketplace.model.enums.UserRole;
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
 
-  UserDto toDto (User entity);
+  UserDto toDto(User entity);
 
   @Mapping(target = "id", ignore = true)
   User toEntity(UserDto dto);
@@ -24,6 +24,7 @@ public interface UserMapper {
       target = "userRole",
       source = "userRole",
       qualifiedByName = "mapUserRoleFromStringToEnum")
+  @Mapping(target = "password", ignore = true)
   void updateEntityFromDto(@MappingTarget User user, UserDto userDto);
 
   @Named("mapUserRoleFromStringToEnum")

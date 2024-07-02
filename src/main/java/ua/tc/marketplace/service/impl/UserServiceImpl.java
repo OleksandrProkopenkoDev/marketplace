@@ -59,27 +59,7 @@ public class UserServiceImpl implements UserService {
         .orElseThrow(() -> new UserNotFoundException(updateUserDto.getId()));
 
     userMapper.updateEntityFromDto(existingUser, updateUserDto);
-//    if (u.getPassword() != null) {
-//      e.setPassword(u.getPassword());
-//    }
-//    if (u.getUserRole() != null) {
-//      e.setUserRole(UserRole.valueOf(u.getUserRole()));
-//    }
-//    if (u.getFirstName() != null) {
-//      e.setFirstName(u.getFirstName());
-//    }
-//    if (u.getLastName() != null) {
-//      e.setLastName(u.getLastName());
-//    }
-//    if (u.getProfilePicture() != null
-//        && !u.getProfilePicture().equals(e.getProfilePicture())) {
-//      e.setProfilePicture(u.getProfilePicture());
-//    }
-//    if (u.getContactInfo() != e.getContactInfo()
-//        && !u.getContactInfo().equals(e.getContactInfo())) {
-//      e.setContactInfo(u.getContactInfo());
-//    }
-//    e.setUpdatedAt(LocalDateTime.now());
+    existingUser.setUpdatedAt(LocalDateTime.now());
 
     return userMapper.toDto(userRepository.save(existingUser));
   }
