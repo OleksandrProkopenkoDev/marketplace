@@ -1,12 +1,19 @@
 package ua.tc.marketplace.service;
 
 import java.util.List;
-import ua.tc.marketplace.model.dto.photo.AdPhotos;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
+import ua.tc.marketplace.model.dto.photo.AdPhotos;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
 
+/**
+ * Service interface for managing photo storage operations.
+ *
+ * <p>This interface defines methods for storing, retrieving, and deleting photos associated with
+ * advertisements. It provides functionality to store multiple photos, retrieve all photos or a
+ * specific photo by its filename, and delete photos based on their paths.
+ */
 public interface PhotoStorageService {
 
   List<Photo> storeAdPhotos(AdPhotos adPhotos);

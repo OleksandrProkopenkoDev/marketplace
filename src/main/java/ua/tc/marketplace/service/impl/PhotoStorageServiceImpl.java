@@ -34,6 +34,15 @@ import ua.tc.marketplace.model.entity.PhotoMetadata;
 import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.PhotoStorageService;
 
+/**
+ * Service implementation for managing photo storage operations.
+ *
+ * <p>This service provides functionality to store, retrieve, and delete photos associated with
+ * advertisements. It handles file operations including creating directories, saving files, listing
+ * files, reading file contents, and deleting files. The service uses Apache Commons Imaging to
+ * extract metadata from images and includes various exception handling mechanisms to manage errors
+ * during file operations.
+ */
 @Service
 @RequiredArgsConstructor
 public class PhotoStorageServiceImpl implements PhotoStorageService {
