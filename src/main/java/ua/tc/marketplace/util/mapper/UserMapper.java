@@ -6,9 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.model.dto.DemoRequest;
 import ua.tc.marketplace.model.dto.UserDto;
-import ua.tc.marketplace.model.entity.Demo;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.model.enums.UserRole;
 
