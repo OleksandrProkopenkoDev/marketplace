@@ -19,6 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
 import ua.tc.marketplace.exception.photo.FailedStoreFileException;
@@ -71,42 +72,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     Arrays.stream(adPhotos.files())
         .forEach(
             file -> {
-              try {
-                // Generate a unique filename
-                String originalFilename = file.getOriginalFilename();
-                String extension = FilenameUtils.getExtension(originalFilename);
-                String uniqueFilename = UUID.randomUUID() + DOT + extension;
-
-                // Save the file
-                Path destinationFile = path.resolve(uniqueFilename);
-                file.transferTo(destinationFile.toFile());
-
-                // Extract metadata using Apache Commons Imaging
-                ImageInfo imageInfo = Imaging.getImageInfo(destinationFile.toFile());
-
-                int width = imageInfo.getWidth();
-                int height = imageInfo.getHeight();
-                float size = (float) file.getSize();
-
-                // Create PhotoMetadata
-                PhotoMetadata metadata =
-                    PhotoMetadata.builder()
-                        .width(width)
-                        .height(height)
-                        .extension(extension)
-                        .size(size)
-                        .build();
-
-                // Create Photo
-                Photo photo =
-                    Photo.builder()
-                        .path(uniqueFilename)
-                        .metadata(metadata)
-                        .build();
-                photos.add(photo);
-              } catch (IOException e) {
-                throw new FailedStoreFileException(file.getOriginalFilename(), e);
-              }
+              Photo photo = storePhotoFile(file, path);
+              photos.add(photo);
             });
     return photos;
   }
@@ -178,6 +145,40 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
             });
 
     return deletedFiles;
+  }
+
+  private Photo storePhotoFile(MultipartFile file, Path path) {
+    try {
+      // Generate a unique filename
+      String originalFilename = file.getOriginalFilename();
+      String extension = FilenameUtils.getExtension(originalFilename);
+      String uniqueFilename = UUID.randomUUID() + DOT + extension;
+
+      // Save the file
+      Path destinationFile = path.resolve(uniqueFilename);
+      file.transferTo(destinationFile.toFile());
+
+      // Extract metadata using Apache Commons Imaging
+      ImageInfo imageInfo = Imaging.getImageInfo(destinationFile.toFile());
+
+      int width = imageInfo.getWidth();
+      int height = imageInfo.getHeight();
+      float size = (float) file.getSize();
+
+      // Create PhotoMetadata
+      PhotoMetadata metadata =
+          PhotoMetadata.builder()
+              .width(width)
+              .height(height)
+              .extension(extension)
+              .size(size)
+              .build();
+
+      // Create Photo
+      return Photo.builder().path(uniqueFilename).metadata(metadata).build();
+    } catch (IOException e) {
+      throw new FailedStoreFileException(file.getOriginalFilename(), e);
+    }
   }
 
   @NotNull
