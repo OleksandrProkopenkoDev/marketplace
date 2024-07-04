@@ -100,7 +100,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
                 // Create Photo
                 Photo photo =
                     Photo.builder()
-                        .path(folder + SLASH + uniqueFilename)
+                        .path(uniqueFilename)
                         .metadata(metadata)
                         .build();
                 photos.add(photo);
