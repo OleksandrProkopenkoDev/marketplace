@@ -55,42 +55,12 @@ public class PhotoStorageServiceImplTest {
 
   @BeforeEach
   public void setup() {
-    // Create a temporary directory for testing
-    testUploadDir = System.getProperty("java.io.tmpdir") + "test-upload";
-    this.uploadDir = testUploadDir;
-    try {
-      Files.createDirectories(Paths.get(testUploadDir));
-    } catch (IOException e) {
-      // Optionally, fail the test if directory creation fails
-      fail("Failed to create temporary directory for testing: " + testUploadDir);
-    }
-    // Mock the behavior of @Value("${file.upload-dir}")
-    ReflectionTestUtils.setField(photoStorageService, "uploadDir", testUploadDir);
+    createTempDirectory();
   }
 
   @AfterEach
   public void cleanup() {
-    // Delete the temporary directory and its contents after each test
-    if (testUploadDir != null) {
-      Path directoryPath = Paths.get(testUploadDir);
-      if (Files.exists(directoryPath)) {
-        try (Stream<Path> paths = Files.walk(directoryPath)) {
-          paths
-              .sorted((a, b) -> -a.compareTo(b)) // Reverse order for directories
-              .forEach(
-                  file -> {
-                    try {
-                      Files.delete(file);
-                    } catch (IOException e) {
-                      throw new FailedRetrieveFileException(file.toAbsolutePath().toString(), e);
-                    }
-                  });
-        } catch (IOException e) {
-          // Handle IOException occurred in opening or closing stream
-          throw new FailedRetrieveFileException(directoryPath.toAbsolutePath().toString(), e);
-        }
-      }
-    }
+    deleteTempDirectory();
   }
 
   @Test
@@ -294,6 +264,43 @@ public class PhotoStorageServiceImplTest {
       return new MockMultipartFile("file", name + ".jpg", "image/jpeg", imageBytes);
     } catch (IOException e) {
       throw new FailedRetrieveFileException(name, e);
+    }
+  }
+
+  private void createTempDirectory() {
+    testUploadDir = System.getProperty("java.io.tmpdir") + "test-upload";
+    this.uploadDir = testUploadDir;
+    try {
+      Files.createDirectories(Paths.get(testUploadDir));
+    } catch (IOException e) {
+      // Optionally, fail the test if directory creation fails
+      fail("Failed to create temporary directory for testing: " + testUploadDir);
+    }
+    // Mock the behavior of @Value("${file.upload-dir}")
+    ReflectionTestUtils.setField(photoStorageService, "uploadDir", testUploadDir);
+  }
+
+  private void deleteTempDirectory() {
+    // Delete the temporary directory and its contents after each test
+    if (testUploadDir != null) {
+      Path directoryPath = Paths.get(testUploadDir);
+      if (Files.exists(directoryPath)) {
+        try (Stream<Path> paths = Files.walk(directoryPath)) {
+          paths
+              .sorted((a, b) -> -a.compareTo(b)) // Reverse order for directories
+              .forEach(
+                  file -> {
+                    try {
+                      Files.delete(file);
+                    } catch (IOException e) {
+                      throw new FailedRetrieveFileException(file.toAbsolutePath().toString(), e);
+                    }
+                  });
+        } catch (IOException e) {
+          // Handle IOException occurred in opening or closing stream
+          throw new FailedRetrieveFileException(directoryPath.toAbsolutePath().toString(), e);
+        }
+      }
     }
   }
 }
