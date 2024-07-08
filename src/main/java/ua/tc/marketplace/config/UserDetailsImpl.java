@@ -2,12 +2,14 @@ package ua.tc.marketplace.config;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ua.tc.marketplace.model.entity.User;
 import java.util.Arrays;
 
+@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
   private User user;
 
