@@ -36,11 +36,14 @@ import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.repository.AdRepository;
+import ua.tc.marketplace.repository.FileStorageRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PhotoStorageServiceImplTest {
 
   @Mock private AdRepository adRepository;
+
+  @Mock private FileStorageRepository fileStorageRepository;
 
   @InjectMocks private PhotoStorageServiceImpl photoStorageService;
 
@@ -65,6 +68,10 @@ public class PhotoStorageServiceImplTest {
 
   @Test
   void storeAdPhotos_shouldSave_whenValidInput() {
+
+
+
+
     // Mock data
     MockMultipartFile file1 = createJPEGImage("image1");
     MockMultipartFile file2 = createJPEGImage("image2");
