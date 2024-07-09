@@ -1,6 +1,5 @@
 package ua.tc.marketplace.repository.impl;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -14,7 +13,6 @@ import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
@@ -22,7 +20,6 @@ import ua.tc.marketplace.exception.photo.FailedStoreFileException;
 import ua.tc.marketplace.exception.photo.FailedToListFilesInDirectoryException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
 import ua.tc.marketplace.exception.photo.WrongFilePathException;
-import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
 import ua.tc.marketplace.repository.FileStorageRepository;
@@ -107,30 +104,13 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   }
 
   @Override
-  @NotNull
-  public HttpHeaders getHeaders(Path filePath) {
-    HttpHeaders headers = new HttpHeaders();
-    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filePath.getFileName());
-    try {
-      headers.add(HttpHeaders.CONTENT_TYPE, Files.probeContentType(filePath));
-    } catch (IOException e) {
-      throw new PhotoFileNotFoundException(filePath.toString(), e);
-    }
-    return headers;
-  }
-
-  @Override
-  public FileResponse retrieveFileWithHeaders(String filename, Path path) {
+  public byte[] retrieveFile(String filename, Path path) {
     try {
       Path filePath = path.resolve(filename);
       if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
         throw new PhotoFileNotFoundException(filename);
       }
-
-      byte[] fileContent = Files.readAllBytes(filePath);
-      HttpHeaders headers = getHeaders(filePath);
-
-      return new FileResponse(fileContent, headers);
+      return Files.readAllBytes(filePath);
     } catch (IOException e) {
       throw new FailedRetrieveFileException(filename, e);
     }

@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.AdPhotos;
+import ua.tc.marketplace.model.dto.photo.AdPhotosDto;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
@@ -23,8 +23,8 @@ public class PhotoController implements PhotoOpenApi {
 
   @Override
   @PostMapping("/ad")
-  public ResponseEntity<List<Photo>> uploadFile(@ModelAttribute @Valid AdPhotos adPhotos) {
-    List<Photo> photos = fileStorageService.storeAdPhotos(adPhotos);
+  public ResponseEntity<List<Photo>> uploadFile(@ModelAttribute @Valid AdPhotosDto adPhotosDto) {
+    List<Photo> photos = fileStorageService.storeAdPhotos(adPhotosDto);
     return ResponseEntity.ok(photos);
   }
 

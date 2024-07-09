@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.AdPhotos;
+import ua.tc.marketplace.model.dto.photo.AdPhotosDto;
 import ua.tc.marketplace.model.entity.Photo;
 
 /**
@@ -26,7 +26,7 @@ public interface PhotoOpenApi {
       description = "Uploads multiple photos for a specific advertisement."
   )
   @PostMapping("/ad")
-  ResponseEntity<List<Photo>> uploadFile(@ModelAttribute AdPhotos adPhotos);
+  ResponseEntity<List<Photo>> uploadFile(@ModelAttribute AdPhotosDto adPhotosDto);
 
   @Operation(
       summary = "Retrieve all photos for an advertisement",

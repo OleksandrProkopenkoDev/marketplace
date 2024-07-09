@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
  * to ensure that the advertisement ID is provided and that the array of
  * files is not empty and does not exceed a certain number of files.
  */
-public record AdPhotos(
+public record AdPhotosDto(
     @NotNull(message = "Advertisement ID cannot be null.") Long adId,
     @NotNull(message = "Files cannot be null.")
         @Size(min = 1, max = 10, message = "The number of files must be between 1 and 10.")

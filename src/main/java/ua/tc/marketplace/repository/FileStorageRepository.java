@@ -1,11 +1,8 @@
 package ua.tc.marketplace.repository;
 
-import jakarta.validation.constraints.NotNull;
 import java.nio.file.Path;
 import java.util.List;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.multipart.MultipartFile;
-import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.entity.Photo;
 
 public interface FileStorageRepository {
@@ -20,10 +17,8 @@ public interface FileStorageRepository {
 
   void deleteFile(Path filePath);
 
-  @NotNull
-  HttpHeaders getHeaders(Path filePath);
 
   String getUploadDir();
 
-  FileResponse retrieveFileWithHeaders(String filename, Path path);
+  byte[] retrieveFile(String filename, Path path);
 }
