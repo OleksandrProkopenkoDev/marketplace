@@ -40,9 +40,10 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Override
   public List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto) {
-    Ad ad = adRepository
-        .findById(photoFilesDto.adId())
-        .orElseThrow(() -> new AdNotFoundException(photoFilesDto.adId()));
+    Ad ad =
+        adRepository
+            .findById(photoFilesDto.adId())
+            .orElseThrow(() -> new AdNotFoundException(photoFilesDto.adId()));
 
     String folder = AD + SLASH + photoFilesDto.adId();
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
@@ -55,6 +56,12 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
     ad.getPhotos().addAll(photos);
     ad = adRepository.save(ad);
+    return ad.getPhotos();
+  }
+
+  @Override
+  public List<Photo> findAllPhotosByAdId(Long adId) {
+    Ad ad = adRepository.findById(adId).orElseThrow(() -> new AdNotFoundException(adId));
     return ad.getPhotos();
   }
 

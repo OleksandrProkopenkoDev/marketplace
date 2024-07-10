@@ -1,7 +1,6 @@
 package ua.tc.marketplace.controller;
 
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,8 +35,8 @@ public class PhotoController implements PhotoOpenApi {
 
   @GetMapping("/ad/{adId}")
   public ResponseEntity<List<Photo>> findAllPhotosByAdId(@PathVariable Long adId) {
-    // todo
-    return ResponseEntity.ok(new ArrayList<>());
+    List<Photo> photos = photoStorageService.findAllPhotosByAdId(adId);
+    return ResponseEntity.ok(photos);
   }
 
   @PostMapping("/user")

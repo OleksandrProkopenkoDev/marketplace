@@ -18,6 +18,8 @@ public interface PhotoStorageService {
 
   List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto);
 
+  List<Photo> findAllPhotosByAdId(Long adId);
+
   FilesResponse findAllAdPhotoFiles(Long adId);
 
   FileResponse findAdPhotoFileByName(Long adId, String filename);

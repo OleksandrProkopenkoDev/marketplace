@@ -5,4 +5,7 @@ spring:
     password: password
 
 file:
-  upload-dir: E:\\JavaProjects\\team-challenge\\photo
+  #windows
+  #  upload-dir: E:\\JavaProjects\\team-challenge\\photo
+  #ubuntu
+  upload-dir: /home/chak/projects/java/teamchallenge/photo
