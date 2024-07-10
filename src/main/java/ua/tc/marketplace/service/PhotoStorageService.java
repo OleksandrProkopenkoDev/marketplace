@@ -18,9 +18,9 @@ public interface PhotoStorageService {
 
   List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto);
 
-  FilesResponse retrieveAllAdPhotos(Long adId);
+  FilesResponse findAllAdPhotoFiles(Long adId);
 
-  FileResponse retrieveAdPhoto(Long adId, String filename);
+  FileResponse findAdPhotoFileByName(Long adId, String filename);
 
   List<String> deleteAdPhotos(AdPhotoPaths adPhotoPaths);
 }

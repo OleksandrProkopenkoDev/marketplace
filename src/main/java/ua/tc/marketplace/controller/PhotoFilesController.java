@@ -22,8 +22,8 @@ public class PhotoFilesController implements PhotoFilesOpenApi {
 
   @Override
   @GetMapping("/ad/{adId}")
-  public ResponseEntity<List<byte[]>> retrieveAllPhotoFilesByAdId(@PathVariable Long adId) {
-    FilesResponse filesResponse = photoStorageService.retrieveAllAdPhotos(adId);
+  public ResponseEntity<List<byte[]>> findAllPhotoFilesByAdId(@PathVariable Long adId) {
+    FilesResponse filesResponse = photoStorageService.findAllAdPhotoFiles(adId);
     return new ResponseEntity<>(filesResponse.contents(), filesResponse.headers(), HttpStatus.OK);
   }
 
@@ -31,7 +31,7 @@ public class PhotoFilesController implements PhotoFilesOpenApi {
   @GetMapping("/ad/{adId}/{filename}")
   public ResponseEntity<byte[]> retrieveAdPhotoFileByName(
       @PathVariable Long adId, @PathVariable String filename) {
-    FileResponse fileResponse = photoStorageService.retrieveAdPhoto(adId, filename);
+    FileResponse fileResponse = photoStorageService.findAdPhotoFileByName(adId, filename);
     return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
   }
 

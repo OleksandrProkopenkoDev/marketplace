@@ -18,7 +18,7 @@ public interface PhotoFilesOpenApi {
       summary = "Retrieve all photos for an advertisement",
       description = "Retrieves all photos associated with a specific advertisement by its ID.")
   @GetMapping("/ad/{adId}")
-  ResponseEntity<List<byte[]>> retrieveAllPhotoFilesByAdId(@PathVariable Long adId);
+  ResponseEntity<List<byte[]>> findAllPhotoFilesByAdId(@PathVariable Long adId);
 
   @Operation(
       summary = "Download a specific photo by filename",

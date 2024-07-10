@@ -60,7 +60,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Transactional(readOnly = true)
   @Override
-  public FilesResponse retrieveAllAdPhotos(Long adId) {
+  public FilesResponse findAllAdPhotoFiles(Long adId) {
     String currentFolder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(currentFolder);
     List<byte[]> fileContents = fileStorageRepository.readFilesList(path);
@@ -69,7 +69,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Transactional(readOnly = true)
   @Override
-  public FileResponse retrieveAdPhoto(Long adId, String filename) {
+  public FileResponse findAdPhotoFileByName(Long adId, String filename) {
     String folder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
 
