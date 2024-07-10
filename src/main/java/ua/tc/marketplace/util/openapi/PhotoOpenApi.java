@@ -5,13 +5,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.AdPhotosDto;
+import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.entity.Photo;
 
 /**
@@ -26,26 +24,13 @@ public interface PhotoOpenApi {
       description = "Uploads multiple photos for a specific advertisement."
   )
   @PostMapping("/ad")
-  ResponseEntity<List<Photo>> uploadFile(@ModelAttribute AdPhotosDto adPhotosDto);
+  ResponseEntity<List<Photo>> saveAdPhotoFiles(@ModelAttribute PhotoFilesDto photoFilesDto);
 
-  @Operation(
-      summary = "Retrieve all photos for an advertisement",
-      description = "Retrieves all photos associated with a specific advertisement by its ID."
-  )
-  @GetMapping("/ad/{adId}")
-  ResponseEntity<List<byte[]>> retrieveAllPhotos(@PathVariable Long adId);
-
-  @Operation(
-      summary = "Download a specific photo by filename",
-      description = "Downloads a specific photo associated with an advertisement by the advertisement ID and filename."
-  )
-  @GetMapping("/ad/{adId}/{filename}")
-  ResponseEntity<byte[]> downloadFile(@PathVariable Long adId, @PathVariable String filename);
 
   @Operation(
       summary = "Delete specific photos for an advertisement",
       description = "Deletes multiple photos associated with a specific advertisement by providing their paths."
   )
   @DeleteMapping("/ad")
-  ResponseEntity<List<String>> deletePhotos(@RequestBody AdPhotoPaths adPhotoPaths);
+  ResponseEntity<List<String>> deleteAdPhotoFiles(@RequestBody AdPhotoPaths adPhotoPaths);
 }

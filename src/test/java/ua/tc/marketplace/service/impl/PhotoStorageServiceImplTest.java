@@ -31,7 +31,7 @@ import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
 import ua.tc.marketplace.exception.photo.FailedToListFilesInDirectoryException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.AdPhotosDto;
+import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
@@ -76,10 +76,10 @@ public class PhotoStorageServiceImplTest {
     MockMultipartFile file1 = createJPEGImage("image1");
     MockMultipartFile file2 = createJPEGImage("image2");
     MockMultipartFile[] files = {file1, file2};
-    AdPhotosDto adPhotosDto = new AdPhotosDto(EXAMPLE_AD_ID, files);
+    PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
 
     // Call the method
-    List<Photo> photos = photoStorageService.storeAdPhotos(adPhotosDto);
+    List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
 
     // Assertions
     assertNotNull(photos);
@@ -99,8 +99,8 @@ public class PhotoStorageServiceImplTest {
     MockMultipartFile file1 = createJPEGImage("image1");
     MockMultipartFile file2 = createJPEGImage("image2");
     MockMultipartFile[] files = {file1, file2};
-    AdPhotosDto adPhotosDto = new AdPhotosDto(EXAMPLE_AD_ID, files);
-    photoStorageService.storeAdPhotos(adPhotosDto);
+    PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
+    photoStorageService.storeAdPhotos(photoFilesDto);
 
     // Call the method
     FilesResponse response = photoStorageService.retrieveAllAdPhotos(EXAMPLE_AD_ID);
@@ -152,8 +152,8 @@ public class PhotoStorageServiceImplTest {
     // Setup: Store a photo for the ad
     MockMultipartFile file = createJPEGImage("image1");
     MockMultipartFile[] files = {file};
-    AdPhotosDto adPhotosDto = new AdPhotosDto(EXAMPLE_AD_ID, files);
-    List<Photo> photos = photoStorageService.storeAdPhotos(adPhotosDto);
+    PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
+    List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
 
     String filename = photos.getFirst().getPath();
 
@@ -196,8 +196,8 @@ public class PhotoStorageServiceImplTest {
     MockMultipartFile file1 = createJPEGImage("image1");
     MockMultipartFile file2 = createJPEGImage("image2");
     MockMultipartFile[] files = {file1, file2};
-    AdPhotosDto adPhotosDto = new AdPhotosDto(EXAMPLE_AD_ID, files);
-    List<Photo> photos = photoStorageService.storeAdPhotos(adPhotosDto);
+    PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
+    List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
 
     String filename1 = photos.get(0).getPath();
     String filename2 = photos.get(1).getPath();
@@ -227,8 +227,8 @@ public class PhotoStorageServiceImplTest {
     // Setup: Store one photo for the ad
     MockMultipartFile file = createJPEGImage("image1");
     MockMultipartFile[] files = {file};
-    AdPhotosDto adPhotosDto = new AdPhotosDto(EXAMPLE_AD_ID, files);
-    photoStorageService.storeAdPhotos(adPhotosDto);
+    PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
+    photoStorageService.storeAdPhotos(photoFilesDto);
 
     String filename1 = file.getOriginalFilename();
     String nonExistentFilename = "non-existent.jpg";

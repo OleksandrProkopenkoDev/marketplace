@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.AdPhotosDto;
+import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.entity.Photo;
@@ -40,13 +40,13 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
 
   @Override
-  public List<Photo> storeAdPhotos(AdPhotosDto adPhotosDto) {
-    String folder = AD + SLASH + adPhotosDto.adId();
+  public List<Photo> storeAdPhotos(PhotoFilesDto photoFilesDto) {
+    String folder = AD + SLASH + photoFilesDto.adId();
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
     fileStorageRepository.createDirectory(path);
 
     List<Photo> photos =
-        Arrays.stream(adPhotosDto.files())
+        Arrays.stream(photoFilesDto.files())
             .map(file -> fileStorageRepository.storeFile(file, path))
             .collect(Collectors.toList());
 
