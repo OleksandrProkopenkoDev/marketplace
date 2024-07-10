@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.tc.marketplace.model.dto.CategoryDto;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.service.CategoryService;
 
@@ -19,32 +20,27 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
-    public ResponseEntity<Page<Category>> getAllCategories(Pageable pageable) {
-        Page<Category> categories = categoryService.findAll(pageable);
+    public ResponseEntity<Page<CategoryDto>> getAllCategories(Pageable pageable) {
+        Page<CategoryDto> categories = categoryService.findAll(pageable);
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
-        Optional<Category> category = categoryService.findById(id);
-        return category.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    public ResponseEntity<CategoryDto> getCategoryById(@PathVariable Long id) {
+        CategoryDto categoryDto = categoryService.findById(id);
+        return ResponseEntity.ok(categoryDto);
     }
 
     @PostMapping
-    public ResponseEntity<Category> createCategory(@RequestBody Category category) {
-        Category createdCategory = categoryService.save(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDTO) {
+        CategoryDto createCategory = categoryService.createCategory(categoryDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createCategory);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category) {
-        try {
-            Category updatedCategory = categoryService.update(id, category);
-            return ResponseEntity.ok(updatedCategory);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Long id, @RequestBody CategoryDto categoryDto) {
+        CategoryDto updatedCategory = categoryService.update(id, categoryDto);
+        return ResponseEntity.ok(updatedCategory);
     }
 
     @DeleteMapping("/{id}")
