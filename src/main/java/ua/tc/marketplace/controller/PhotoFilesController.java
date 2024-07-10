@@ -15,15 +15,15 @@ import ua.tc.marketplace.util.openapi.PhotoFilesOpenApi;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/photo")
+@RequestMapping("/api/v1/file")
 public class PhotoFilesController implements PhotoFilesOpenApi {
 
-  private final PhotoStorageService fileStorageService;
+  private final PhotoStorageService photoStorageService;
 
   @Override
   @GetMapping("/ad/{adId}")
   public ResponseEntity<List<byte[]>> retrieveAllPhotoFilesByAdId(@PathVariable Long adId) {
-    FilesResponse filesResponse = fileStorageService.retrieveAllAdPhotos(adId);
+    FilesResponse filesResponse = photoStorageService.retrieveAllAdPhotos(adId);
     return new ResponseEntity<>(filesResponse.contents(), filesResponse.headers(), HttpStatus.OK);
   }
 
@@ -31,7 +31,7 @@ public class PhotoFilesController implements PhotoFilesOpenApi {
   @GetMapping("/ad/{adId}/{filename}")
   public ResponseEntity<byte[]> retrieveAdPhotoFileByName(
       @PathVariable Long adId, @PathVariable String filename) {
-    FileResponse fileResponse = fileStorageService.retrieveAdPhoto(adId, filename);
+    FileResponse fileResponse = photoStorageService.retrieveAdPhoto(adId, filename);
     return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
   }
 

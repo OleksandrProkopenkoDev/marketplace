@@ -44,7 +44,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   }
 
   @Override
-  public Photo storeFile(MultipartFile file, Path path) {
+  public Photo writeFile(MultipartFile file, Path path) {
     try {
       String originalFilename = file.getOriginalFilename();
       String extension = FilenameUtils.getExtension(originalFilename);
@@ -74,11 +74,11 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   }
 
   @Override
-  public List<byte[]> listFiles(Path path) {
+  public List<byte[]> readFilesList(Path path) {
     try (Stream<Path> paths = Files.list(path)) {
       return paths
           .filter(Files::isRegularFile)
-          .map(this::readFileContent)
+          .map(this::readFile)
           .collect(Collectors.toList());
     } catch (IOException e) {
       throw new FailedToListFilesInDirectoryException(path.toString(), e);
@@ -86,11 +86,24 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   }
 
   @Override
-  public byte[] readFileContent(Path filePath) {
+  public byte[] readFile(Path filePath) {
     try {
       return Files.readAllBytes(filePath);
     } catch (IOException e) {
       throw new FailedRetrieveFileException(filePath.toAbsolutePath().toString(), e);
+    }
+  }
+
+  @Override
+  public byte[] readFile(String filename, Path path) {
+    try {
+      Path filePath = path.resolve(filename);
+      if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
+        throw new PhotoFileNotFoundException(filename);
+      }
+      return Files.readAllBytes(filePath);
+    } catch (IOException e) {
+      throw new FailedRetrieveFileException(filename, e);
     }
   }
 
@@ -103,16 +116,5 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
     }
   }
 
-  @Override
-  public byte[] retrieveFile(String filename, Path path) {
-    try {
-      Path filePath = path.resolve(filename);
-      if (!Files.exists(filePath) || !Files.isRegularFile(filePath)) {
-        throw new PhotoFileNotFoundException(filename);
-      }
-      return Files.readAllBytes(filePath);
-    } catch (IOException e) {
-      throw new FailedRetrieveFileException(filename, e);
-    }
-  }
+
 }

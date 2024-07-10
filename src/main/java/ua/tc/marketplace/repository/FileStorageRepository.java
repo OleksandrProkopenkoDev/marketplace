@@ -9,16 +9,16 @@ public interface FileStorageRepository {
 
   void createDirectory(Path path);
 
-  Photo storeFile(MultipartFile file, Path path);
+  Photo writeFile(MultipartFile file, Path path);
 
-  List<byte[]> listFiles(Path path);
+  List<byte[]> readFilesList(Path path);
 
-  byte[] readFileContent(Path filePath);
+  byte[] readFile(Path filePath);
 
   void deleteFile(Path filePath);
 
 
   String getUploadDir();
 
-  byte[] retrieveFile(String filename, Path path);
+  byte[] readFile(String filename, Path path);
 }

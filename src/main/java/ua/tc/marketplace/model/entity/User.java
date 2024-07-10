@@ -24,7 +24,7 @@ import ua.tc.marketplace.model.enums.UserRole;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "app_user")
 @Entity
 public class User {
   @Id

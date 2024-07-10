@@ -16,11 +16,11 @@ import ua.tc.marketplace.model.entity.Photo;
  */
 public interface PhotoStorageService {
 
-  List<Photo> storeAdPhotos(PhotoFilesDto photoFilesDto);
+  List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto);
 
   FilesResponse retrieveAllAdPhotos(Long adId);
 
   FileResponse retrieveAdPhoto(Long adId, String filename);
 
-  List<String> deletePhotos(AdPhotoPaths adPhotoPaths);
+  List<String> deleteAdPhotos(AdPhotoPaths adPhotoPaths);
 }

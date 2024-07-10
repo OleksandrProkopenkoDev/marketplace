@@ -1,6 +1,5 @@
 package ua.tc.marketplace.service.impl;
 
-
 import jakarta.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
@@ -17,9 +16,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
 import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
-import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
+import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
+import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.repository.FileStorageRepository;
@@ -38,19 +38,24 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   private static final String AD = "ad";
   private static final String SLASH = File.separator;
 
-
   @Override
-  public List<Photo> storeAdPhotos(PhotoFilesDto photoFilesDto) {
+  public List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto) {
+    Ad ad = adRepository
+        .findById(photoFilesDto.adId())
+        .orElseThrow(() -> new AdNotFoundException(photoFilesDto.adId()));
+
     String folder = AD + SLASH + photoFilesDto.adId();
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
     fileStorageRepository.createDirectory(path);
 
     List<Photo> photos =
         Arrays.stream(photoFilesDto.files())
-            .map(file -> fileStorageRepository.storeFile(file, path))
-            .collect(Collectors.toList());
+            .map(file -> fileStorageRepository.writeFile(file, path))
+            .toList();
 
-    return photoRepository.saveAll(photos);
+    ad.getPhotos().addAll(photos);
+    ad = adRepository.save(ad);
+    return ad.getPhotos();
   }
 
   @Transactional(readOnly = true)
@@ -58,7 +63,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   public FilesResponse retrieveAllAdPhotos(Long adId) {
     String currentFolder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(currentFolder);
-    List<byte[]> fileContents = fileStorageRepository.listFiles(path);
+    List<byte[]> fileContents = fileStorageRepository.readFilesList(path);
     return new FilesResponse(fileContents, getHeaders(path));
   }
 
@@ -68,12 +73,12 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     String folder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
 
-    byte[] bytes = fileStorageRepository.retrieveFile(filename, path);
+    byte[] bytes = fileStorageRepository.readFile(filename, path);
     return new FileResponse(bytes, getHeaders(path));
   }
 
   @Override
-  public List<String> deletePhotos(AdPhotoPaths adPhotoPaths) {
+  public List<String> deleteAdPhotos(AdPhotoPaths adPhotoPaths) {
     Long adId = adPhotoPaths.adId();
 
     String folder = AD + SLASH + adId;

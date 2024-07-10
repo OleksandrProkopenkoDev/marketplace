@@ -17,12 +17,12 @@ import ua.tc.marketplace.util.openapi.PhotoOpenApi;
 @RequestMapping("/api/v1/photo")
 public class PhotoController implements PhotoOpenApi {
 
-  private final PhotoStorageService fileStorageService;
+  private final PhotoStorageService photoStorageService;
 
   @PostMapping("/ad")
   public ResponseEntity<List<Photo>> saveAdPhotoFiles(
       @ModelAttribute @Valid PhotoFilesDto photoFilesDto) {
-    List<Photo> photos = fileStorageService.storeAdPhotos(photoFilesDto);
+    List<Photo> photos = photoStorageService.saveAdPhotos(photoFilesDto);
     return ResponseEntity.ok(photos);
   }
 
@@ -30,7 +30,7 @@ public class PhotoController implements PhotoOpenApi {
   @DeleteMapping("/ad")
   public ResponseEntity<List<String>> deleteAdPhotoFiles(
       @RequestBody @Valid AdPhotoPaths adPhotoPaths) {
-    List<String> deletedFiles = fileStorageService.deletePhotos(adPhotoPaths);
+    List<String> deletedFiles = photoStorageService.deleteAdPhotos(adPhotoPaths);
     return ResponseEntity.ok(deletedFiles);
   }
 
@@ -43,14 +43,14 @@ public class PhotoController implements PhotoOpenApi {
   @PostMapping("/user")
   public ResponseEntity<List<Photo>> saveUserPhotoFile(
       @ModelAttribute @Valid PhotoFilesDto photoFilesDto) {
-    List<Photo> photos = fileStorageService.storeAdPhotos(photoFilesDto);
+    List<Photo> photos = photoStorageService.saveAdPhotos(photoFilesDto);
     return ResponseEntity.ok(photos);
   }
 
   @DeleteMapping("/user")
   public ResponseEntity<List<String>> deleteUserPhotoFiles(
       @RequestBody @Valid AdPhotoPaths adPhotoPaths) {
-    List<String> deletedFiles = fileStorageService.deletePhotos(adPhotoPaths);
+    List<String> deletedFiles = photoStorageService.deleteAdPhotos(adPhotoPaths);
     return ResponseEntity.ok(deletedFiles);
   }
 
