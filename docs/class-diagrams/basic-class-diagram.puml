@@ -22,6 +22,7 @@ class Ad {
   Long id
   User author
   String title
+  String description
   BigDecimal price
   List<Photo> photos
   Photo thumbnail

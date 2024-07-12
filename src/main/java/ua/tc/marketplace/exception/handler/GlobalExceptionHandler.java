@@ -1,12 +1,19 @@
 package ua.tc.marketplace.exception.handler;
 
 import java.io.StringWriter;
+import java.util.Map;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -17,13 +24,22 @@ import ua.tc.marketplace.exception.model.CustomIllegalStateException;
 import ua.tc.marketplace.exception.model.CustomRuntimeException;
 import ua.tc.marketplace.exception.model.ErrorResponse;
 
+/**
+ * Global exception handler for handling various exceptions in the application.
+ *
+ * <p>This handler intercepts and processes exceptions thrown during request processing. It provides
+ * customized error responses for specific exception types, such as security-related exceptions
+ * (AuthenticationException, AccessDeniedException), custom runtime exceptions, and validation
+ * errors (MethodArgumentNotValidException). The handler logs detailed error messages and generates
+ * appropriate HTTP responses with error details.
+ */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({
-      AuthenticationException.class,
-      AccessDeniedException.class,
+    AuthenticationException.class,
+    AccessDeniedException.class,
   })
   protected ResponseEntity<ErrorResponse> handleSecurityExceptions(
       Exception ex, ServletWebRequest request) {
@@ -49,6 +65,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     final ErrorResponse errorResponseBody = buildErrorResponse(ex, request, status);
     writeErrorLog(errorResponseBody);
     return ResponseEntity.status(status).body(errorResponseBody);
+  }
+
+  @Override
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(
+      MethodArgumentNotValidException ex,
+      @NonNull HttpHeaders headers,
+      @NonNull HttpStatusCode status,
+      @NonNull WebRequest request) {
+
+    // Collect default messages from the validation errors
+    Map<String, String> errors =
+        ex.getBindingResult().getFieldErrors().stream()
+            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+
+    // Create a custom message from the collected errors
+    String defaultMessage = String.join(", ", errors.values());
+
+    final ErrorResponse errorResponseBody =
+        new ErrorResponse(HttpStatus.BAD_REQUEST.value(), defaultMessage, getRequestURI(request));
+    writeErrorLog(errorResponseBody);
+
+    return new ResponseEntity<>(errorResponseBody, headers, status);
   }
 
   private ErrorResponse buildErrorResponse(
