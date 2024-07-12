@@ -8,14 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
-import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
@@ -40,10 +38,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Override
   public List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto) {
-    Ad ad =
-        adRepository
-            .findById(photoFilesDto.adId())
-            .orElseThrow(() -> new AdNotFoundException(photoFilesDto.adId()));
+    Ad ad = findAdById(photoFilesDto.adId());
 
     String folder = AD + SLASH + photoFilesDto.adId();
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
@@ -61,7 +56,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Override
   public List<Photo> findAllPhotosByAdId(Long adId) {
-    Ad ad = adRepository.findById(adId).orElseThrow(() -> new AdNotFoundException(adId));
+    Ad ad = findAdById(adId);
     return ad.getPhotos();
   }
 
@@ -85,36 +80,47 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   }
 
   @Override
-  public List<String> deleteAdPhotos(AdPhotoPaths adPhotoPaths) {
-    Long adId = adPhotoPaths.adId();
-
+  public List<String> deleteAdPhotos(Long adId, List<Long> photoIds) {
     String folder = AD + SLASH + adId;
     Path basePath = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
 
-    if (!adRepository.existsById(adId)) {
-      throw new AdNotFoundException(adId);
-    }
+    Ad ad = findAdById(adId);
+
+    List<Photo> photos = ad.getPhotos();
+
+    List<Photo> photosToDelete =
+        photos.stream().filter(photo -> photoIds.contains(photo.getId())).toList();
 
     List<String> paths =
-        Arrays.stream(adPhotoPaths.paths())
+        photosToDelete.stream()
             .map(
-                filename ->
-                    fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + filename)
+                photo ->
+                    fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + photo.getPath())
             .toList();
 
-    return paths.stream()
-        .map(basePath::resolve)
-        .filter(
-            filePath -> {
-              if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
-                return true;
-              } else {
-                throw new PhotoFileNotFoundException(filePath.toString());
-              }
-            })
-        .peek(fileStorageRepository::deleteFile)
-        .map(Path::toString)
-        .collect(Collectors.toList());
+    List<String> deletedFiles =
+        paths.stream()
+            .map(basePath::resolve)
+            .map(
+                filePath -> {
+                  if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
+                    fileStorageRepository.deleteFile(filePath); // Perform the delete action here
+                    return filePath;
+                  } else {
+                    throw new PhotoFileNotFoundException(filePath.toString());
+                  }
+                })
+            .map(Path::toString)
+            .toList();
+
+    ad.getPhotos().removeAll(photosToDelete);
+    adRepository.save(ad);
+    photoRepository.deleteAll(photosToDelete);
+    return deletedFiles;
+  }
+
+  private Ad findAdById(Long adId) {
+    return adRepository.findById(adId).orElseThrow(() -> new AdNotFoundException(adId));
   }
 
   @NotNull

@@ -1,7 +1,6 @@
 package ua.tc.marketplace.service;
 
 import java.util.List;
-import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
 import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
@@ -24,5 +23,5 @@ public interface PhotoStorageService {
 
   FileResponse findAdPhotoFileByName(Long adId, String filename);
 
-  List<String> deleteAdPhotos(AdPhotoPaths adPhotoPaths);
+  List<String> deleteAdPhotos(Long adId, List<Long> photoIds);
 }

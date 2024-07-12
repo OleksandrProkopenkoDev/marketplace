@@ -16,5 +16,4 @@ public record AdPhotoPaths(
     @NotNull(message = "Advertisement ID cannot be null.") Long adId,
     @NotNull(message = "Paths cannot be null.")
         @Size(min = 1, max = 10, message = "The number of paths must be between 1 and 10.")
-        @Pattern(regexp = "^[a-zA-Z0-9_/.-]+$", message = "Each path must be a valid file path.")
         String[] paths) {}

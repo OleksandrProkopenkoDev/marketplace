@@ -26,10 +26,10 @@ public class PhotoController implements PhotoOpenApi {
   }
 
   @Override
-  @DeleteMapping("/ad")
-  public ResponseEntity<List<String>> deleteAdPhotoFiles(
-      @RequestBody @Valid AdPhotoPaths adPhotoPaths) {
-    List<String> deletedFiles = photoStorageService.deleteAdPhotos(adPhotoPaths);
+  @DeleteMapping("/ad/{adId}")
+  public ResponseEntity<List<String>> deleteAdPhotosWithFiles(
+      @RequestBody List<Long> photoIds, @PathVariable Long adId) {
+    List<String> deletedFiles = photoStorageService.deleteAdPhotos(adId, photoIds);
     return ResponseEntity.ok(deletedFiles);
   }
 
@@ -42,15 +42,15 @@ public class PhotoController implements PhotoOpenApi {
   @PostMapping("/user")
   public ResponseEntity<List<Photo>> saveUserPhotoFile(
       @ModelAttribute @Valid PhotoFilesDto photoFilesDto) {
-    List<Photo> photos = photoStorageService.saveAdPhotos(photoFilesDto);
-    return ResponseEntity.ok(photos);
+    // todo
+    return ResponseEntity.ok(null);
   }
 
   @DeleteMapping("/user")
   public ResponseEntity<List<String>> deleteUserPhotoFiles(
       @RequestBody @Valid AdPhotoPaths adPhotoPaths) {
-    List<String> deletedFiles = photoStorageService.deleteAdPhotos(adPhotoPaths);
-    return ResponseEntity.ok(deletedFiles);
+    // todo
+    return ResponseEntity.ok(null);
   }
 
   @GetMapping("/user/{userId}")

@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
 import org.apache.commons.io.FilenameUtils;
@@ -24,6 +25,7 @@ import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
 import ua.tc.marketplace.repository.FileStorageRepository;
 
+@Slf4j
 @Getter
 @Repository
 public class FileStorageRepositoryImpl implements FileStorageRepository {
@@ -76,10 +78,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   @Override
   public List<byte[]> readFilesList(Path path) {
     try (Stream<Path> paths = Files.list(path)) {
-      return paths
-          .filter(Files::isRegularFile)
-          .map(this::readFile)
-          .collect(Collectors.toList());
+      return paths.filter(Files::isRegularFile).map(this::readFile).collect(Collectors.toList());
     } catch (IOException e) {
       throw new FailedToListFilesInDirectoryException(path.toString(), e);
     }
@@ -115,6 +114,4 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
       throw new FailedRetrieveFileException(filePath.toAbsolutePath().toString(), e);
     }
   }
-
-
 }
