@@ -14,6 +14,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -58,4 +59,21 @@ public class User {
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
+
+  @Override
+  public String toString() {
+    return "User{" +
+        "id=" + id +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", userRole=" + userRole +
+        ", firstName='" + firstName + '\'' +
+        ", lastName='" + lastName + '\'' +
+        ", profilePicture=" + profilePicture +
+        ", contactInfo=" + contactInfo +
+        ", favorites=" + (favorites != null ? favorites.stream().map(Ad::getId).toList() : null) +
+        ", createdAt=" + createdAt +
+        ", updatedAt=" + updatedAt +
+        '}';
+  }
 }
