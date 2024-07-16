@@ -19,7 +19,6 @@ import ua.tc.marketplace.exception.photo.PhotoNotFoundException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
-import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.User;
@@ -47,6 +46,10 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   public Photo saveUserPhoto(Long userId, MultipartFile file) {
     User user = findUserById(userId);
 
+    if (user.getProfilePicture() != null) {
+      deleteUserProfilePicture(userId);
+    }
+
     String folder = USER + SLASH + userId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
     fileStorageRepository.createDirectory(path);
@@ -66,17 +69,15 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   }
 
   @Override
-  public List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto) {
-    Ad ad = findAdById(photoFilesDto.ownerId());
+  public List<Photo> saveAdPhotos(Long adId, MultipartFile[] files) {
+    Ad ad = findAdById(adId);
 
-    String folder = AD + SLASH + photoFilesDto.ownerId();
+    String folder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
     fileStorageRepository.createDirectory(path);
 
     List<Photo> photos =
-        Arrays.stream(photoFilesDto.files())
-            .map(file -> fileStorageRepository.writeFile(file, path))
-            .toList();
+        Arrays.stream(files).map(file -> fileStorageRepository.writeFile(file, path)).toList();
 
     ad.getPhotos().addAll(photos);
     if (!photos.isEmpty()) {
@@ -102,13 +103,16 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     return new FilesResponse(fileContents, getHeaders(path));
   }
 
+  @Transactional(readOnly = true)
   @Override
   public FileResponse findUserProfilePictureFile(Long userId) {
     User user = findUserById(userId);
     String folder = USER + SLASH + userId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
-
-    byte[] bytes = fileStorageRepository.readFile(user.getProfilePicture().getPath(), path);
+    byte[] bytes = new byte[0];
+    if (user.getProfilePicture() != null) {
+      bytes = fileStorageRepository.readFile(user.getProfilePicture().getPath(), path);
+    }
     return new FileResponse(bytes, getHeaders(path));
   }
 

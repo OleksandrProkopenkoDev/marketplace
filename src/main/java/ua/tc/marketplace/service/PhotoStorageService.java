@@ -20,7 +20,7 @@ public interface PhotoStorageService {
 
   Photo findUserProfilePicture(Long userId);
 
-  List<Photo> saveAdPhotos(PhotoFilesDto photoFilesDto);
+  List<Photo> saveAdPhotos(Long adId, MultipartFile[] files);
 
   List<Photo> findAllPhotosByAdId(Long adId);
 
