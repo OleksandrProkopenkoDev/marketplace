@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.tc.marketplace.model.dto.photo.AdPhotoPaths;
+import org.springframework.web.multipart.MultipartFile;
 import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
 import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.service.PhotoStorageService;
@@ -39,23 +39,22 @@ public class PhotoController implements PhotoOpenApi {
     return ResponseEntity.ok(photos);
   }
 
-  @PostMapping("/user")
-  public ResponseEntity<List<Photo>> saveUserPhotoFile(
-      @ModelAttribute @Valid PhotoFilesDto photoFilesDto) {
-    // todo
-    return ResponseEntity.ok(null);
+  @PostMapping("/user/{userId}")
+  public ResponseEntity<Photo> saveUserPhotoFile(
+      @PathVariable Long userId, @RequestPart("file") MultipartFile file) {
+    Photo photo = photoStorageService.saveUserPhoto(userId, file);
+    return ResponseEntity.ok(photo);
   }
 
-  @DeleteMapping("/user")
-  public ResponseEntity<List<String>> deleteUserPhotoFiles(
-      @RequestBody @Valid AdPhotoPaths adPhotoPaths) {
-    // todo
-    return ResponseEntity.ok(null);
+  @DeleteMapping("/user/{userId}")
+  public ResponseEntity<String> deleteUserProfilePicture(@PathVariable Long userId) {
+    String deleted = photoStorageService.deleteUserProfilePicture(userId);
+    return ResponseEntity.ok(deleted);
   }
 
   @GetMapping("/user/{userId}")
   public ResponseEntity<Photo> findPhotoByUserId(@PathVariable Long userId) {
-    // todo
-    return ResponseEntity.ok(new Photo());
+    Photo userProfilePicture = photoStorageService.findUserProfilePicture(userId);
+    return ResponseEntity.ok(userProfilePicture);
   }
 }

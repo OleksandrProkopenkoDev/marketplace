@@ -35,10 +35,9 @@ public class PhotoFilesController implements PhotoFilesOpenApi {
     return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
   }
 
-  @GetMapping("/user/{userId}/{filename}")
-  public ResponseEntity<byte[]> retrieveUserPhotoFileByName(
-      @PathVariable Long userId, @PathVariable String filename) {
-    // todo
-    return ResponseEntity.ok(new byte[10]);
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<byte[]> findUserProfilePictureFile(@PathVariable Long userId) {
+    FileResponse fileResponse = photoStorageService.findUserProfilePictureFile(userId);
+    return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
   }
 }
