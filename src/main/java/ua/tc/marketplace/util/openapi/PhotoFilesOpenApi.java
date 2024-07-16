@@ -15,15 +15,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface PhotoFilesOpenApi {
 
   @Operation(
-      summary = "Retrieve all photos for an advertisement",
+      summary = "Retrieve all photo files for an advertisement",
       description = "Retrieves all photos associated with a specific advertisement by its ID.")
   @GetMapping("/ad/{adId}")
   ResponseEntity<List<byte[]>> findAllPhotoFilesByAdId(@PathVariable Long adId);
 
   @Operation(
-      summary = "Download a specific photo by filename",
+      summary = "Download a specific photo by photoId",
       description =
-          "Downloads a specific photo associated with an advertisement by the advertisement ID and filename.")
+          "Downloads a specific photo associated with an advertisement by the advertisement ID and photoId.")
   @GetMapping("/ad/{adId}/photo/{photoId}")
   ResponseEntity<byte[]> findFileByPhotoId(@PathVariable Long adId, @PathVariable Long photoId);
+
+  @Operation(
+      summary = "Download a file of User's profile picture",
+      description =
+          "Downloads a specific photo associated with an advertisement by the advertisement ID and filename.")
+  @GetMapping("/user/{userId}")
+  ResponseEntity<byte[]> findUserProfilePictureFile(@PathVariable Long userId);
 }

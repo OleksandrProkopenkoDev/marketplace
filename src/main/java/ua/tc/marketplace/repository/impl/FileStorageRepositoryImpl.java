@@ -25,6 +25,16 @@ import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
 import ua.tc.marketplace.repository.FileStorageRepository;
 
+/**
+ * Implementation of {@link FileStorageRepository} that provides methods to handle file storage
+ * operations.
+ *
+ * <p>This repository manages file storage operations such as creating directories, writing files
+ * with metadata, reading files as byte arrays, and deleting files.
+ *
+ * <p>It uses Apache Commons Imaging library for extracting image metadata and Apache Commons IO for
+ * file operations.
+ */
 @Slf4j
 @Getter
 @Repository

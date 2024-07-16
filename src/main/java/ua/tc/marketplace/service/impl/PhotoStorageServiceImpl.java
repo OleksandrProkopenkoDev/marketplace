@@ -28,6 +28,15 @@ import ua.tc.marketplace.repository.PhotoRepository;
 import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.service.PhotoStorageService;
 
+/**
+ * Implementation of {@link PhotoStorageService} interface for managing photo storage related
+ * operations.
+ *
+ * <p>This service provides methods for saving and retrieving photos associated with users and
+ * advertisements. It handles operations such as saving user profile pictures, saving advertisement
+ * photos, retrieving user profile pictures and advertisement photos, as well as deleting user
+ * profile pictures and advertisement photos.
+ */
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -118,7 +127,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Transactional(readOnly = true)
   @Override
-  public FileResponse findAdPhotoFileByName(Long adId, Long photoId) {
+  public FileResponse findAdPhotoFileById(Long adId, Long photoId) {
     Photo photo =
         photoRepository.findById(photoId).orElseThrow(() -> new PhotoNotFoundException(photoId));
 

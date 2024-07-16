@@ -18,6 +18,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing an advertisement.
+ *
+ * <p>This class defines the structure of an advertisement stored in the database. It includes
+ * properties such as ID, author, title, description, price, photos, thumbnail, category, creation
+ * timestamp, and update timestamp.
+ */
 @Builder
 @Data
 @NoArgsConstructor

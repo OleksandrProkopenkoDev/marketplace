@@ -34,6 +34,7 @@ public class PhotoController implements PhotoOpenApi {
 
   private final PhotoStorageService photoStorageService;
 
+  @Override
   @PostMapping("/ad/{adId}")
   public ResponseEntity<List<Photo>> saveAdPhotoFiles(
       @PathVariable Long adId, @RequestPart("files") MultipartFile[] files) {
@@ -49,12 +50,14 @@ public class PhotoController implements PhotoOpenApi {
     return ResponseEntity.ok(deletedFiles);
   }
 
+  @Override
   @GetMapping("/ad/{adId}")
   public ResponseEntity<List<Photo>> findAllPhotosByAdId(@PathVariable Long adId) {
     List<Photo> photos = photoStorageService.findAllPhotosByAdId(adId);
     return ResponseEntity.ok(photos);
   }
 
+  @Override
   @PostMapping("/user/{userId}")
   public ResponseEntity<Photo> saveUserPhotoFile(
       @PathVariable Long userId, @RequestPart("file") MultipartFile file) {
@@ -62,12 +65,14 @@ public class PhotoController implements PhotoOpenApi {
     return ResponseEntity.ok(photo);
   }
 
+  @Override
   @DeleteMapping("/user/{userId}")
   public ResponseEntity<String> deleteUserProfilePicture(@PathVariable Long userId) {
     String deleted = photoStorageService.deleteUserProfilePicture(userId);
     return ResponseEntity.ok(deleted);
   }
 
+  @Override
   @GetMapping("/user/{userId}")
   public ResponseEntity<Photo> findPhotoByUserId(@PathVariable Long userId) {
     Photo userProfilePicture = photoStorageService.findUserProfilePicture(userId);

@@ -12,6 +12,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing a photo.
+ *
+ * <p>This class defines the structure of a photo stored in the database. It includes properties
+ * such as ID, path, and associated metadata.
+ */
 @Builder
 @Data
 @NoArgsConstructor
@@ -28,4 +34,3 @@ public class Photo {
   @OneToOne(cascade = CascadeType.ALL)
   private PhotoMetadata metadata;
 }
-

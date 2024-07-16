@@ -10,6 +10,13 @@ import ua.tc.marketplace.model.entity.Demo;
 import ua.tc.marketplace.repository.DemoRepository;
 import ua.tc.marketplace.service.DemoService;
 import ua.tc.marketplace.util.mapper.DemoMapper;
+/**
+ * Service implementation for managing {@link Demo} entities.
+ *
+ * <p>This service implements {@link DemoService} interface, providing methods for
+ * retrieving {@link Demo} entities, including finding all entities with pagination
+ * and finding a specific entity by its ID.
+ */
 
 @RequiredArgsConstructor
 @Service
