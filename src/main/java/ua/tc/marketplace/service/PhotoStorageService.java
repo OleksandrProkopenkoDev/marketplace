@@ -21,7 +21,7 @@ public interface PhotoStorageService {
 
   FilesResponse findAllAdPhotoFiles(Long adId);
 
-  FileResponse findAdPhotoFileByName(Long adId, String filename);
+  FileResponse findAdPhotoFileByName(Long adId, Long filename);
 
   List<String> deleteAdPhotos(Long adId, List<Long> photoIds);
 }

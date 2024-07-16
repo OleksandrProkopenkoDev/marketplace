@@ -2,7 +2,6 @@ package ua.tc.marketplace.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,10 +28,10 @@ public class PhotoFilesController implements PhotoFilesOpenApi {
   }
 
   @Override
-  @GetMapping("/ad/{adId}/{filename}")
-  public ResponseEntity<byte[]> retrieveAdPhotoFileByName(
-      @PathVariable Long adId, @PathVariable String filename) {
-    FileResponse fileResponse = photoStorageService.findAdPhotoFileByName(adId, filename);
+  @GetMapping("/ad/{adId}/photo/{photoId}")
+  public ResponseEntity<byte[]> findFileByPhotoId(
+      @PathVariable Long adId, @PathVariable Long photoId) {
+    FileResponse fileResponse = photoStorageService.findAdPhotoFileByName(adId, photoId);
     return new ResponseEntity<>(fileResponse.content(), fileResponse.headers(), HttpStatus.OK);
   }
 

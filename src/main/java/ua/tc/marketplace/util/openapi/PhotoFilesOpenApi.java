@@ -24,6 +24,6 @@ public interface PhotoFilesOpenApi {
       summary = "Download a specific photo by filename",
       description =
           "Downloads a specific photo associated with an advertisement by the advertisement ID and filename.")
-  @GetMapping("/ad/{adId}/{filename}")
-  ResponseEntity<byte[]> retrieveAdPhotoFileByName(@PathVariable Long adId, @PathVariable String filename);
+  @GetMapping("/ad/{adId}/photo/{photoId}")
+  ResponseEntity<byte[]> findFileByPhotoId(@PathVariable Long adId, @PathVariable Long photoId);
 }

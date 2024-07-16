@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.exception.photo.PhotoFileNotFoundException;
+import ua.tc.marketplace.exception.photo.PhotoNotFoundException;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
 import ua.tc.marketplace.model.dto.photo.PhotoFilesDto;
@@ -50,6 +51,9 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
             .toList();
 
     ad.getPhotos().addAll(photos);
+    if (!photos.isEmpty()) {
+      ad.setThumbnail(photos.getFirst());
+    }
     ad = adRepository.save(ad);
     return ad.getPhotos();
   }
@@ -71,11 +75,14 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Transactional(readOnly = true)
   @Override
-  public FileResponse findAdPhotoFileByName(Long adId, String filename) {
+  public FileResponse findAdPhotoFileByName(Long adId, Long photoId) {
+    Photo photo =
+        photoRepository.findById(photoId).orElseThrow(() -> new PhotoNotFoundException(photoId));
+
     String folder = AD + SLASH + adId;
     Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
 
-    byte[] bytes = fileStorageRepository.readFile(filename, path);
+    byte[] bytes = fileStorageRepository.readFile(photo.getPath(), path);
     return new FileResponse(bytes, getHeaders(path));
   }
 
@@ -91,6 +98,20 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     List<Photo> photosToDelete =
         photos.stream().filter(photo -> photoIds.contains(photo.getId())).toList();
 
+    ad.getPhotos().removeAll(photosToDelete);
+    boolean deleteThumbnail = false;
+    if (ad.getThumbnail() != null) {
+      deleteThumbnail = photosToDelete.stream().anyMatch(photo -> ad.getThumbnail().equals(photo));
+    }
+    if (deleteThumbnail) {
+      ad.setThumbnail(null);
+    }
+    adRepository.save(ad);
+    photoRepository.deleteAll(photosToDelete);
+    if (!ad.getPhotos().isEmpty() && deleteThumbnail) {
+      ad.setThumbnail(ad.getPhotos().getFirst());
+    }
+
     List<String> paths =
         photosToDelete.stream()
             .map(
@@ -98,25 +119,19 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
                     fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + photo.getPath())
             .toList();
 
-    List<String> deletedFiles =
-        paths.stream()
-            .map(basePath::resolve)
-            .map(
-                filePath -> {
-                  if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
-                    fileStorageRepository.deleteFile(filePath); // Perform the delete action here
-                    return filePath;
-                  } else {
-                    throw new PhotoFileNotFoundException(filePath.toString());
-                  }
-                })
-            .map(Path::toString)
-            .toList();
-
-    ad.getPhotos().removeAll(photosToDelete);
-    adRepository.save(ad);
-    photoRepository.deleteAll(photosToDelete);
-    return deletedFiles;
+    return paths.stream()
+        .map(basePath::resolve)
+        .map(
+            filePath -> {
+              if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
+                fileStorageRepository.deleteFile(filePath); // Perform the delete action here
+                return filePath;
+              } else {
+                throw new PhotoFileNotFoundException(filePath.toString());
+              }
+            })
+        .map(Path::toString)
+        .toList();
   }
 
   private Ad findAdById(Long adId) {
