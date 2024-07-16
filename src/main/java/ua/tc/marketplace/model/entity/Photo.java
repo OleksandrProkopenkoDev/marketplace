@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
  * Entity class representing a photo.
  *
  * <p>This class defines the structure of a photo stored in the database. It includes properties
- * such as ID, path, and associated metadata.
+ * such as ID, filename, and associated metadata.
  */
 @Builder
 @Data
@@ -29,7 +29,7 @@ public class Photo {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private String path;
+  private String filename;
 
   @OneToOne(cascade = CascadeType.ALL)
   private PhotoMetadata metadata;

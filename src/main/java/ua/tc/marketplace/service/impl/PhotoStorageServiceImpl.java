@@ -59,8 +59,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
       deleteUserProfilePicture(userId);
     }
 
-    String folder = USER + SLASH + userId;
-    Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
+    String folder = getUserFolder(userId);
+    Path path = getPath(folder);
     fileStorageRepository.createDirectory(path);
 
     Photo photo = fileStorageRepository.writeFile(file, path);
@@ -81,8 +81,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   public List<Photo> saveAdPhotos(Long adId, MultipartFile[] files) {
     Ad ad = findAdById(adId);
 
-    String folder = AD + SLASH + adId;
-    Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
+    String folder = getAdFolder(adId);
+    Path path = getPath(folder);
     fileStorageRepository.createDirectory(path);
 
     List<Photo> photos =
@@ -106,8 +106,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   @Transactional(readOnly = true)
   @Override
   public FilesResponse findAllAdPhotoFiles(Long adId) {
-    String currentFolder = AD + SLASH + adId;
-    Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(currentFolder);
+    String folder = getAdFolder(adId);
+    Path path = getPath(folder);
     List<byte[]> fileContents = fileStorageRepository.readFilesList(path);
     return new FilesResponse(fileContents, getHeaders(path));
   }
@@ -116,11 +116,11 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   @Override
   public FileResponse findUserProfilePictureFile(Long userId) {
     User user = findUserById(userId);
-    String folder = USER + SLASH + userId;
-    Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
+    String folder = getUserFolder(userId);
+    Path path = getPath(folder);
     byte[] bytes = new byte[0];
     if (user.getProfilePicture() != null) {
-      bytes = fileStorageRepository.readFile(user.getProfilePicture().getPath(), path);
+      bytes = fileStorageRepository.readFile(user.getProfilePicture().getFilename(), path);
     }
     return new FileResponse(bytes, getHeaders(path));
   }
@@ -128,19 +128,18 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   @Transactional(readOnly = true)
   @Override
   public FileResponse findAdPhotoFileById(Long adId, Long photoId) {
-    Photo photo =
-        photoRepository.findById(photoId).orElseThrow(() -> new PhotoNotFoundException(photoId));
+    Photo photo = findPhotoById(photoId);
 
-    String folder = AD + SLASH + adId;
-    Path path = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
+    String folder = getAdFolder(adId);
+    Path path = getPath(folder);
 
-    byte[] bytes = fileStorageRepository.readFile(photo.getPath(), path);
+    byte[] bytes = fileStorageRepository.readFile(photo.getFilename(), path);
     return new FileResponse(bytes, getHeaders(path));
   }
 
   @Override
   public String deleteUserProfilePicture(Long userId) {
-    String folder = USER + SLASH + userId;
+    String folder = getUserFolder(userId);
 
     User user = findUserById(userId);
 
@@ -151,7 +150,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
     photoRepository.delete(photo);
     userRepository.save(user);
 
-    Path filePath = Paths.get(fileStorageRepository.getUploadDir(), folder, photo.getPath());
+    Path filePath = Paths.get(fileStorageRepository.getUploadDir(), folder, photo.getFilename());
 
     if (Files.exists(filePath) && Files.isRegularFile(filePath)) {
       fileStorageRepository.deleteFile(filePath); // Perform the delete action here
@@ -163,8 +162,8 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   @Override
   public List<String> deleteAdPhotos(Long adId, List<Long> photoIds) {
-    String folder = AD + SLASH + adId;
-    Path basePath = Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
+    String folder = getAdFolder(adId);
+    Path basePath = getPath(folder);
 
     Ad ad = findAdById(adId);
 
@@ -191,7 +190,7 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
         photosToDelete.stream()
             .map(
                 photo ->
-                    fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + photo.getPath())
+                    fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + photo.getFilename())
             .toList();
 
     return paths.stream()
@@ -227,5 +226,21 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
 
   private User findUserById(Long userId) {
     return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+  }
+
+  private Photo findPhotoById(Long photoId) {
+    return photoRepository.findById(photoId).orElseThrow(() -> new PhotoNotFoundException(photoId));
+  }
+
+  private String getAdFolder(Long adId) {
+    return AD + SLASH + adId;
+  }
+
+  private String getUserFolder(Long userId) {
+    return USER + SLASH + userId;
+  }
+
+  private Path getPath(String folder) {
+    return Paths.get(fileStorageRepository.getUploadDir()).resolve(folder);
   }
 }

@@ -7,7 +7,7 @@ import lombok.Data;
 
 /**
  * Represents an error response returned by the API. Contains information about the error message,
- * timestamp, path, and status number.
+ * timestamp, filename, and status number.
  */
 @Data
 public class ErrorResponse {

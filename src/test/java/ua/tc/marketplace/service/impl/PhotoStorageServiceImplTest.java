@@ -73,7 +73,7 @@ public class PhotoStorageServiceImplTest {
       // Verify file existence in the upload directory
       String folderPath = uploadDir + SLASH + "ad" + SLASH + EXAMPLE_AD_ID;
       for (Photo photo : photos) {
-        Path filePath = Paths.get(folderPath, photo.getPath());
+        Path filePath = Paths.get(folderPath, photo.getFilename());
         assertTrue(Files.exists(filePath));
       }
     }
@@ -108,11 +108,11 @@ public class PhotoStorageServiceImplTest {
     @Test
     void retrieveAllAdPhotos_shouldReturnEmptyList_whenEmptyDirectory() {
       // Setup: Ensure the directory exists but is empty
-      Path path = Paths.get(testUploadDir, "ad", EXAMPLE_AD_ID.toString());
+      Path filename = Paths.get(testUploadDir, "ad", EXAMPLE_AD_ID.toString());
       try {
-        Files.createDirectories(path);
+        Files.createDirectories(filename);
       } catch (IOException e) {
-        fail("Failed to create directory for testing: " + path);
+        fail("Failed to create directory for testing: " + filename);
       }
 
       // Call the method
@@ -140,7 +140,7 @@ public class PhotoStorageServiceImplTest {
       PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
       List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
 
-      String filename = photos.getFirst().getPath();
+      String filename = photos.getFirst().getFilename();
 
       // Call the method
       FileResponse response = photoStorageService.retrieveAdPhoto(EXAMPLE_AD_ID, filename);
@@ -184,8 +184,8 @@ public class PhotoStorageServiceImplTest {
       PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
       List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
 
-      String filename1 = photos.get(0).getPath();
-      String filename2 = photos.get(1).getPath();
+      String filename1 = photos.get(0).getFilename();
+      String filename2 = photos.get(1).getFilename();
 
       AdPhotoPaths adPhotoPaths =
           new AdPhotoPaths(EXAMPLE_AD_ID, new String[] {filename1, filename2});

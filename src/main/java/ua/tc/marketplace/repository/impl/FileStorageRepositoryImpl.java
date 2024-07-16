@@ -79,7 +79,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
               .size(size)
               .build();
 
-      return Photo.builder().path(uniqueFilename).metadata(metadata).build();
+      return Photo.builder().filename(uniqueFilename).metadata(metadata).build();
     } catch (IOException e) {
       throw new FailedStoreFileException(file.getOriginalFilename(), e);
     }

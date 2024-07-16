@@ -37,7 +37,7 @@ native_path() { printf %s\\n "$1"; }
 case "$(uname)" in
 CYGWIN* | MINGW*)
   [ -z "${JAVA_HOME-}" ] || JAVA_HOME="$(cygpath --unix "$JAVA_HOME")"
-  native_path() { cygpath --path --windows "$1"; }
+  native_path() { cygpath --filename --windows "$1"; }
   ;;
 esac
 

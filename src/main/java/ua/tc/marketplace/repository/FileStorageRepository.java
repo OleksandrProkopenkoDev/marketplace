@@ -10,7 +10,7 @@ import ua.tc.marketplace.model.entity.Photo;
  *
  * <p>This interface defines methods for managing file operations such as creating directories,
  * writing files with associated metadata, reading files as byte arrays, deleting files, retrieving
- * the upload directory path, and reading specific files by filename.
+ * the upload directory filename, and reading specific files by filename.
  */
 public interface FileStorageRepository {
 
