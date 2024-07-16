@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
@@ -37,6 +38,7 @@ import ua.tc.marketplace.repository.FileStorageRepository;
  */
 @Slf4j
 @Getter
+@Setter
 @Repository
 public class FileStorageRepositoryImpl implements FileStorageRepository {
 
