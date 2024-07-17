@@ -3,297 +3,176 @@ package ua.tc.marketplace.service.impl;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.stream.Stream;
-import org.junit.jupiter.api.AfterEach;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.util.ReflectionTestUtils;
-import ua.tc.marketplace.exception.photo.FailedRetrieveFileException;
+import org.springframework.web.multipart.MultipartFile;
+import ua.tc.marketplace.exception.ad.AdNotFoundException;
+import ua.tc.marketplace.exception.user.UserNotFoundException;
+import ua.tc.marketplace.model.entity.Ad;
+import ua.tc.marketplace.model.entity.Photo;
+import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.repository.FileStorageRepository;
+import ua.tc.marketplace.repository.PhotoRepository;
+import ua.tc.marketplace.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
 public class PhotoStorageServiceImplTest {
 
   @Mock private AdRepository adRepository;
-
+  @Mock private UserRepository userRepository;
   @Mock private FileStorageRepository fileStorageRepository;
+  @Mock private PhotoRepository photoRepository;
 
   @InjectMocks private PhotoStorageServiceImpl photoStorageService;
 
-  @Value("${file.upload-dir}")
-  private String uploadDir;
-
-  private String testUploadDir;
-
-  private static final Long EXAMPLE_AD_ID = 1L;
-
-  private static final String SLASH = File.separator;
+  private User user;
+  private Photo photo;
+  private MultipartFile file;
 
   @BeforeEach
-  public void setup() {
-    createTempDirectory();
+  void setUp() {
+    user = new User();
+    user.setId(1L);
+
+    photo = new Photo();
+    photo.setFilename("photo.jpg");
+
+    file = mock(MultipartFile.class);
   }
 
-  @AfterEach
-  public void cleanup() {
-    deleteTempDirectory();
+  @Test
+  void saveUserPhoto_newPhoto_success() {
+    // Given
+    String uploadDir = "temp";
+    when(fileStorageRepository.getUploadDir()).thenReturn(uploadDir);
+    when(userRepository.findById(1L)).thenReturn(Optional.of(user));
+    when(fileStorageRepository.writeFile(any(MultipartFile.class), any(Path.class)))
+        .thenReturn(photo);
+    when(userRepository.save(any(User.class))).thenReturn(user);
+
+    // When
+    Photo result = photoStorageService.saveUserPhoto(1L, file);
+
+    // Then
+    assertNotNull(result);
+    assertEquals(photo, result);
+    verify(fileStorageRepository).createDirectory(any(Path.class));
+    verify(userRepository).save(user);
   }
 
-  /*
+  @Test
+  void saveUserPhoto_replaceExistingPhoto_success() {
+    // Given
+    user.setProfilePicture(photo);
+    String uploadDir = "temp";
+    when(fileStorageRepository.getUploadDir()).thenReturn(uploadDir);
+    Long userId = 1L;
+    when(userRepository.findById(userId)).thenReturn(Optional.of(user));
 
-    @Test
-    void storeAdPhotos_shouldSave_whenValidInput() {
+    when(fileStorageRepository.writeFile(any(MultipartFile.class), any(Path.class)))
+        .thenReturn(photo);
+    when(userRepository.save(any(User.class))).thenReturn(user);
+    doNothing().when(photoRepository).delete(any(Photo.class));
 
-
-
-
-      // Mock data
-      MockMultipartFile file1 = createJPEGImage("image1");
-      MockMultipartFile file2 = createJPEGImage("image2");
-      MockMultipartFile[] files = {file1, file2};
-      PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
-
-      // Call the method
-      List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
-
-      // Assertions
-      assertNotNull(photos);
-      assertEquals(2, photos.size());
-
-      // Verify file existence in the upload directory
-      String folderPath = uploadDir + SLASH + "ad" + SLASH + EXAMPLE_AD_ID;
-      for (Photo photo : photos) {
-        Path filePath = Paths.get(folderPath, photo.getFilename());
-        assertTrue(Files.exists(filePath));
-      }
+    Photo result;
+    try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+      filesMock.when(() -> Files.exists(any(Path.class))).thenReturn(true);
+      filesMock.when(() -> Files.isRegularFile(any(Path.class))).thenReturn(true);
+      // When
+      result = photoStorageService.saveUserPhoto(userId, file);
     }
 
-    @Test
-    void retrieveAllAdPhotos_returnList_whenPhotoExist() {
-      // Setup: Store some photos for the ad
-      MockMultipartFile file1 = createJPEGImage("image1");
-      MockMultipartFile file2 = createJPEGImage("image2");
-      MockMultipartFile[] files = {file1, file2};
-      PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
-      photoStorageService.storeAdPhotos(photoFilesDto);
-
-      // Call the method
-      FilesResponse response = photoStorageService.retrieveAllAdPhotos(EXAMPLE_AD_ID);
-
-      // Assertions
-      assertNotNull(response);
-      assertNotNull(response.contents());
-      assertEquals(2, response.contents().size());
-
-      // Verify file contents are non-empty
-      response.contents().forEach(fileContent -> assertNotEquals(0, fileContent.length));
-
-      // Verify headers
-      assertNotNull(response.headers());
-      assertAll(
-          () -> assertTrue(response.headers().containsKey(HttpHeaders.CONTENT_DISPOSITION)),
-          () -> assertTrue(response.headers().containsKey(HttpHeaders.CONTENT_TYPE)));
-    }
-
-    @Test
-    void retrieveAllAdPhotos_shouldReturnEmptyList_whenEmptyDirectory() {
-      // Setup: Ensure the directory exists but is empty
-      Path filename = Paths.get(testUploadDir, "ad", EXAMPLE_AD_ID.toString());
-      try {
-        Files.createDirectories(filename);
-      } catch (IOException e) {
-        fail("Failed to create directory for testing: " + filename);
-      }
-
-      // Call the method
-      FilesResponse response = photoStorageService.retrieveAllAdPhotos(EXAMPLE_AD_ID);
-
-      // Assertions
-      assertNotNull(response);
-      assertNotNull(response.contents());
-      assertEquals(0, response.contents().size());
-    }
-
-    @Test
-    void retrieveAllAdPhotos_shouldThrow_whenDirectoryDoesNotExist() {
-      // Call the method and expect an exception
-      assertThrows(
-          FailedToListFilesInDirectoryException.class,
-          () -> photoStorageService.retrieveAllAdPhotos(EXAMPLE_AD_ID));
-    }
-
-    @Test
-    void retrieveAdPhoto_returnAdPhoto_whenExist() {
-      // Setup: Store a photo for the ad
-      MockMultipartFile file = createJPEGImage("image1");
-      MockMultipartFile[] files = {file};
-      PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
-      List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
-
-      String filename = photos.getFirst().getFilename();
-
-      // Call the method
-      FileResponse response = photoStorageService.retrieveAdPhoto(EXAMPLE_AD_ID, filename);
-
-      // Assertions
-      assertNotNull(response);
-      assertNotNull(response.content());
-      assertNotEquals(0, response.content().length);
-
-      // Verify headers
-      assertNotNull(response.headers());
-      assertAll(
-          () -> assertTrue(response.headers().containsKey(HttpHeaders.CONTENT_DISPOSITION)),
-          () -> assertTrue(response.headers().containsKey(HttpHeaders.CONTENT_TYPE)));
-    }
-
-    @Test
-    void retrieveAdPhoto_shouldThrow_whenFileNotFound() {
-      // Call the method and expect an exception
-      String nonExistentFilename = "non-existent.jpg";
-      assertThrows(
-          PhotoFileNotFoundException.class,
-          () -> photoStorageService.retrieveAdPhoto(EXAMPLE_AD_ID, nonExistentFilename));
-    }
-
-    @Test
-    void retrieveAdPhoto_shouldThrow_whenDirectoryDoesNotExist() {
-      // Call the method and expect an exception
-      String filename = "image1.jpg";
-      assertThrows(
-          PhotoFileNotFoundException.class,
-          () -> photoStorageService.retrieveAdPhoto(EXAMPLE_AD_ID, filename));
-    }
-
-    @Test
-    public void deletePhotos_shouldDelete_Ad_whenValidName() {
-      // Setup: Store photos for the ad
-      MockMultipartFile file1 = createJPEGImage("image1");
-      MockMultipartFile file2 = createJPEGImage("image2");
-      MockMultipartFile[] files = {file1, file2};
-      PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
-      List<Photo> photos = photoStorageService.storeAdPhotos(photoFilesDto);
-
-      String filename1 = photos.get(0).getFilename();
-      String filename2 = photos.get(1).getFilename();
-
-      AdPhotoPaths adPhotoPaths =
-          new AdPhotoPaths(EXAMPLE_AD_ID, new String[] {filename1, filename2});
-
-      when(adRepository.existsById(EXAMPLE_AD_ID)).thenReturn(true);
-
-      // Call the method
-      List<String> deletedFiles = photoStorageService.deleteAdPhotos(adPhotoPaths);
-
-      // Assertions
-      assertNotNull(deletedFiles);
-      assertEquals(2, deletedFiles.size());
-
-      // Verify file deletion in the upload directory
-      deletedFiles.forEach(
-          deletedFile -> {
-            Path filePath = Paths.get(deletedFile);
-            assertFalse(Files.exists(filePath));
-          });
-    }
-
-    @Test
-    public void deleteAdPhotos_shouldThrow_whenPhotoNotFound() {
-      // Setup: Store one photo for the ad
-      MockMultipartFile file = createJPEGImage("image1");
-      MockMultipartFile[] files = {file};
-      PhotoFilesDto photoFilesDto = new PhotoFilesDto(EXAMPLE_AD_ID, files);
-      photoStorageService.storeAdPhotos(photoFilesDto);
-
-      String filename1 = file.getOriginalFilename();
-      String nonExistentFilename = "non-existent.jpg";
-
-      AdPhotoPaths adPhotoPaths =
-          new AdPhotoPaths(EXAMPLE_AD_ID, new String[] {filename1, nonExistentFilename});
-
-      when(adRepository.existsById(EXAMPLE_AD_ID)).thenReturn(false);
-
-      // Call the method and expect an exception
-      assertThrows(AdNotFoundException.class, () -> photoStorageService.deleteAdPhotos(adPhotoPaths));
-    }
-
-    @Test
-    public void deleteAdPhotos_shouldThrow_whenAdNotFound() {
-      // Call the method and expect an exception
-      Long nonExistentAdId = 999L;
-      AdPhotoPaths adPhotoPaths = new AdPhotoPaths(nonExistentAdId, new String[] {"image1.jpg"});
-
-      assertThrows(AdNotFoundException.class, () -> photoStorageService.deleteAdPhotos(adPhotoPaths));
-    }
-
-    private MockMultipartFile createJPEGImage(String name) {
-      try {
-        // Create a BufferedImage with example content
-        BufferedImage bufferedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
-        Graphics2D graphics = bufferedImage.createGraphics();
-        graphics.setPaint(Color.BLUE);
-        graphics.fillRect(0, 0, bufferedImage.getWidth(), bufferedImage.getHeight());
-        graphics.setPaint(Color.RED);
-        graphics.drawString(name, 10, 50);
-        graphics.dispose();
-
-        // Convert BufferedImage to byte array
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-        byte[] imageBytes = byteArrayOutputStream.toByteArray();
-
-        // Create and return the MockMultipartFile
-        return new MockMultipartFile("file", name + ".jpg", "image/jpeg", imageBytes);
-      } catch (IOException e) {
-        throw new FailedRetrieveFileException(name, e);
-      }
-    }
-  */
-
-  private void createTempDirectory() {
-    testUploadDir = System.getProperty("java.io.tmpdir") + "test-upload";
-    this.uploadDir = testUploadDir;
-    try {
-      Files.createDirectories(Paths.get(testUploadDir));
-    } catch (IOException e) {
-      // Optionally, fail the test if directory creation fails
-      fail("Failed to create temporary directory for testing: " + testUploadDir);
-    }
-    // Mock the behavior of @Value("${file.upload-dir}")
-    ReflectionTestUtils.setField(photoStorageService, "uploadDir", testUploadDir);
+    // Then
+    assertNotNull(result);
+    assertEquals(photo, result);
+    verify(fileStorageRepository).createDirectory(any(Path.class));
+    verify(userRepository, times(2)).save(user);
+    verify(photoRepository).delete(any(Photo.class));
   }
 
-  private void deleteTempDirectory() {
-    // Delete the temporary directory and its contents after each test
-    if (testUploadDir != null) {
-      Path directoryPath = Paths.get(testUploadDir);
-      if (Files.exists(directoryPath)) {
-        try (Stream<Path> paths = Files.walk(directoryPath)) {
-          paths
-              .sorted((a, b) -> -a.compareTo(b)) // Reverse order for directories
-              .forEach(
-                  file -> {
-                    try {
-                      Files.delete(file);
-                    } catch (IOException e) {
-                      throw new FailedRetrieveFileException(file.toAbsolutePath().toString(), e);
-                    }
-                  });
-        } catch (IOException e) {
-          // Handle IOException occurred in opening or closing stream
-          throw new FailedRetrieveFileException(directoryPath.toAbsolutePath().toString(), e);
-        }
-      }
-    }
+  @Test
+  void saveUserPhoto_userNotFound_throwsException() {
+    // Given
+    when(userRepository.findById(1L)).thenReturn(Optional.empty());
+
+    // When / Then
+    assertThrows(UserNotFoundException.class, () -> photoStorageService.saveUserPhoto(1L, file));
+  }
+
+  @Test
+  public void saveAdPhotos_success() {
+    // Mock data
+    Long adId = 1L;
+    Ad ad = new Ad(); // Create ad entity as needed for testing
+    // Mock MultipartFile objects
+    MultipartFile file1 = mock(MultipartFile.class);
+    MultipartFile file2 = mock(MultipartFile.class);
+
+    // Create an array of mock MultipartFiles
+    MultipartFile[] files = new MultipartFile[] {file1, file2};
+
+    // Stubbing behavior
+    when(adRepository.findById(adId)).thenReturn(Optional.of(ad));
+    doNothing().when(fileStorageRepository).createDirectory(any());
+    String uploadDir = "temp";
+    when(fileStorageRepository.getUploadDir()).thenReturn(uploadDir);
+
+    when(fileStorageRepository.writeFile(any(MultipartFile.class), any(Path.class)))
+        .thenAnswer(
+            invocation -> {
+              MultipartFile file = invocation.getArgument(0);
+              Photo photo1 = new Photo();
+              photo1.setFilename(file.getOriginalFilename());
+              return photo1; // Create mock Photo entity
+            });
+    when(adRepository.save(any(Ad.class))).thenReturn(ad);
+
+    // Call the method under test
+    List<Photo> savedPhotos = photoStorageService.saveAdPhotos(adId, files);
+
+    // Assertions
+    verify(adRepository, times(1)).findById(adId); // Verify findById was called once with adId
+    verify(fileStorageRepository, times(1)).createDirectory(any()); // Verify directory creation
+    verify(fileStorageRepository, times(2))
+        .writeFile(
+            any(MultipartFile.class), any()); // Verify writeFile called twice (for each file)
+    verify(adRepository, times(1))
+        .save(any(Ad.class)); // Verify save method called once with updated ad
+
+    // Additional assertions as needed for savedPhotos
+    assertEquals(2, savedPhotos.size());
+    // Assert specific properties or conditions on savedPhotos
+  }
+
+  @Test
+  public void saveAdPhotos_adNotFound() {
+    Long adId = 1L;
+    MultipartFile[] files = new MultipartFile[2];
+
+    // Stubbing behavior for adRepository.findById
+    when(adRepository.findById(adId)).thenReturn(Optional.empty());
+
+    // Assertions
+    assertThrows(
+        AdNotFoundException.class,
+        () -> {
+          photoStorageService.saveAdPhotos(adId, files);
+        });
+
+    verify(fileStorageRepository, never())
+        .createDirectory(any()); // Verify directory creation was not called
+    verify(fileStorageRepository, never())
+        .writeFile(any(MultipartFile.class), any()); // Verify writeFile was not called
+    verify(adRepository, times(1)).findById(adId); // Verify findById was called once with adId
   }
 }

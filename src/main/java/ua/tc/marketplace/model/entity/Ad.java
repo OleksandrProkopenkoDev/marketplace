@@ -12,6 +12,7 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -49,7 +50,7 @@ public class Ad {
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "ad_id")
-  private List<Photo> photos;
+  private List<Photo> photos = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   private Photo thumbnail;

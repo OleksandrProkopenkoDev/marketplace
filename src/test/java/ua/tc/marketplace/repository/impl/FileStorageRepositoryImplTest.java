@@ -93,9 +93,6 @@ class FileStorageRepositoryImplTest {
       // Arrange
       String originalFilename = "test-image.jpg";
       String extension = "jpg";
-      String uniqueFilename = "unique-id." + extension;
-
-      File destinationFile = path.resolve(uniqueFilename).toFile();
 
       when(file.getOriginalFilename()).thenReturn(originalFilename);
       filenameUtilsMock
