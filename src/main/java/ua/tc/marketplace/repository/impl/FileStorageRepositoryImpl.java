@@ -64,10 +64,10 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
       String extension = FilenameUtils.getExtension(originalFilename);
       String uniqueFilename = UUID.randomUUID() + DOT + extension;
 
-      Path destinationFile = path.resolve(uniqueFilename);
-      file.transferTo(destinationFile.toFile());
+      File destinationFile = path.resolve(uniqueFilename).toFile();
+      file.transferTo(destinationFile);
 
-      ImageInfo imageInfo = Imaging.getImageInfo(destinationFile.toFile());
+      ImageInfo imageInfo = Imaging.getImageInfo(destinationFile);
 
       int width = imageInfo.getWidth();
       int height = imageInfo.getHeight();
