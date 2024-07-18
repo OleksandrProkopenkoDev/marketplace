@@ -5,11 +5,10 @@ import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
-import ua.tc.marketplace.model.entity.Ad;
 
 public interface AdService {
 
-  Page<Ad> findAll(Pageable pageable);
+  Page<AdDto> findAll(Pageable pageable);
 
   AdDto findAdById(Long adId);
 

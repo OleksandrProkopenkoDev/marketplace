@@ -2,6 +2,9 @@ package ua.tc.marketplace.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -23,6 +26,11 @@ import ua.tc.marketplace.service.AdService;
 @RequestMapping("/api/v1/ad")
 public class AdController {
   private final AdService adService;
+
+  @GetMapping
+  public ResponseEntity<Page<AdDto>> getAllAds(@PageableDefault Pageable pageable) {
+    return ResponseEntity.ok(adService.findAll(pageable));
+  }
 
   @GetMapping("/{adId}")
   public ResponseEntity<AdDto> getAdById(@PathVariable Long adId) {

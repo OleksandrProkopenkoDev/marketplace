@@ -1,6 +1,5 @@
 package ua.tc.marketplace.service.impl;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +11,6 @@ import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Category;
-import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.AdService;
@@ -33,8 +31,8 @@ public class AdServiceImpl implements AdService {
   private final CategoryService categoryService;
 
   @Override
-  public Page<Ad> findAll(Pageable pageable) {
-    return null;
+  public Page<AdDto> findAll(Pageable pageable) {
+    return adRepository.findAll(pageable).map(adMapper::toAdDto);
   }
 
   @Transactional(readOnly = true)
