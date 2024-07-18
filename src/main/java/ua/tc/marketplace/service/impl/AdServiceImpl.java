@@ -35,6 +35,7 @@ public class AdServiceImpl implements AdService {
   private final UserService userService;
   private final CategoryService categoryService;
 
+  @Transactional(readOnly = true)
   @Override
   public Page<AdDto> findAll(Pageable pageable) {
     return adRepository.findAll(pageable).map(adMapper::toAdDto);
