@@ -2,8 +2,11 @@ package ua.tc.marketplace.repository.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,6 +50,15 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
 
   @Value("${file.upload-dir}")
   private String uploadDir;
+
+  @Override
+  public void deleteFolder(Path basePath) {
+    try {
+      Files.walkFileTree(basePath, getVisitor());
+    } catch (IOException e) {
+      throw new WrongFilePathException(basePath.toString(), e);
+    }
+  }
 
   @Override
   public void createDirectory(Path path) {
@@ -125,5 +137,21 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
     } catch (IOException e) {
       throw new FailedRetrieveFileException(filePath.toAbsolutePath().toString(), e);
     }
+  }
+
+  private SimpleFileVisitor<Path> getVisitor() {
+    return new SimpleFileVisitor<Path>() {
+      @Override
+      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+        Files.delete(file);
+        return FileVisitResult.CONTINUE;
+      }
+
+      @Override
+      public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        Files.delete(dir);
+        return FileVisitResult.CONTINUE;
+      }
+    };
   }
 }

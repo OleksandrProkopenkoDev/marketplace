@@ -4,6 +4,7 @@ import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tc.marketplace.model.dto.photo.FileResponse;
 import ua.tc.marketplace.model.dto.photo.FilesResponse;
+import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Photo;
 
 /**
@@ -32,4 +33,6 @@ public interface PhotoStorageService {
   String deleteUserProfilePicture(Long userId);
 
   List<String> deleteAdPhotos(Long adId, List<Long> photoIds);
+
+  void deleteAllAdPhotos(Ad ad);
 }

@@ -18,12 +18,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 /**
  * Entity class representing an advertisement.
  *
  * <p>This class defines the structure of an advertisement stored in the database. It includes
- * properties such as ID, author, title, description, price, photos, thumbnail, category, creation
+ * properties such as ID, author, title, description, price, photos, thumbnail, categoryId, creation
  * timestamp, and update timestamp.
  */
 @Builder
@@ -48,6 +50,7 @@ public class Ad {
 
   private BigDecimal price;
 
+  @Builder.Default
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "ad_id")
   private List<Photo> photos = new ArrayList<>();
@@ -59,7 +62,9 @@ public class Ad {
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @CreationTimestamp
   private LocalDateTime createdAt;
 
+  @UpdateTimestamp
   private LocalDateTime updatedAt;
 }
