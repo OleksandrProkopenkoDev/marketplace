@@ -9,6 +9,11 @@ import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
 import ua.tc.marketplace.model.entity.Ad;
 
+/**
+ * Mapper interface using MapStruct for converting between Ad entities and DTOs. Defines mappings
+ * for converting Ad to AdDto, extracting primitive fields from CreateAdDto, and updating an
+ * existing Ad entity with fields from UpdateAdDto.
+ */
 @Mapper(config = MapperConfig.class)
 public interface AdMapper {
 

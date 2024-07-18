@@ -6,6 +6,10 @@ import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
 
+/**
+ * Service interface defining operations for managing advertisements. Includes methods for
+ * retrieving, creating, updating, and deleting advertisements.
+ */
 public interface AdService {
 
   Page<AdDto> findAll(Pageable pageable);

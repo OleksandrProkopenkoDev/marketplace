@@ -19,6 +19,11 @@ import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.AdMapper;
 
+/**
+ * Implementation of the AdService interface providing CRUD operations for managing advertisements.
+ * Uses AdRepository for database interactions, AdMapper for DTO mapping, and services for related
+ * entities. Manages transactions and handles exceptions such as AdNotFoundException.
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional
