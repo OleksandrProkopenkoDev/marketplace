@@ -14,6 +14,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing a categoryId.
+ *
+ * <p>This class defines the structure of a categoryId stored in the database. It includes properties
+ * such as ID, name, and a list of classification attributes.
+ */
 @Builder
 @Data
 @NoArgsConstructor

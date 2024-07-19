@@ -8,6 +8,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing a demo entity.
+ *
+ * <p>This class defines the structure of a demo entity stored in the database. It includes
+ * properties such as ID and name.
+ */
 @Builder
 @Data
 @AllArgsConstructor
@@ -15,8 +21,6 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Demo {
 
-  @Id
-  @GeneratedValue
-  private Long id;
+  @Id @GeneratedValue private Long id;
   private String name;
 }

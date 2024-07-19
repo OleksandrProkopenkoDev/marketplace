@@ -10,6 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing metadata associated with a photo.
+ *
+ * <p>This class defines the structure of metadata stored in the database for a photo. It includes
+ * properties such as ID, width, height, extension, and size.
+ */
 @Builder
 @Data
 @NoArgsConstructor
