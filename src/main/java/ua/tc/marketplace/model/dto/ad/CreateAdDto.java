@@ -27,7 +27,7 @@ public record CreateAdDto(
     String description,
 
     @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    @DecimalMin(value = "0.0", message = "Price must be greater than zero")
     BigDecimal price,
 
     @NotNull(message = "Photo files cannot be null")
