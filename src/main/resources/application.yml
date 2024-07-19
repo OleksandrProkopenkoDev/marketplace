@@ -1,6 +1,13 @@
 spring:
   application:
     name: marketplace
+  datasource:
+    hikari:
+      maximum-pool-size: 10 # Adjust based on your load
+  servlet:
+    multipart:
+      max-file-size: 10MB # Adjust based on your needs
+      max-request-size: 10MB # Adjust based on your needs
 
   profiles:
     active: local

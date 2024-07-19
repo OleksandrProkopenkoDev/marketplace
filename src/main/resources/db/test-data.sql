@@ -65,7 +65,7 @@ VALUES ('user/1/profile1.jpg', 1),
        ('user/5/profile5.jpg', 5);
 
 -- Insert Users
-INSERT INTO "user" (email, password, user_role, first_name, last_name, profile_picture_id,
+INSERT INTO app_user (email, password, user_role, first_name, last_name, profile_picture_id,
                   contact_info_id, created_at, updated_at)
 VALUES ('user1@example.com', 'password1', 'INDIVIDUAL', 'John', 'Doe', 16, 1, NOW(), NOW()),
        ('user2@example.com', 'password2', 'SHELTER', 'Jane', 'Smith', 17, 2, NOW(), NOW()),

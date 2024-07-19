@@ -1,6 +1,5 @@
 package ua.tc.marketplace.model.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,6 +13,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ua.tc.marketplace.model.enums.ValueType;
 
+/**
+ * Entity class representing a classification attribute.
+ *
+ * <p>This class defines the structure of a classification attribute stored in the database. It
+ * includes properties such as ID, name, and value type.
+ */
 @Builder
 @Data
 @NoArgsConstructor
@@ -30,4 +35,3 @@ public class ClassificationAttribute {
   @Enumerated(EnumType.STRING)
   private ValueType valueType;
 }
-
