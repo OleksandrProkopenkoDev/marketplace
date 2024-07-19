@@ -20,6 +20,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ua.tc.marketplace.model.enums.UserRole;
 
+/**
+ * Entity class representing a user of the application.
+ *
+ * <p>This class defines the structure of a user stored in the database. It includes properties such
+ * as ID, email, password, user role, first name, last name, profile picture, contact information,
+ * favorite ads, creation timestamp, and update timestamp.
+ */
 @Builder
 @Data
 @NoArgsConstructor
@@ -58,4 +65,36 @@ public class User {
   private LocalDateTime createdAt;
 
   private LocalDateTime updatedAt;
+
+  @Override
+  public String toString() {
+    return "User{"
+        + "id="
+        + id
+        + ", email='"
+        + email
+        + '\''
+        + ", password='"
+        + password
+        + '\''
+        + ", userRole="
+        + userRole
+        + ", firstName='"
+        + firstName
+        + '\''
+        + ", lastName='"
+        + lastName
+        + '\''
+        + ", profilePicture="
+        + profilePicture
+        + ", contactInfo="
+        + contactInfo
+        + ", favorites="
+        + (favorites != null ? favorites.stream().map(Ad::getId).toList() : null)
+        + ", createdAt="
+        + createdAt
+        + ", updatedAt="
+        + updatedAt
+        + '}';
+  }
 }

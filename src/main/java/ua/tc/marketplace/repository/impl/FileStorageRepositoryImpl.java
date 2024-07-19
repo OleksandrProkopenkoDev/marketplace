@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.imaging.ImageInfo;
 import org.apache.commons.imaging.Imaging;
@@ -25,8 +26,19 @@ import ua.tc.marketplace.model.entity.Photo;
 import ua.tc.marketplace.model.entity.PhotoMetadata;
 import ua.tc.marketplace.repository.FileStorageRepository;
 
+/**
+ * Implementation of {@link FileStorageRepository} that provides methods to handle file storage
+ * operations.
+ *
+ * <p>This repository manages file storage operations such as creating directories, writing files
+ * with metadata, reading files as byte arrays, and deleting files.
+ *
+ * <p>It uses Apache Commons Imaging library for extracting image metadata and Apache Commons IO for
+ * file operations.
+ */
 @Slf4j
 @Getter
+@Setter
 @Repository
 public class FileStorageRepositoryImpl implements FileStorageRepository {
 
@@ -52,10 +64,10 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
       String extension = FilenameUtils.getExtension(originalFilename);
       String uniqueFilename = UUID.randomUUID() + DOT + extension;
 
-      Path destinationFile = path.resolve(uniqueFilename);
-      file.transferTo(destinationFile.toFile());
+      File destinationFile = path.resolve(uniqueFilename).toFile();
+      file.transferTo(destinationFile);
 
-      ImageInfo imageInfo = Imaging.getImageInfo(destinationFile.toFile());
+      ImageInfo imageInfo = Imaging.getImageInfo(destinationFile);
 
       int width = imageInfo.getWidth();
       int height = imageInfo.getHeight();
@@ -69,7 +81,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
               .size(size)
               .build();
 
-      return Photo.builder().path(uniqueFilename).metadata(metadata).build();
+      return Photo.builder().filename(uniqueFilename).metadata(metadata).build();
     } catch (IOException e) {
       throw new FailedStoreFileException(file.getOriginalFilename(), e);
     }

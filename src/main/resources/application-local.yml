@@ -6,6 +6,6 @@ spring:
 
 file:
   #windows
-  #  upload-dir: E:\\JavaProjects\\team-challenge\\photo
+  upload-dir: E:\\JavaProjects\\team-challenge\\photo
   #ubuntu
-  upload-dir: /home/chak/projects/java/teamchallenge/photo
+  #upload-dir: /home/chak/projects/java/teamchallenge/photo

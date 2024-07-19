@@ -12,12 +12,20 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing an advertisement.
+ *
+ * <p>This class defines the structure of an advertisement stored in the database. It includes
+ * properties such as ID, author, title, description, price, photos, thumbnail, category, creation
+ * timestamp, and update timestamp.
+ */
 @Builder
 @Data
 @NoArgsConstructor
@@ -42,7 +50,7 @@ public class Ad {
 
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "ad_id")
-  private List<Photo> photos;
+  private List<Photo> photos = new ArrayList<>();
 
   @OneToOne(cascade = CascadeType.ALL)
   private Photo thumbnail;
