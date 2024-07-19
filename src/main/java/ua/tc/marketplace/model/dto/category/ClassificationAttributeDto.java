@@ -1,4 +1,4 @@
-package ua.tc.marketplace.model.dto;
+package ua.tc.marketplace.model.dto.category;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

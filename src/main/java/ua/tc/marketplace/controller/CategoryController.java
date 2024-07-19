@@ -1,16 +1,15 @@
 package ua.tc.marketplace.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.tc.marketplace.model.dto.CategoryDto;
-import ua.tc.marketplace.model.entity.Category;
+import ua.tc.marketplace.model.dto.category.CategoryDto;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
 import ua.tc.marketplace.service.CategoryService;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -32,8 +31,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<CategoryDto> createCategory(@RequestBody CategoryDto categoryDTO) {
-        CategoryDto createCategory = categoryService.createCategory(categoryDTO);
+    public ResponseEntity<CreateCategoryDTO> createCategory(@Valid @RequestBody CreateCategoryDTO categoryDTO) {
+        CreateCategoryDTO createCategory = categoryService.createCategory(categoryDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createCategory);
     }
 

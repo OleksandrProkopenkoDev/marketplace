@@ -28,7 +28,6 @@ import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.AdRepository;
-import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.AdMapper;

@@ -1,53 +1,21 @@
 package ua.tc.marketplace.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import ua.tc.marketplace.exception.category.CategoryNotFoundException;
+import ua.tc.marketplace.model.dto.category.CategoryDto;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
 import ua.tc.marketplace.model.entity.Category;
-import ua.tc.marketplace.repository.CategoryRepository;
-import ua.tc.marketplace.model.dto.CategoryDto;
-import ua.tc.marketplace.util.mapper.CategoryMapper;
 
-@Service
-@RequiredArgsConstructor
-public class CategoryService {
+public interface CategoryService {
+    Category findCategoryById(Long categoryId);
 
-    private final CategoryRepository categoryRepository;
-    private final CategoryMapper categoryMapper;
+    Page<CategoryDto> findAll(Pageable pageable);
 
-    public Page<CategoryDto> findAll(Pageable pageable) {
-        Page<Category> categories = categoryRepository.findAll(pageable);
-        return categories.map(categoryMapper::toDto);
-    }
+    CategoryDto findById(Long id);
 
-    public CategoryDto findById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new CategoryNotFoundException(id));
-        return categoryMapper.toDto(category);
-    }
+    CreateCategoryDTO createCategory(CreateCategoryDTO categoryDto);
 
-    public CategoryDto createCategory(CategoryDto categoryDto) {
-        Category category = categoryMapper.toEntity(categoryDto);
-        Category savedCategory = categoryRepository.save(category);
-        return categoryMapper.toDto(savedCategory);
-    }
+    CategoryDto update(Long id, CategoryDto categoryDto);
 
-    public CategoryDto update(Long id, CategoryDto categoryDto) {
-        Category updatedCategory = categoryRepository.findById(id)
-                .map(existingCategory -> {
-                    categoryMapper.updateEntityFromDto(existingCategory, categoryDto);
-                    return categoryRepository.save(existingCategory);
-                })
-                .orElseThrow(() -> new CategoryNotFoundException(id));
-        return categoryMapper.toDto(updatedCategory);
-    }
-
-    public void deleteById(Long id) {
-        if (!categoryRepository.existsById(id)) {
-            throw new CategoryNotFoundException(id);
-        }
-        categoryRepository.deleteById(id);
-    }
+    void deleteById(Long id);
 }
