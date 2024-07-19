@@ -11,7 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
-import ua.tc.marketplace.model.dto.UserDto;
+import ua.tc.marketplace.model.dto.user.CreateUserDto;
+import ua.tc.marketplace.model.dto.user.UpdateUserDto;
+import ua.tc.marketplace.model.dto.user.UserDto;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.service.UserService;
@@ -33,18 +35,8 @@ public class UserServiceImpl implements UserService {
         .map(userMapper::toDto);
   }
 
-  @Transactional
   @Override
-  public UserDto createUser(UserDto createUserDto) {
-    createUserDto.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
-    createUserDto.setCreatedAt(LocalDateTime.now());
-    return userMapper.toDto(
-        userRepository.save(
-            userMapper.toEntity(createUserDto)));
-  }
-
-  @Override
-  public UserDto findById(Long id) {
+  public UserDto findUserById(Long id) {
     User user = userRepository.findById(id)
         .orElseThrow(() -> new UserNotFoundException(id));
     return userMapper.toDto(user);
@@ -52,7 +44,17 @@ public class UserServiceImpl implements UserService {
 
   @Transactional
   @Override
-  public UserDto updateUser(@NonNull UserDto updateUserDto) {
+  public UserDto createUser(CreateUserDto createUserDto) {
+    User user = userMapper.toEntity(createUserDto);
+    user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+    user.setCreatedAt(LocalDateTime.now());
+    return userMapper.toDto(
+        userRepository.save(user));
+  }
+
+  @Transactional
+  @Override
+  public UserDto updateUser(@NonNull UpdateUserDto updateUserDto) {
     User existingUser = userRepository.findById(updateUserDto.getId())
         .orElseThrow(() -> new UserNotFoundException(updateUserDto.getId()));
 
