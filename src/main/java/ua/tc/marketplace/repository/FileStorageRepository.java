@@ -27,4 +27,6 @@ public interface FileStorageRepository {
   String getUploadDir();
 
   byte[] readFile(String filename, Path path);
+
+  void deleteFolder(Path basePath);
 }

@@ -161,6 +161,13 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
   }
 
   @Override
+  public void deleteAllAdPhotos(Ad ad) {
+    String folder = getAdFolder(ad.getId());
+    Path basePath = getPath(folder);
+    fileStorageRepository.deleteFolder(basePath);
+  }
+
+  @Override
   public List<String> deleteAdPhotos(Long adId, List<Long> photoIds) {
     String folder = getAdFolder(adId);
     Path basePath = getPath(folder);
@@ -190,7 +197,11 @@ public class PhotoStorageServiceImpl implements PhotoStorageService {
         photosToDelete.stream()
             .map(
                 photo ->
-                    fileStorageRepository.getUploadDir() + SLASH + folder + SLASH + photo.getFilename())
+                    fileStorageRepository.getUploadDir()
+                        + SLASH
+                        + folder
+                        + SLASH
+                        + photo.getFilename())
             .toList();
 
     return paths.stream()

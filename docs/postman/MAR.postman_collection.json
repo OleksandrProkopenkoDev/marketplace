@@ -1,0 +1,901 @@
+{
+	"info": {
+		"_postman_id": "052d8d1b-c6c4-4631-b23e-9ae24285f57a",
+		"name": "MAR",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28832260",
+		"_collection_link": "https://solar-trinity-249367.postman.co/workspace/team467Marketplace~03ff0fc9-3ac0-4526-a90c-7e533070b13d/collection/31711139-052d8d1b-c6c4-4631-b23e-9ae24285f57a?action=share&source=collection_link&creator=28832260"
+	},
+	"item": [
+		{
+			"name": "UserController",
+			"item": [
+				{
+					"name": "createUser",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"taras@shevchenko.ua\",\n    \"password\":\"password\",\n    \"userRole\":\"INDIVIDUAL\",\n    \"firstName\":\"Taras\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "updateUser",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "taras@shevchenko.ua",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\":\"7\",\n    \"email\":\"taras@shevchenko.ua\",\n    \"password\":\"password\",\n    \"userRole\":\"INDIVIDUAL\",\n    \"firstName\":\"Taras\",\n    \"lastName\":\"Shevchenko\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getUserById",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "password",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "taras@shevchenko.ua",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllUsers",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"page\":\"1\",\n    \"size\":\"10\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/user/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"user",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Demo",
+			"item": [
+				{
+					"name": "getDemo local",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/demo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"demo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllDemo local",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/demo/all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"demo",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDemo By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/demo/112",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"demo",
+								"112"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getDemo - server",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/demo",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"demo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllDemo - server",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/demo/all",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"demo",
+								"all"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Photo local",
+			"item": [
+				{
+					"name": "Ad",
+					"item": [
+						{
+							"name": "getPhotoFILE by Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/file/ad/1/photo/47",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"file",
+										"ad",
+										"1",
+										"photo",
+										"47"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllPhotos by adId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/ad/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllPhotoFiles by adId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/file/ad/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"file",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save Ad Photos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files",
+											"type": "file",
+											"src": "postman-cloud:///1ef3ebc6-93b1-4c30-ac2a-d972312d13c7"
+										},
+										{
+											"key": "files",
+											"type": "file",
+											"src": "postman-cloud:///1ef3ebc6-82ba-4800-90f1-9dfe4178484d"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/ad/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Ad Photos",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[44, 42, 46, 45]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/ad/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Save User Profile Picture",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1ef43655-9cb0-4550-9973-222ca79bdb52"
+										}
+									]
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's profile picture",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's profile picture FILE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User's profile picture",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/photo/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Photo on Server",
+			"item": [
+				{
+					"name": "getAllPhotos by adId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad/1",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"photo",
+								"ad",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getPhoto by name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/file/ad/1/6c726680-ab3c-456a-bac2-822725e01328.jpg",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"file",
+								"ad",
+								"1",
+								"6c726680-ab3c-456a-bac2-822725e01328.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAllPhotoFiles by adId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/file/ad/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"file",
+								"ad",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Save Ad Photos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": "postman-cloud:///1ef3ebc6-93b1-4c30-ac2a-d972312d13c7"
+								},
+								{
+									"key": "files",
+									"type": "file",
+									"src": "postman-cloud:///1ef3ebc6-82ba-4800-90f1-9dfe4178484d"
+								},
+								{
+									"key": "adId",
+									"value": "1",
+									"contentType": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"photo",
+								"ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ad Photos",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[41]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad/1",
+							"protocol": "https",
+							"host": [
+								"marketplace-production-c9c4",
+								"up",
+								"railway",
+								"app"
+							],
+							"path": [
+								"api",
+								"v1",
+								"photo",
+								"ad",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ad",
+			"item": [
+				{
+					"name": "Find Ad By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Ads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Ad With Photos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "authorId",
+									"value": "2\n",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "New ad about dog",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Bear is a mixed breed puppy who will be ready for adoption July 25th. He will be 9 weeks old and have 2 of his 3 required puppy shots. Mom is a pit/ lab mix. Dad is possibly a husky and or Dane but its unsure due to mom at large while in heat. All puppies are fostered in homes with families being socialized, learning house training and crate training. Adoption fee $300 w $50 refund upon proof of spay/ neuter. Location is near Utica New York 13502. Apply at www.rescuemek9.org",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "0\n",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "photoFiles",
+									"type": "file",
+									"src": "postman-cloud:///1ef44da9-a5ed-4440-a55f-d9e1957704a4"
+								},
+								{
+									"key": "photoFiles",
+									"type": "file",
+									"src": "postman-cloud:///1ef44daa-950a-4a50-be8f-d716f18c67c4"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ad and all its Photos",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ad fields",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"authorId\": 3,\r\n    \"title\": \"Updated title\",\r\n    \"description\": \"new description\",\r\n    \"price\": 3.3,\r\n    \"categoryId\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"10"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "login",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "taras@shevchenko.ua",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8080/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
