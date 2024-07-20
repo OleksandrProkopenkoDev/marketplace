@@ -28,6 +28,7 @@ public interface AdMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "author", ignore = true)
+  @Mapping(target = "adAttributes", ignore = true)
   Ad getPrimitiveFields(CreateAdDto dto);
 
   @Mapping(target = "updatedAt", ignore = true)

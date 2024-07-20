@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,9 +66,27 @@ public class Ad {
   @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<AdAttribute> adAttributes = new ArrayList<>();
 
-  @CreationTimestamp
-  private LocalDateTime createdAt;
+  @CreationTimestamp private LocalDateTime createdAt;
 
-  @UpdateTimestamp
-  private LocalDateTime updatedAt;
+  @UpdateTimestamp private LocalDateTime updatedAt;
+
+  @Override
+  public String toString() {
+    String adAttributesString =
+        adAttributes.stream()
+            .map(
+                adAttribute -> adAttribute.getAttribute().getName() + ": " + adAttribute.getValue())
+            .collect(Collectors.joining(", "));
+
+    return String.format(
+        "Ad{id=%d, title='%s', description='%s', price=%s, category=%s, adAttributes=[%s], createdAt=%s, updatedAt=%s}",
+        id,
+        title,
+        description,
+        price,
+        category != null ? category.getName() : "N/A",
+        adAttributesString,
+        createdAt,
+        updatedAt);
+  }
 }
