@@ -14,7 +14,7 @@ import ua.tc.marketplace.model.entity.Ad;
  * for converting Ad to AdDto, extracting primitive fields from CreateAdDto, and updating an
  * existing Ad entity with fields from UpdateAdDto.
  */
-@Mapper(config = MapperConfig.class)
+@Mapper(config = MapperConfig.class, uses = AttributeMapper.class)
 public interface AdMapper {
 
   @Mapping(target = "categoryId", source = "category.id")

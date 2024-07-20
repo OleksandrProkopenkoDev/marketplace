@@ -26,7 +26,7 @@ public record UpdateAdDto(
     String description,
 
     @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    @DecimalMin(value = "0.0", message = "Price must be zero or positive")
     BigDecimal price,
 
     @NotNull(message = "Category ID cannot be null")

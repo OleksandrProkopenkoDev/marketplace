@@ -139,47 +139,47 @@ VALUES
     (1, 2, '3 years'),         -- age
     (1, 3, 'Large'),           -- size
     (1, 4, 'Male'),            -- gender
-    (1, 6, 'Medium'),          -- coat length
-    (1, 7, 'Golden'),          -- color
-    (1, 8, 'Healthy'),         -- health condition
-    (1, 5, 'Buddy'),           -- pet name
+    (1, 5, 'Medium'),          -- coat length
+    (1, 6, 'Golden'),          -- color
+    (1, 7, 'Healthy'),         -- health condition
+    (1, 8, 'Buddy'),           -- pet name
 
     -- Ad 2 (Cat)
     (2, 1, 'Siamese'),         -- breed
     (2, 2, '2 years'),         -- age
     (2, 3, 'Small'),           -- size
     (2, 4, 'Female'),          -- gender
-    (2, 6, 'Short'),           -- coat length
-    (2, 7, 'Cream'),           -- color
-    (2, 8, 'Healthy'),         -- health condition
-    (2, 5, 'Whiskers'),        -- pet name
+    (2, 5, 'Short'),           -- coat length
+    (2, 6, 'Cream'),           -- color
+    (2, 7, 'Healthy'),         -- health condition
+    (2, 8, 'Whiskers'),        -- pet name
 
     -- Ad 3 (Rabbit)
     (3, 1, 'Lop'),             -- breed
     (3, 2, '1 year'),          -- age
     (3, 3, 'Small'),           -- size
     (3, 4, 'Female'),          -- gender
-    (3, 6, 'Short'),           -- coat length
-    (3, 7, 'White'),           -- color
-    (3, 8, 'Healthy'),         -- health condition
-    (3, 5, 'Fluffy'),          -- pet name
+    (3, 5, 'Short'),           -- coat length
+    (3, 6, 'White'),           -- color
+    (3, 7, 'Healthy'),         -- health condition
+    (3, 8, 'Fluffy'),          -- pet name
 
     -- Ad 4 (Bird)
     (4, 1, 'Parakeet'),        -- breed
     (4, 2, '6 months'),        -- age
     (4, 3, 'Small'),           -- size
     (4, 4, 'Male'),            -- gender
-    (4, 6, 'Short'),           -- coat length
-    (4, 7, 'Green'),           -- color
-    (4, 8, 'Healthy'),         -- health condition
-    (4, 5, 'Tweety'),          -- pet name
+    (4, 5, 'Short'),           -- coat length
+    (4, 6, 'Green'),           -- color
+    (4, 7, 'Healthy'),         -- health condition
+    (4, 8, 'Tweety'),          -- pet name
 
     -- Ad 5 (Fish)
     (5, 1, 'Goldfish'),        -- breed
     (5, 2, '1 year'),          -- age
     (5, 3, 'Small'),           -- size
     (5, 4, 'Female'),          -- gender
-    (5, 7, 'Gold'),            -- color
-    (5, 8, 'Healthy'),         -- health condition
-    (5, 5, 'Bubbles');         -- pet name
+    (5, 6, 'Gold'),            -- color
+    (5, 7, 'Healthy'),         -- health condition
+    (5, 8, 'Bubbles');         -- pet name
 
