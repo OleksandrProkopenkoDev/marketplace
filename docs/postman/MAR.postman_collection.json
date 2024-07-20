@@ -700,7 +700,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ad/10",
+							"raw": "http://localhost:8080/api/v1/ad/13",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -710,7 +710,7 @@
 								"api",
 								"v1",
 								"ad",
-								"10"
+								"13"
 							]
 						}
 					},
@@ -762,7 +762,7 @@
 								},
 								{
 									"key": "price",
-									"value": "0\n",
+									"value": "0.0\n",
 									"type": "text"
 								},
 								{
@@ -835,6 +835,33 @@
 							}
 						},
 						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Ad V2",
+			"item": [
+				{
+					"name": "Find Ad By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
 							"raw": "http://localhost:8080/api/v1/ad/10",
 							"protocol": "http",
 							"host": [
@@ -846,6 +873,146 @@
 								"v1",
 								"ad",
 								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find All Ads",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Ad With Photos",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "authorId",
+									"value": "2\n",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "New ad about dog",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Bear is a mixed breed puppy who will be ready for adoption July 25th. He will be 9 weeks old and have 2 of his 3 required puppy shots. Mom is a pit/ lab mix. Dad is possibly a husky and or Dane but its unsure due to mom at large while in heat. All puppies are fostered in homes with families being socialized, learning house training and crate training. Adoption fee $300 w $50 refund upon proof of spay/ neuter. Location is near Utica New York 13502. Apply at www.rescuemek9.org",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "0.0\n",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "photoFiles",
+									"type": "file",
+									"src": "postman-cloud:///1ef44da9-a5ed-4440-a55f-d9e1957704a4"
+								},
+								{
+									"key": "photoFiles",
+									"type": "file",
+									"src": "postman-cloud:///1ef44daa-950a-4a50-be8f-d716f18c67c4"
+								},
+								{
+									"key": "adAttributes",
+									"value": "[\n    {\n        \"attributeId\": 1,\n        \"value\": \"Retriever\"\n    },\n    {\n        \"attributeId\": 2,\n        \"value\": \"2 years\"\n    },\n    {\n        \"attributeId\": 3,\n        \"value\": \"Big\"\n    },\n    {\n        \"attributeId\": 4,\n        \"value\": \"Male\"\n    },\n    {\n        \"attributeId\": 5,\n        \"value\": \"Medium\"\n    },\n    {\n        \"attributeId\": 6,\n        \"value\": \"Grey\"\n    },\n    {\n        \"attributeId\": 7,\n        \"value\": \"Healthy\"\n    },\n    {\n        \"attributeId\": 8,\n        \"value\": \"Rocky\"\n    }\n]",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Ad and all its Photos",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Ad fields",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"authorId\": 3,\r\n    \"title\": \"Updated title\",\r\n    \"description\": \"new description\",\r\n    \"price\": 3.3,\r\n    \"categoryId\": 2,\r\n    \"adAttributes\": [\r\n        {\r\n            \"attributeId\": 1,\r\n            \"value\": \"Retriever Updated\"\r\n        },\r\n        {\r\n            \"attributeId\": 2,\r\n            \"value\": \"2 years updated\"\r\n        },\r\n        {\r\n            \"attributeId\": 3,\r\n            \"value\": \"Big updated\"\r\n        },\r\n        {\r\n            \"attributeId\": 4,\r\n            \"value\": \"Male updated\"\r\n        }\r\n        // {\r\n        //     \"attributeId\": 5,\r\n        //     \"value\": \"Medium\"\r\n        // },\r\n        // {\r\n        //     \"attributeId\": 6,\r\n        //     \"value\": \"Grey\"\r\n        // },\r\n        // {\r\n        //     \"attributeId\": 7,\r\n        //     \"value\": \"Healthy\"\r\n        // },\r\n        // {\r\n        //     \"attributeId\": 8,\r\n        //     \"value\": \"Rocky\"\r\n        // }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad",
+								"2"
 							]
 						}
 					},
