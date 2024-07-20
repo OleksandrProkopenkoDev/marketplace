@@ -89,6 +89,8 @@ public class AdServiceImpl implements AdService {
   public AdDto updateAd(Long adId, UpdateAdDto dto) {
     Ad ad = getAd(adId);
     adMapper.updateAd(dto, ad);
+    updateAdAttributes(dto, ad);
+
     Category category = categoryService.findCategoryById(dto.categoryId());
     User author = userService.findUserById(dto.authorId());
     ad.setCategory(category);
@@ -97,6 +99,8 @@ public class AdServiceImpl implements AdService {
     ad = adRepository.save(ad);
     return adMapper.toAdDto(ad);
   }
+
+
 
   @Override
   public void deleteAd(Long adId) {
@@ -150,5 +154,21 @@ public class AdServiceImpl implements AdService {
     } else {
       throw new AdAttributesNotMatchCategoryException(attributeMap.keySet(), requiredAttributeIds);
     }
+  }
+
+  private void updateAdAttributes(UpdateAdDto dto, Ad ad) {
+    List<AdAttributeRequestDto> adAttributeRequestDtos = dto.adAttributes();
+    List<AdAttribute> adAttributes = ad.getAdAttributes();
+
+    // Step 1: Convert adAttributeRequestDtos to a Map<Long, String> for quick lookup
+    Map<Long, String> attributeUpdates = adAttributeRequestDtos.stream()
+        .collect(Collectors.toMap(AdAttributeRequestDto::attributeId, AdAttributeRequestDto::value));
+
+    // Step 2: Update adAttributes list based on the attributeUpdates map
+    adAttributes.forEach(adAttribute -> {
+      if (attributeUpdates.containsKey(adAttribute.getAttribute().getId())) {
+        adAttribute.setValue(attributeUpdates.get(adAttribute.getAttribute().getId()));
+      }
+    });
   }
 }

@@ -38,5 +38,7 @@ public interface AdMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "author", ignore = true)
+  @Mapping(target = "adAttributes", ignore = true)
   void updateAd(UpdateAdDto dto, @MappingTarget Ad ad);
+
 }

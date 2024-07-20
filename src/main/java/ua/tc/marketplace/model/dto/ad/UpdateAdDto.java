@@ -1,6 +1,7 @@
 package ua.tc.marketplace.model.dto.ad;
 
 import java.math.BigDecimal;
+import java.util.List;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -30,5 +31,8 @@ public record UpdateAdDto(
     BigDecimal price,
 
     @NotNull(message = "Category ID cannot be null")
-    Long categoryId
+    Long categoryId,
+
+    @NotEmpty
+    List<AdAttributeRequestDto> adAttributes
 ) {}
