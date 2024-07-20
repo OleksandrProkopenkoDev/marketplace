@@ -62,6 +62,9 @@ public class Ad {
   @JoinColumn(name = "category_id")
   private Category category;
 
+  @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<AdAttribute> adAttributes = new ArrayList<>();
+
   @CreationTimestamp
   private LocalDateTime createdAt;
 

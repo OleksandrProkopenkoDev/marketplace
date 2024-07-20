@@ -131,3 +131,55 @@ VALUES
 (6, 7),  -- color
 (6, 8);  -- care & behaviour
 
+-- Insert Ad Attributes
+INSERT INTO ad_attributes (ad_id, attribute_id, value)
+VALUES
+    -- Ad 1 (Dog)
+    (1, 1, 'Golden Retriever'), -- breed
+    (1, 2, '3 years'),         -- age
+    (1, 3, 'Large'),           -- size
+    (1, 4, 'Male'),            -- gender
+    (1, 6, 'Medium'),          -- coat length
+    (1, 7, 'Golden'),          -- color
+    (1, 8, 'Healthy'),         -- health condition
+    (1, 5, 'Buddy'),           -- pet name
+
+    -- Ad 2 (Cat)
+    (2, 1, 'Siamese'),         -- breed
+    (2, 2, '2 years'),         -- age
+    (2, 3, 'Small'),           -- size
+    (2, 4, 'Female'),          -- gender
+    (2, 6, 'Short'),           -- coat length
+    (2, 7, 'Cream'),           -- color
+    (2, 8, 'Healthy'),         -- health condition
+    (2, 5, 'Whiskers'),        -- pet name
+
+    -- Ad 3 (Rabbit)
+    (3, 1, 'Lop'),             -- breed
+    (3, 2, '1 year'),          -- age
+    (3, 3, 'Small'),           -- size
+    (3, 4, 'Female'),          -- gender
+    (3, 6, 'Short'),           -- coat length
+    (3, 7, 'White'),           -- color
+    (3, 8, 'Healthy'),         -- health condition
+    (3, 5, 'Fluffy'),          -- pet name
+
+    -- Ad 4 (Bird)
+    (4, 1, 'Parakeet'),        -- breed
+    (4, 2, '6 months'),        -- age
+    (4, 3, 'Small'),           -- size
+    (4, 4, 'Male'),            -- gender
+    (4, 6, 'Short'),           -- coat length
+    (4, 7, 'Green'),           -- color
+    (4, 8, 'Healthy'),         -- health condition
+    (4, 5, 'Tweety'),          -- pet name
+
+    -- Ad 5 (Fish)
+    (5, 1, 'Goldfish'),        -- breed
+    (5, 2, '1 year'),          -- age
+    (5, 3, 'Small'),           -- size
+    (5, 4, 'Female'),          -- gender
+    (5, 7, 'Gold'),            -- color
+    (5, 8, 'Healthy'),         -- health condition
+    (5, 5, 'Bubbles');         -- pet name
+
