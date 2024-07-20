@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/** Entity representing an attribute of an advertisement. */
 @Builder
 @Data
 @NoArgsConstructor
@@ -33,5 +34,4 @@ public class AdAttribute {
   private Attribute attribute;
 
   private String value;
-
 }

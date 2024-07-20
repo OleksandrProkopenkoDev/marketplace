@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import ua.tc.marketplace.model.entity.AdAttribute;
 import ua.tc.marketplace.model.entity.Photo;
 
 /**
@@ -21,31 +20,17 @@ import ua.tc.marketplace.model.entity.Photo;
  */
 public record AdDto(
     Long id,
-
-    @NotNull(message = "Author ID cannot be null")
-    Long authorId,
-
+    @NotNull(message = "Author ID cannot be null") Long authorId,
     @NotEmpty(message = "Title cannot be empty")
-    @Size(max = 100, message = "Title cannot be longer than 100 characters")
-    String title,
-
-    @NotEmpty(message = "Description cannot be empty")
-    String description,
-
+        @Size(max = 100, message = "Title cannot be longer than 100 characters")
+        String title,
+    @NotEmpty(message = "Description cannot be empty") String description,
     @NotNull(message = "Price cannot be null")
-    @DecimalMin(value = "0.0", message = "Price must be zero or positive")
-    BigDecimal price,
-
+        @DecimalMin(value = "0.0", message = "Price must be zero or positive")
+        BigDecimal price,
     List<Photo> photos,
-
     Photo thumbnail,
-
-    @NotNull(message = "Category ID cannot be null")
-    Long categoryId,
-
+    @NotNull(message = "Category ID cannot be null") Long categoryId,
     List<AdAttributeDto> adAttributes,
-
     LocalDateTime createdAt,
-
-    LocalDateTime updatedAt
-) {}
+    LocalDateTime updatedAt) {}
