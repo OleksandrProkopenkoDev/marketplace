@@ -23,9 +23,9 @@ import ua.tc.marketplace.model.enums.ValueType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "classification_attribute")
+@Table(name = "attribute")
 @Entity
-public class ClassificationAttribute {
+public class Attribute {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
