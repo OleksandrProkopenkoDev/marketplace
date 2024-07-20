@@ -100,8 +100,6 @@ public class AdServiceImpl implements AdService {
     return adMapper.toAdDto(ad);
   }
 
-
-
   @Override
   public void deleteAd(Long adId) {
     Ad ad = getAd(adId);
