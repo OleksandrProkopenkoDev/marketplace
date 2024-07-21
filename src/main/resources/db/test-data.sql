@@ -13,10 +13,10 @@ VALUES ('breed', 'STRING'),
        ('age', 'STRING'),
        ('size', 'STRING'),
        ('gender', 'STRING'),
-       ('coat length', 'STRING'),
+       ('coat_length', 'STRING'),
        ('color', 'STRING'),
-       ('health condition', 'STRING'),
-       ('pet name', 'STRING');
+       ('health_condition', 'STRING'),
+       ('pet_name', 'STRING');
 
 -- Insert ContactInfo
 INSERT INTO contact_info (phone)

@@ -2,7 +2,12 @@ package ua.tc.marketplace.service.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,6 +16,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
@@ -49,10 +55,11 @@ public class AdServiceImpl implements AdService {
   private final UserService userService;
   private final CategoryService categoryService;
 
-  @Transactional(readOnly = true)
   @Override
-  public Page<AdDto> findAll(Pageable pageable) {
-    return adRepository.findAll(pageable).map(adMapper::toAdDto);
+  @Transactional(readOnly = true)
+  public Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable) {
+    Specification<Ad> specification = getAdSpecification(filterCriteria);
+    return adRepository.findAll(specification, pageable).map(adMapper::toAdDto);
   }
 
   @Transactional(readOnly = true)
@@ -159,14 +166,58 @@ public class AdServiceImpl implements AdService {
     List<AdAttribute> adAttributes = ad.getAdAttributes();
 
     // Step 1: Convert adAttributeRequestDtos to a Map<Long, String> for quick lookup
-    Map<Long, String> attributeUpdates = adAttributeRequestDtos.stream()
-        .collect(Collectors.toMap(AdAttributeRequestDto::attributeId, AdAttributeRequestDto::value));
+    Map<Long, String> attributeUpdates =
+        adAttributeRequestDtos.stream()
+            .collect(
+                Collectors.toMap(AdAttributeRequestDto::attributeId, AdAttributeRequestDto::value));
 
     // Step 2: Update adAttributes list based on the attributeUpdates map
-    adAttributes.forEach(adAttribute -> {
-      if (attributeUpdates.containsKey(adAttribute.getAttribute().getId())) {
-        adAttribute.setValue(attributeUpdates.get(adAttribute.getAttribute().getId()));
-      }
-    });
+    adAttributes.forEach(
+        adAttribute -> {
+          if (attributeUpdates.containsKey(adAttribute.getAttribute().getId())) {
+            adAttribute.setValue(attributeUpdates.get(adAttribute.getAttribute().getId()));
+          }
+        });
+  }
+
+  private Specification<Ad> getAdSpecification(Map<String, String> filterCriteria) {
+    return (root, query, cb) -> {
+      List<Predicate> predicates = new ArrayList<>();
+
+      filterCriteria.forEach(
+          (key, value) -> {
+            if (value != null) {
+              switch (key) {
+                case "title":
+                  predicates.add(cb.like(root.get("title"), "%" + value + "%"));
+                  break;
+                case "description":
+                  predicates.add(cb.like(root.get("description"), "%" + value + "%"));
+                  break;
+                case "price":
+                  predicates.add(cb.greaterThanOrEqualTo(root.get("price"), new BigDecimal(value)));
+                  break;
+                case "category":
+                  predicates.add(cb.equal(root.get("category").get("id"), Long.valueOf(value)));
+                  break;
+                case "authorId":
+                  predicates.add(cb.equal(root.get("author").get("id"), Long.valueOf(value)));
+                  break;
+                default:
+                  if (key.startsWith("attribute_")) {
+                    String attributeName = key.substring(10); // Remove "attribute_" prefix
+                    Join<Ad, AdAttribute> join = root.join("adAttributes", JoinType.LEFT);
+                    predicates.add(
+                        cb.and(
+                            cb.equal(join.get("attribute").get("name"), attributeName),
+                            cb.like(join.get("value"), "%" + value + "%")));
+                  }
+                  break;
+              }
+            }
+          });
+
+      return cb.and(predicates.toArray(new Predicate[0]));
+    };
   }
 }

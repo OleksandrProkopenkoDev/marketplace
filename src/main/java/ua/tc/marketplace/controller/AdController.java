@@ -1,6 +1,7 @@
 package ua.tc.marketplace.controller;
 
 import jakarta.validation.Valid;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
@@ -40,12 +42,14 @@ import ua.tc.marketplace.util.openapi.AdOpenApi;
 @RestController
 @RequestMapping("/api/v1/ad")
 public class AdController implements AdOpenApi {
+
   private final AdService adService;
 
   @Override
   @GetMapping
-  public ResponseEntity<Page<AdDto>> getAllAds(@PageableDefault Pageable pageable) {
-    return ResponseEntity.ok(adService.findAll(pageable));
+  public ResponseEntity<Page<AdDto>> getAllAds(
+      @RequestParam Map<String, String> params, @PageableDefault(sort = "id") Pageable pageable) {
+    return ResponseEntity.ok(adService.findAll(params, pageable));
   }
 
   @Override
