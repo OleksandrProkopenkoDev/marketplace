@@ -194,8 +194,11 @@ public class AdServiceImpl implements AdService {
                 case "description":
                   predicates.add(cb.like(root.get("description"), "%" + value + "%"));
                   break;
-                case "price":
+                case "priceMin":
                   predicates.add(cb.greaterThanOrEqualTo(root.get("price"), new BigDecimal(value)));
+                  break;
+                case "priceMax":
+                  predicates.add(cb.lessThanOrEqualTo(root.get("price"), new BigDecimal(value)));
                   break;
                 case "category":
                   predicates.add(cb.equal(root.get("category").get("id"), Long.valueOf(value)));
