@@ -900,6 +900,109 @@
 					"response": []
 				},
 				{
+					"name": "Find All Ads Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad?priceMin=100.0&priceMax=400&page=0&size=5&sort=price,desc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "New",
+									"disabled": true
+								},
+								{
+									"key": "authorId",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "fish",
+									"disabled": true
+								},
+								{
+									"key": "priceMin",
+									"value": "100.0"
+								},
+								{
+									"key": "priceMax",
+									"value": "400"
+								},
+								{
+									"key": "category",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "attribute_breed",
+									"value": "Retriever",
+									"disabled": true
+								},
+								{
+									"key": "attribute_age",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "attribute_size",
+									"value": "Big",
+									"disabled": true
+								},
+								{
+									"key": "attribute_gender",
+									"value": "Female",
+									"disabled": true
+								},
+								{
+									"key": "attribute_coat_length",
+									"value": "Medium",
+									"disabled": true
+								},
+								{
+									"key": "attribute_color",
+									"value": "Grey",
+									"disabled": true
+								},
+								{
+									"key": "attribute_health_condition",
+									"value": "Healthy",
+									"disabled": true
+								},
+								{
+									"key": "attribute_pet_name",
+									"value": "Rocky",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "price,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create New Ad With Photos",
 					"request": {
 						"method": "POST",
@@ -971,7 +1074,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ad/9",
+							"raw": "http://localhost:8080/api/v1/ad/16",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -981,7 +1084,7 @@
 								"api",
 								"v1",
 								"ad",
-								"9"
+								"16"
 							]
 						}
 					},
@@ -1002,7 +1105,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ad/2",
+							"raw": "http://localhost:8080/api/v1/ad/17",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1012,7 +1115,7 @@
 								"api",
 								"v1",
 								"ad",
-								"2"
+								"17"
 							]
 						}
 					},
