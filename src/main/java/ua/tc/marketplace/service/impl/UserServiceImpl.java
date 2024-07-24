@@ -37,8 +37,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public UserDto findUserById(Long id) {
-    User user = userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException(id));
+    User user = getUser(id);
     return userMapper.toDto(user);
   }
 
@@ -46,7 +45,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDto createUser(CreateUserDto createUserDto) {
     User user = userMapper.toEntity(createUserDto);
-    user.setPassword(passwordEncoder.encode(createUserDto.getPassword()));
+    user.setPassword(passwordEncoder.encode(createUserDto.password()));
     user.setCreatedAt(LocalDateTime.now());
     return userMapper.toDto(
         userRepository.save(user));
@@ -55,19 +54,22 @@ public class UserServiceImpl implements UserService {
   @Transactional
   @Override
   public UserDto updateUser(@NonNull UpdateUserDto updateUserDto) {
-    User existingUser = userRepository.findById(updateUserDto.getId())
-        .orElseThrow(() -> new UserNotFoundException(updateUserDto.getId()));
-
+    User existingUser = getUser(updateUserDto.id());
     userMapper.updateEntityFromDto(existingUser, updateUserDto);
     existingUser.setUpdatedAt(LocalDateTime.now());
-
     return userMapper.toDto(userRepository.save(existingUser));
   }
 
   @Transactional
   @Override
   public void deleteUserById(Long id) {
-    userRepository.deleteById(id);
+    User existingUser = getUser(id);
+    userRepository.deleteById(existingUser.getId());
+  }
+
+  private User getUser (Long id){
+    return userRepository.findById(id)
+        .orElseThrow(() -> new UserNotFoundException(id));
   }
 
 

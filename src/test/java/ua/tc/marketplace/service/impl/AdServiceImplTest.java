@@ -24,6 +24,7 @@ import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
+import ua.tc.marketplace.model.dto.user.UserDto;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.model.entity.User;
@@ -108,7 +109,23 @@ class AdServiceImplTest {
         new CreateAdDto(
             1L, "Sample Ad", "This is a sample ad", BigDecimal.valueOf(100.00), files, 1L);
 
-    User mockUser = new User(); // create a mock User entity
+    // create a mock User entity
+    UserDto mockUserDto =
+        new UserDto(
+            1L,
+            "taras@shevchenko.ua",
+            "password",
+            "INDIVIDUAL",
+            "Taras",
+            null,
+            null,
+            null,
+            Collections.emptyList(),
+            LocalDateTime.now(),
+            null
+        );
+
+
     Category mockCategory = new Category(); // create a mock Category entity
     Ad mockAd = new Ad(); // create a mock Ad entity
     AdDto mockAdDto =
@@ -125,7 +142,7 @@ class AdServiceImplTest {
             LocalDateTime.now()); // create a mock AdDto
 
     // Mock userService to return mockUser when findUserById is called
-    when(userService.findUserById(createAdDto.authorId())).thenReturn(mockUser);
+    when(userService.findUserById(createAdDto.authorId())).thenReturn(mockUserDto);
 
     // Mock categoryService to return mockCategory when findCategoryById is called
     when(categoryService.findCategoryById(createAdDto.categoryId())).thenReturn(mockCategory);
@@ -180,6 +197,21 @@ class AdServiceImplTest {
     );
 
     User mockUser = new User(); // create a mock User entity
+    UserDto mockUserDto =
+        new UserDto(
+            1L,
+            "taras@shevchenko.ua",
+            "password",
+            "INDIVIDUAL",
+            "Taras",
+            null,
+            null,
+            null,
+            Collections.emptyList(),
+            LocalDateTime.now(),
+            null
+        );
+
     Category mockCategory = new Category(); // create a mock Category entity
     Ad existingAd = new Ad(); // create an existing mock Ad entity
     existingAd.setId(adId); // Set the ID for the existing Ad
@@ -229,7 +261,7 @@ class AdServiceImplTest {
       return null;
     }).when(adMapper).updateAd(updateAdDto, existingAd);
 
-    when(userService.findUserById(anyLong())).thenReturn(mockUser);
+    when(userService.findUserById(anyLong())).thenReturn(mockUserDto);
 
     // Mock categoryService to return mockCategory when findCategoryById is called
     when(categoryService.findCategoryById(updateAdDto.categoryId())).thenReturn(mockCategory);
