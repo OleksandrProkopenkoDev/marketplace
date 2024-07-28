@@ -43,6 +43,8 @@ import ua.tc.marketplace.util.mapper.AdMapper;
 @Transactional
 public class AdServiceImpl implements AdService {
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
+
   private final AdRepository adRepository;
   private final AdMapper adMapper;
   private final PhotoStorageService photoService;
@@ -123,9 +125,8 @@ public class AdServiceImpl implements AdService {
   }
 
   private List<AdAttributeRequestDto> parseJsonAdAttributes(CreateAdDto dto) {
-    ObjectMapper mapper = new ObjectMapper();
     try {
-      return mapper.readValue(dto.adAttributes(), new TypeReference<>() {});
+      return objectMapper.readValue(dto.adAttributes(), new TypeReference<>() {});
     } catch (IOException e) {
       throw new FailedToParseAdAttributesJsonException(dto.adAttributes());
     }

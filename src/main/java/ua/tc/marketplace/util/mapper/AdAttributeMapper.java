@@ -8,8 +8,8 @@ import ua.tc.marketplace.model.entity.AdAttribute;
 
 /** Mapper interface for converting AdAttribute entities to AdAttributeDto. */
 @Mapper(config = MapperConfig.class)
-public interface AttributeMapper {
+public interface AdAttributeMapper {
 
   @Mapping(target = "name", source = "attribute.name")
-  AdAttributeDto adAttributeDto(AdAttribute adAttribute);
+  AdAttributeDto toDto(AdAttribute adAttribute);
 }
