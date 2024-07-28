@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
+import ua.tc.marketplace.exception.tests.FailedLoadJsonResourceException;
 import ua.tc.marketplace.model.dto.ad.AdAttributeDto;
 import ua.tc.marketplace.model.dto.ad.AdAttributeRequestDto;
 import ua.tc.marketplace.model.dto.ad.AdDto;
@@ -39,6 +41,7 @@ import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.AdMapper;
+import ua.tc.marketplace.utils.TestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class AdServiceImplTest {
@@ -195,8 +198,7 @@ class AdServiceImplTest {
             "Updated Description",
             BigDecimal.valueOf(200.00),
             2L, // Updated Category ID
-            getAdAttributeRequestDtos()
-            );
+            getAdAttributeRequestDtos());
 
     User mockUser = new User(); // create a mock User entity
     Category mockCategory = new Category(); // create a mock Category entity
@@ -274,8 +276,6 @@ class AdServiceImplTest {
     assertEquals(mockCategory, existingAd.getCategory());
   }
 
-
-
   @Test
   void deleteAd_shouldDelete() {
     // Arrange
@@ -309,45 +309,13 @@ class AdServiceImplTest {
   }
 
   private String getAdAttributeJson() {
-    return """
-  [
-      {
-          "attributeId": 1,
-          "value": "Retriever"
-      },
-      {
-          "attributeId": 2,
-          "value": "2 years"
-      },
-      {
-          "attributeId": 3,
-          "value": "Big"
-      },
-      {
-          "attributeId": 4,
-          "value": "Male"
-      },
-      {
-          "attributeId": 5,
-          "value": "Medium"
-      },
-      {
-          "attributeId": 6,
-          "value": "Grey"
-      },
-      {
-          "attributeId": 7,
-          "value": "Healthy"
-      },
-      {
-          "attributeId": 8,
-          "value": "Rocky"
-      }
-  ]
-""";
+    String fileName = "ad-attributes.json";
+    try {
+      return TestUtils.readResourceFile(fileName);
+    } catch (IOException e) {
+      throw new FailedLoadJsonResourceException(fileName);
+    }
   }
-
-
 
   private List<AdAttributeDto> getAttributeDtos() {
     return List.of(
@@ -365,9 +333,7 @@ class AdServiceImplTest {
     return List.of(
         new AdAttributeRequestDto(1L, "bulldog"),
         new AdAttributeRequestDto(2L, "10 years"),
-        new AdAttributeRequestDto(6L, "brown")
-
-    );
+        new AdAttributeRequestDto(6L, "brown"));
   }
 
   private List<AdAttributeDto> getUpdatedAttributeDtos() {
@@ -391,11 +357,10 @@ class AdServiceImplTest {
         new AdAttribute(null, ad, getAttributes().get(4), "Medium"),
         new AdAttribute(null, ad, getAttributes().get(5), "brown"),
         new AdAttribute(null, ad, getAttributes().get(6), "Healthy"),
-        new AdAttribute(null, ad, getAttributes().get(7), "Rocky")
-    );
+        new AdAttribute(null, ad, getAttributes().get(7), "Rocky"));
   }
 
-  private List<Attribute> getAttributes(){
+  private List<Attribute> getAttributes() {
     return List.of(
         new Attribute(1L, "breed", ValueType.STRING),
         new Attribute(2L, "age", ValueType.STRING),
@@ -404,7 +369,6 @@ class AdServiceImplTest {
         new Attribute(5L, "coat length", ValueType.STRING),
         new Attribute(6L, "color", ValueType.STRING),
         new Attribute(7L, "health condition", ValueType.STRING),
-        new Attribute(8L, "pet name", ValueType.STRING)
-    );
+        new Attribute(8L, "pet name", ValueType.STRING));
   }
 }

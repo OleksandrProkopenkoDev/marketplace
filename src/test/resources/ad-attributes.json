@@ -1,0 +1,34 @@
+[
+  {
+    "attributeId": 1,
+    "value": "Retriever"
+  },
+  {
+    "attributeId": 2,
+    "value": "2 years"
+  },
+  {
+    "attributeId": 3,
+    "value": "Big"
+  },
+  {
+    "attributeId": 4,
+    "value": "Male"
+  },
+  {
+    "attributeId": 5,
+    "value": "Medium"
+  },
+  {
+    "attributeId": 6,
+    "value": "Grey"
+  },
+  {
+    "attributeId": 7,
+    "value": "Healthy"
+  },
+  {
+    "attributeId": 8,
+    "value": "Rocky"
+  }
+]
