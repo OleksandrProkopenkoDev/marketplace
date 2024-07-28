@@ -1,11 +1,9 @@
 package ua.tc.marketplace.service;
 
-import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ua.tc.marketplace.model.dto.ad.AdDto;
-import ua.tc.marketplace.model.dto.ad.CreateAdDto;
-import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
+import org.springframework.data.jpa.domain.Specification;
+import ua.tc.marketplace.model.entity.Ad;
 
 /**
  * Service interface defining operations for managing advertisements. Includes methods for
@@ -13,13 +11,11 @@ import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
  */
 public interface AdService {
 
-  Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable);
+  Page<Ad> findAll(Specification<Ad> specification, Pageable pageable);
 
-  AdDto findAdById(Long adId);
+  Ad save(Ad ad);
 
-  AdDto createNewAd(CreateAdDto dto);
+  void delete(Ad ad);
 
-  AdDto updateAd(Long adId, UpdateAdDto dto);
-
-  void deleteAd(Long adId);
+  Ad findAdById(Long adId);
 }

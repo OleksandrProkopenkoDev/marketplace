@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ua.tc.marketplace.facade.AdFacade;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
-import ua.tc.marketplace.service.AdService;
 import ua.tc.marketplace.util.openapi.AdOpenApi;
 
 /**
@@ -43,37 +43,37 @@ import ua.tc.marketplace.util.openapi.AdOpenApi;
 @RequestMapping("/api/v1/ad")
 public class AdController implements AdOpenApi {
 
-  private final AdService adService;
+  private final AdFacade adFacade;
 
   @Override
   @GetMapping
   public ResponseEntity<Page<AdDto>> getAllAds(
       @RequestParam Map<String, String> params, @PageableDefault(sort = "id") Pageable pageable) {
-    return ResponseEntity.ok(adService.findAll(params, pageable));
+    return ResponseEntity.ok(adFacade.findAll(params, pageable));
   }
 
   @Override
   @GetMapping("/{adId}")
   public ResponseEntity<AdDto> getAdById(@PathVariable Long adId) {
-    return ResponseEntity.ok(adService.findAdById(adId));
+    return ResponseEntity.ok(adFacade.findAdById(adId));
   }
 
   @Override
   @PostMapping
   public ResponseEntity<AdDto> createNewAd(@ModelAttribute @Valid CreateAdDto dto) {
-    return ResponseEntity.ok(adService.createNewAd(dto));
+    return ResponseEntity.ok(adFacade.createNewAd(dto));
   }
 
   @Override
   @PutMapping("/{adId}")
   public ResponseEntity<AdDto> updateAd(@PathVariable Long adId, @RequestBody UpdateAdDto dto) {
-    return ResponseEntity.ok(adService.updateAd(adId, dto));
+    return ResponseEntity.ok(adFacade.updateAd(adId, dto));
   }
 
   @Override
   @DeleteMapping("/{adId}")
   public ResponseEntity<Void> deleteAd(@PathVariable Long adId) {
-    adService.deleteAd(adId);
+    adFacade.deleteAd(adId);
     return ResponseEntity.status(HttpStatus.OK).build();
   }
 }
