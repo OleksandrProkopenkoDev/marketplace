@@ -34,6 +34,14 @@ import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.ad_filtering.FilterSpecificationFactory;
 import ua.tc.marketplace.util.mapper.AdMapper;
 
+/**
+ * AdFacadeImpl implements the AdFacade interface, providing concrete operations for managing ads in
+ * the system.
+ *
+ * <p>This class is responsible for interacting with the underlying services and repositories to
+ * handle ad-related operations, including creation, update, retrieval, and deletion of ads. It also
+ * manages ad attributes and performs filtering based on criteria provided in the form of DTOs.
+ */
 @Service
 @RequiredArgsConstructor
 public class AdFacadeImpl implements AdFacade {

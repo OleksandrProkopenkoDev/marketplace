@@ -7,6 +7,13 @@ import org.springframework.stereotype.Component;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.util.ad_filtering.FilterSpecification;
 
+/**
+ * PriceMaxFilterSpecification is a component that implements the FilterSpecification interface for
+ * the Ad entity.
+ *
+ * <p>This class is used to create a JPA Specification for filtering ads based on a maximum price.
+ * It generates a query that matches ads with a price less than or equal to the specified value.
+ */
 @Component("priceMax")
 public class PriceMaxFilterSpecification implements FilterSpecification<Ad> {
 

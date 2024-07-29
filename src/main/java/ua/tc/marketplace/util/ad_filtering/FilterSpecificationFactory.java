@@ -7,6 +7,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import ua.tc.marketplace.model.entity.Ad;
 
+/**
+ * FilterSpecificationFactory is a component responsible for generating JPA Specifications for
+ * filtering ads.
+ *
+ * <p>This class uses a map of filter specifications and builds a combined JPA Specification based
+ * on the provided filter criteria. It supports dynamic filtering by attribute or other predefined
+ * criteria.
+ */
 @Component
 @RequiredArgsConstructor
 public class FilterSpecificationFactory {
