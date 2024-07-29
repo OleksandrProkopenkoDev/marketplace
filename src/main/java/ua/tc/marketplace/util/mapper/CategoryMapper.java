@@ -6,7 +6,7 @@ import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.IterableMapping;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.CategoryDTO;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.model.entity.ClassificationAttribute;
 import java.util.List;
@@ -25,22 +25,17 @@ import java.util.List;
  *
  * <p>Additionally, it includes named mappings for converting between lists of ClassificationAttribute and lists of IDs.</p>
  */
-
 @Mapper(config = MapperConfig.class, uses = ClassificationAttributeMapper.class)
 public interface CategoryMapper {
 
-    @Mapping(source = "classificationAttributes", target = "classificationAttributes", qualifiedByName = "classificationAttributeToIdList")
-    CreateCategoryDTO toCreateCategoryDto(Category entity);
+    @Mapping(source = "classificationAttributes", target = "attributeIds", qualifiedByName = "classificationAttributeToIdList")
+    CategoryDTO toCategoryDto(Category entity);
 
+    @Mapping(source = "attributeIds", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
+    Category toEntity(CategoryDTO dto);
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "classificationAttributes", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
-    Category toEntity(CreateCategoryDTO dto);
-
-
-    @Mapping(target = "id", ignore = true)
-    @Mapping(source = "classificationAttributes", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
-    void updateEntityFromDto(@MappingTarget Category category, CreateCategoryDTO createCategoryDto);
+    @Mapping(source = "attributeIds", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
+    void updateEntityFromDto(@MappingTarget Category category, CategoryDTO categoryDto);
 
     @Named("classificationAttributeToIdList")
     @IterableMapping(qualifiedByName = "classificationAttributeToId")

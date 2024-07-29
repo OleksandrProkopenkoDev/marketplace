@@ -13,7 +13,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.CategoryDTO;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.repository.CategoryRepository;
 import ua.tc.marketplace.util.mapper.CategoryMapper;
@@ -36,22 +36,25 @@ class CategoryServiceImplTest {
         // Arrange
         Long categoryId = 1L;
         Category category = new Category(); // create a sample Category entity
-        CreateCategoryDTO categoryDto = new CreateCategoryDTO(); // create a sample CreateCategoryDTO
+        CategoryDTO categoryDto = new CategoryDTO(); // create a sample CategoryDTO
 
         // Mock repository method to return a mocked Category entity
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
 
-        // Mock mapper method to return the provided CreateCategoryDTO
-        when(categoryMapper.toCreateCategoryDto(category)).thenReturn(categoryDto);
+        // Mock mapper method to return the provided CategoryDTO
+        when(categoryMapper.toCategoryDto(category)).thenReturn(categoryDto);
 
         // Act
-        CreateCategoryDTO result = categoryService.findById(categoryId);
+        CategoryDTO result = categoryService.findById(categoryId);
 
         // Assert
         assertEquals(categoryDto, result);
 
         // Verify that repository method was called with correct argument
         verify(categoryRepository, times(1)).findById(categoryId);
+
+        // Verify that mapper method was called with correct argument
+        verify(categoryMapper, times(1)).toCategoryDto(category);
     }
 
     @Test
@@ -68,26 +71,29 @@ class CategoryServiceImplTest {
 
         // Verify that repository method was called with correct argument
         verify(categoryRepository, times(1)).findById(categoryId);
+
+        // Verify that mapper method was never called
+        verify(categoryMapper, never()).toCategoryDto(any(Category.class));
     }
 
     @Test
     void createCategory_shouldCreate_whenValidInput() {
         // Arrange
-        CreateCategoryDTO createCategoryDto = new CreateCategoryDTO(); // create a sample CreateCategoryDTO
+        CategoryDTO categoryDto = new CategoryDTO(); // create a sample CreateCategoryDTO
         Category category = new Category(); // create a sample Category entity
-        CreateCategoryDTO createdCategoryDto = new CreateCategoryDTO(); // create a sample created CreateCategoryDTO
+        CategoryDTO createdCategoryDto = new CategoryDTO(); // create a sample created CreateCategoryDTO
 
         // Mock mapper method to return a Category entity
-        when(categoryMapper.toEntity(createCategoryDto)).thenReturn(category);
+        when(categoryMapper.toEntity(categoryDto)).thenReturn(category);
 
         // Mock repository method to return the saved Category entity
         when(categoryRepository.save(category)).thenReturn(category);
 
         // Mock mapper method to return the created CreateCategoryDTO
-        when(categoryMapper.toCreateCategoryDto(category)).thenReturn(createdCategoryDto);
+        when(categoryMapper.toCategoryDto(category)).thenReturn(createdCategoryDto);
 
         // Act
-        CreateCategoryDTO result = categoryService.createCategory(createCategoryDto);
+        CategoryDTO result = categoryService.createCategory(categoryDto);
 
         // Assert
         assertEquals(createdCategoryDto, result);
@@ -100,10 +106,10 @@ class CategoryServiceImplTest {
     void updateCategory_shouldUpdate_whenValidInput() {
         // Arrange
         Long categoryId = 1L;
-        CreateCategoryDTO updateCategoryDto = new CreateCategoryDTO(); // create a sample CreateCategoryDTO
+        CategoryDTO updateCategoryDto = new CategoryDTO(); // create a sample CreateCategoryDTO
         Category existingCategory = new Category(); // create an existing Category entity
         Category updatedCategory = new Category(); // create an updated Category entity
-        CreateCategoryDTO updatedCategoryDto = new CreateCategoryDTO(); // create an updated CreateCategoryDTO
+        CategoryDTO updatedCategoryDto = new CategoryDTO(); // create an updated CreateCategoryDTO
 
         // Mock repository method to return the existing Category entity
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existingCategory));
@@ -115,10 +121,10 @@ class CategoryServiceImplTest {
         doNothing().when(categoryMapper).updateEntityFromDto(existingCategory, updateCategoryDto);
 
         // Mock mapper method to return the updated CreateCategoryDTO
-        when(categoryMapper.toCreateCategoryDto(updatedCategory)).thenReturn(updatedCategoryDto);
+        when(categoryMapper.toCategoryDto(updatedCategory)).thenReturn(updatedCategoryDto);
 
         // Act
-        CreateCategoryDTO result = categoryService.update(categoryId, updateCategoryDto);
+        CategoryDTO result = categoryService.update(categoryId, updateCategoryDto);
 
         // Assert
         assertEquals(updatedCategoryDto, result);
@@ -166,20 +172,20 @@ class CategoryServiceImplTest {
         // Arrange
         Pageable pageable = PageRequest.of(0, 10);
         Page<Category> categoryPage = new PageImpl<>(Collections.singletonList(new Category()));
-        CreateCategoryDTO createCategoryDto = new CreateCategoryDTO();
+        CategoryDTO categoryDto = new CategoryDTO();
 
         // Mock repository method to return a page of Category entities
         when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
 
         // Mock mapper method to return a page of CreateCategoryDTOs
-        when(categoryMapper.toCreateCategoryDto(any(Category.class))).thenReturn(createCategoryDto);
+        when(categoryMapper.toCategoryDto(any(Category.class))).thenReturn(categoryDto);
 
         // Act
-        Page<CreateCategoryDTO> result = categoryService.findAll(pageable);
+        Page<CategoryDTO> result = categoryService.findAll(pageable);
 
         // Assert
         assertEquals(1, result.getTotalElements());
-        assertEquals(createCategoryDto, result.getContent().get(0));
+        assertEquals(categoryDto, result.getContent().get(0));
 
         // Verify that repository method was called with correct argument
         verify(categoryRepository, times(1)).findAll(pageable);

@@ -2,7 +2,7 @@ package ua.tc.marketplace.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.CategoryDTO;
 import ua.tc.marketplace.model.entity.Category;
 
 /**
@@ -22,14 +22,14 @@ import ua.tc.marketplace.model.entity.Category;
 public interface CategoryService {
     Category findCategoryById(Long categoryId);
 
-    Page<CreateCategoryDTO> findAll(Pageable pageable);
+    Page<CategoryDTO> findAll(Pageable pageable);
 
-    CreateCategoryDTO findById(Long id);
+    CategoryDTO findById(Long id);
 
-    CreateCategoryDTO createCategory(CreateCategoryDTO categoryDto);
+    CategoryDTO createCategory(CategoryDTO categoryDto);
 
 
-    CreateCategoryDTO update(Long id, CreateCategoryDTO categoryDto);
+    CategoryDTO update(Long id, CategoryDTO categoryDto);
 
     void deleteById(Long id);
 }

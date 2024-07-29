@@ -22,7 +22,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCategoryDTO {
+public class CategoryDTO {
 
     /**
      * The name of the category.
@@ -40,5 +40,5 @@ public class CreateCategoryDTO {
      */
     @NotNull(message = "Classification attributes cannot be null")
     @NotEmpty(message = "Classification attributes cannot be empty")
-    private List<Long> classificationAttributes;
+    private List<Long> attributeIds;
 }
