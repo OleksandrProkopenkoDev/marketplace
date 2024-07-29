@@ -2,12 +2,7 @@ package ua.tc.marketplace.facade.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -36,6 +31,7 @@ import ua.tc.marketplace.service.AdService;
 import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
+import ua.tc.marketplace.util.ad_filtering.FilterSpecificationFactory;
 import ua.tc.marketplace.util.mapper.AdMapper;
 
 @Service
@@ -49,11 +45,12 @@ public class AdFacadeImpl implements AdFacade {
   private final PhotoStorageService photoService;
   private final UserService userService;
   private final CategoryService categoryService;
+  private final FilterSpecificationFactory filterSpecificationFactory;
 
   @Override
   @Transactional(readOnly = true)
   public Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable) {
-    Specification<Ad> specification = getAdSpecification(filterCriteria);
+    Specification<Ad> specification = filterSpecificationFactory.getSpecification(filterCriteria);
     return adService.findAll(specification, pageable).map(adMapper::toAdDto);
   }
 
@@ -168,49 +165,5 @@ public class AdFacadeImpl implements AdFacade {
             adAttribute.setValue(attributeUpdates.get(adAttribute.getAttribute().getId()));
           }
         });
-  }
-
-  private Specification<Ad> getAdSpecification(Map<String, String> filterCriteria) {
-    return (root, query, cb) -> {
-      List<Predicate> predicates = new ArrayList<>();
-
-      filterCriteria.forEach(
-          (key, value) -> {
-            if (value != null) {
-              switch (key) {
-                case "title":
-                  predicates.add(cb.like(root.get("title"), "%" + value + "%"));
-                  break;
-                case "description":
-                  predicates.add(cb.like(root.get("description"), "%" + value + "%"));
-                  break;
-                case "priceMin":
-                  predicates.add(cb.greaterThanOrEqualTo(root.get("price"), new BigDecimal(value)));
-                  break;
-                case "priceMax":
-                  predicates.add(cb.lessThanOrEqualTo(root.get("price"), new BigDecimal(value)));
-                  break;
-                case "category":
-                  predicates.add(cb.equal(root.get("category").get("id"), Long.valueOf(value)));
-                  break;
-                case "authorId":
-                  predicates.add(cb.equal(root.get("author").get("id"), Long.valueOf(value)));
-                  break;
-                default:
-                  if (key.startsWith("attribute_")) {
-                    String attributeName = key.substring(10); // Remove "attribute_" prefix
-                    Join<Ad, AdAttribute> join = root.join("adAttributes", JoinType.LEFT);
-                    predicates.add(
-                        cb.and(
-                            cb.equal(join.get("attribute").get("name"), attributeName),
-                            cb.like(join.get("value"), "%" + value + "%")));
-                  }
-                  break;
-              }
-            }
-          });
-
-      return cb.and(predicates.toArray(new Predicate[0]));
-    };
   }
 }
