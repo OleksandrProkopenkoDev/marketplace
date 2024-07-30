@@ -43,8 +43,7 @@ public class CategoryServiceImpl implements ua.tc.marketplace.service.CategorySe
 
   @Override
   public CategoryDTO findById(Long id) {
-    Category category = categoryRepository.findById(id)
-            .orElseThrow(() -> new CategoryNotFoundException(id));
+    Category category = findCategoryById(id);
     return categoryMapper.toCategoryDto(category);
   }
 
@@ -59,13 +58,13 @@ public class CategoryServiceImpl implements ua.tc.marketplace.service.CategorySe
   @Transactional
   @Override
   public CategoryDTO update(Long id, CategoryDTO categoryDto) {
-    Category existingCategory = categoryRepository.findById(id)
-            .orElseThrow(() -> new CategoryNotFoundException(id));
+    Category existingCategory = findCategoryById(id);
     categoryMapper.updateEntityFromDto(existingCategory, categoryDto);
     Category updatedCategory = categoryRepository.save(existingCategory);
     return categoryMapper.toCategoryDto(updatedCategory);
   }
 
+  @Transactional
   @Override
   public void deleteById(Long id) {
     if (!categoryRepository.existsById(id)) {
