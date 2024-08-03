@@ -25,8 +25,6 @@ public record CreateUserDto(
     @Schema(example = "Shevchenko")
     String lastName, // optional
 
-    Photo profilePicture,
-
     ContactInfo contactInfo
 ) {
 

@@ -26,7 +26,8 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**"};
+  private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
+  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE};
   private static final String CREATE_USER_POST_URL = "/api/v1/user";
 
   @Bean
@@ -45,7 +46,9 @@ public class SecurityConfig {
                 config.requestMatchers(WHITELIST).permitAll()
                     .requestMatchers(HttpMethod.POST, CREATE_USER_POST_URL).permitAll()
                     .anyRequest().authenticated())
-        .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+//        .formLogin(AbstractAuthenticationFilterConfigurer::permitAll);
+        .formLogin(formLogin -> formLogin.permitAll()
+                .defaultSuccessUrl(DEFAULT_SUCCESS_PAGE));
     return http.build();
   }
 

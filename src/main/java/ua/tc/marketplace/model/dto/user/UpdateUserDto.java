@@ -28,8 +28,6 @@ public record UpdateUserDto(
     @Schema(example = "Shevchenko")
     String lastName, // optional
 
-    Photo profilePicture,
-
     ContactInfo contactInfo,
 
     List<Ad> favorites

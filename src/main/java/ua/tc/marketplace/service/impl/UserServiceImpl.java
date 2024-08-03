@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
   public UserDto createUser(CreateUserDto createUserDto) {
     User user = userMapper.toEntity(createUserDto);
     user.setPassword(passwordEncoder.encode(createUserDto.password()));
-    user.setCreatedAt(LocalDateTime.now());
+//    user.setCreatedAt(LocalDateTime.now());
     return userMapper.toDto(
         userRepository.save(user));
   }
@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
   public UserDto updateUser(@NonNull UpdateUserDto updateUserDto) {
     User existingUser = getUser(updateUserDto.id());
     userMapper.updateEntityFromDto(existingUser, updateUserDto);
-    existingUser.setUpdatedAt(LocalDateTime.now());
+//    existingUser.setUpdatedAt(LocalDateTime.now());
     return userMapper.toDto(userRepository.save(existingUser));
   }
 
