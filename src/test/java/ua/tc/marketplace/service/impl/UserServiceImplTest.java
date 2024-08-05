@@ -120,7 +120,6 @@ class UserServiceImplTest {
             "INDIVIDUAL",
             "Taras",
             null,
-            null,
             null
         );
 
@@ -199,7 +198,6 @@ class UserServiceImplTest {
         "Taras",
         "Shevchenko",
         null,
-        null,
         Collections.emptyList()
     );
 
@@ -260,7 +258,6 @@ class UserServiceImplTest {
       userToUpdate.setUserRole(UserRole.valueOf(dto.userRole()));
       userToUpdate.setFirstName(dto.firstName());
       userToUpdate.setLastName(dto.lastName());
-      userToUpdate.setProfilePicture(dto.profilePicture());
       userToUpdate.setContactInfo(dto.contactInfo());
       userToUpdate.setFavorites(dto.favorites());// Setting the updated category
       return null;
@@ -303,7 +300,6 @@ class UserServiceImplTest {
         "INDIVIDUAL",
         "Taras",
         "Shevchenko",
-        null,
         null,
         Collections.emptyList()
     );
