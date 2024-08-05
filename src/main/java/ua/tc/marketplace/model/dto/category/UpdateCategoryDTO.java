@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.tc.marketplace.model.dto.classificationAttribute.ClassificationAttributeDto;
 
 import java.util.List;
 
@@ -17,9 +16,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
-
-    Long id;
+public class UpdateCategoryDTO {
 
     /**
      * The name of the category.
@@ -32,10 +29,10 @@ public class CategoryDTO {
     private String name;
 
     /**
-     * List of classification attribute DTOs associated with the category.
+     * List of classification attribute IDs associated with the category.
      * Cannot be null or empty.
      */
     @NotNull(message = "Classification attributes cannot be null")
     @NotEmpty(message = "Classification attributes cannot be empty")
-    private List<ClassificationAttributeDto> classificationAttribute;
+    private List<Long> attributeIds;
 }

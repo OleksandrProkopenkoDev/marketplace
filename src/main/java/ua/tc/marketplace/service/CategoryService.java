@@ -3,6 +3,8 @@ package ua.tc.marketplace.service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.model.dto.category.CategoryDTO;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.UpdateCategoryDTO;
 import ua.tc.marketplace.model.entity.Category;
 
 /**
@@ -26,10 +28,10 @@ public interface CategoryService {
 
     CategoryDTO findById(Long id);
 
-    CategoryDTO createCategory(CategoryDTO categoryDto);
+    CategoryDTO createCategory(CreateCategoryDTO categoryDto);
 
 
-    CategoryDTO update(Long id, CategoryDTO categoryDto);
+    CategoryDTO update(Long id, UpdateCategoryDTO categoryDto);
 
     void deleteById(Long id);
 }

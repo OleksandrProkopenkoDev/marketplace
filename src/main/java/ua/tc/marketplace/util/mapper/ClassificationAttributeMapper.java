@@ -1,10 +1,11 @@
 package ua.tc.marketplace.util.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+
 import org.mapstruct.Named;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.model.dto.category.ClassificationAttributeDto;
+
+import ua.tc.marketplace.model.dto.classificationAttribute.ClassificationAttributeDto;
 import ua.tc.marketplace.model.entity.ClassificationAttribute;
 
 @Mapper(config = MapperConfig.class)

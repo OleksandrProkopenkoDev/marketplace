@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.category.CategoryDTO;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.UpdateCategoryDTO;
 import ua.tc.marketplace.service.CategoryService;
 
 /**
@@ -40,7 +42,7 @@ public class CategoryController {
   }
 
   @PostMapping
-  public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO categoryDTO) {
+  public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CreateCategoryDTO categoryDTO) {
     log.info("Request to create category ");
     CategoryDTO createCategory = categoryService.createCategory(categoryDTO);
     log.info("Category was create successfully");
@@ -49,7 +51,7 @@ public class CategoryController {
 
   @PutMapping("/{id}")
   public ResponseEntity<CategoryDTO> updateCategory(
-      @PathVariable Long id, @RequestBody CategoryDTO categoryDto) {
+      @PathVariable Long id, @RequestBody UpdateCategoryDTO categoryDto) {
     log.info("Request to update category with ID: {}", id);
     CategoryDTO updatedCategory = categoryService.update(id, categoryDto);
     log.info("Category with ID: {} updated successfully", id);

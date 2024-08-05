@@ -1,4 +1,4 @@
-package ua.tc.marketplace.model.dto.category;
+package ua.tc.marketplace.model.dto.classificationAttribute;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
