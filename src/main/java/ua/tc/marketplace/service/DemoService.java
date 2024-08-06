@@ -13,6 +13,4 @@ import ua.tc.marketplace.model.dto.DemoRequest;
 public interface DemoService {
 
   Page<DemoRequest> findAll(Pageable pageable);
-
-  DemoRequest findById(Integer id);
 }

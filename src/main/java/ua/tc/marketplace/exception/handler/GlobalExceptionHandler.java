@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +28,8 @@ import ua.tc.marketplace.exception.model.ErrorResponse;
 /**
  * Global exception handler for handling various exceptions in the application.
  *
- * <p>This handler intercepts and processes exceptions thrown during request processing. It provides
+ * <p>This handler intercepts and processes exceptions thrown during request processing. It
+ * provides
  * customized error responses for specific exception types, such as security-related exceptions
  * (AuthenticationException, AccessDeniedException), custom runtime exceptions, and validation
  * errors (MethodArgumentNotValidException). The handler logs detailed error messages and generates
@@ -38,8 +40,9 @@ import ua.tc.marketplace.exception.model.ErrorResponse;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({
-    AuthenticationException.class,
-    AccessDeniedException.class,
+      AuthenticationException.class,
+      AccessDeniedException.class,
+      UsernameNotFoundException.class
   })
   protected ResponseEntity<ErrorResponse> handleSecurityExceptions(
       Exception ex, ServletWebRequest request) {
@@ -55,9 +58,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   }
 
   @ExceptionHandler({
-    CustomRuntimeException.class,
-    CustomIllegalStateException.class,
-    CustomIOException.class
+      CustomRuntimeException.class,
+      CustomIllegalStateException.class,
+      CustomIOException.class
   })
   protected ResponseEntity<ErrorResponse> handleCustomExceptions(
       CustomRuntimeException ex, ServletWebRequest request) {

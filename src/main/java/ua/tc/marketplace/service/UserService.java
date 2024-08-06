@@ -1,8 +1,18 @@
 package ua.tc.marketplace.service;
 
-import ua.tc.marketplace.model.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import ua.tc.marketplace.model.dto.user.CreateUserDto;
+import ua.tc.marketplace.model.dto.user.UpdateUserDto;
+import ua.tc.marketplace.model.dto.user.UserDto;
+
 
 public interface UserService {
 
-  User findUserById(Long userId);
+  Page<UserDto> findAll(Pageable pageable);
+
+  UserDto createUser(CreateUserDto createUserDto);
+  UserDto findUserById(Long id);
+  UserDto updateUser(UpdateUserDto updateUserDto);
+  void deleteUserById(Long id);
 }

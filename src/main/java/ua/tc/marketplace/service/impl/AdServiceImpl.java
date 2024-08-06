@@ -32,6 +32,7 @@ import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.AdMapper;
+import ua.tc.marketplace.util.mapper.UserMapper;
 
 /**
  * Implementation of the AdService interface providing CRUD operations for managing advertisements.
@@ -47,6 +48,7 @@ public class AdServiceImpl implements AdService {
 
   private final AdRepository adRepository;
   private final AdMapper adMapper;
+  private final UserMapper userMapper;
   private final PhotoStorageService photoService;
   private final UserService userService;
   private final CategoryService categoryService;
@@ -68,7 +70,7 @@ public class AdServiceImpl implements AdService {
   public AdDto createNewAd(CreateAdDto dto) {
     Ad ad = adMapper.getPrimitiveFields(dto);
 
-    User author = userService.findUserById(dto.authorId());
+    User author = userMapper.toEntity(userService.findUserById(dto.authorId()));
 
     Category category = categoryService.findCategoryById(dto.categoryId());
 
@@ -94,7 +96,7 @@ public class AdServiceImpl implements AdService {
     updateAdAttributes(dto, ad);
 
     Category category = categoryService.findCategoryById(dto.categoryId());
-    User author = userService.findUserById(dto.authorId());
+    User author = userMapper.toEntity(userService.findUserById(dto.authorId()));
     ad.setCategory(category);
     ad.setAuthor(author);
 
