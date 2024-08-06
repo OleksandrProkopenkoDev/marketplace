@@ -1,0 +1,96 @@
+@startuml
+left to right direction
+title Project Roadmap (1 June 2024 - 31 October 2024)
+
+legend right
+| Backend | Backend Developer |
+| Frontend | Frontend Developer |
+| QA | QA Tester |
+| PM | Project Manager |
+| Mentor | Mentor |
+| Designer | UI/UX Designer |
+endlegend
+
+rectangle "June 2024" {
+    note left of "Week 1-2\n(1 June - 15 June)"
+    unordered list
+        - Project Kickoff
+        - Requirement Analysis
+        - UI/UX Design Planning
+        - Backend and Frontend Setup
+    end note
+
+    note left of "Week 3-4\n(16 June - 30 June)"
+    unordered list
+        - UI/UX Design Drafts
+        - Backend: Initial API Development
+        - Frontend: Initial Layout Implementation
+        - QA: Test Planning
+    end note
+}
+
+rectangle "July 2024" {
+    note left of "Week 5-6\n(1 July - 15 July)"
+    unordered list
+        - UI/UX Design Finalization
+        - Backend: Database Design and Implementation
+        - Frontend: Component Development
+        - QA: Initial Test Case Creation
+    end note
+
+    note left of "Week 7-8\n(16 July - 31 July)"
+    unordered list
+        - Backend: API Development Continuation
+        - Frontend: Integration with Backend
+        - QA: Testing of Initial Components
+    end note
+}
+
+rectangle "August 2024" {
+    note left of "Week 9-10\n(1 August - 15 August)"
+    unordered list
+        - Backend: API Development Finalization
+        - Frontend: Continued Integration and Development
+        - QA: System Testing
+    end note
+
+    note left of "Week 11-12\n(16 August - 31 August)"
+    unordered list
+        - Backend: Security and Performance Enhancements
+        - Frontend: UI Enhancements
+        - QA: Regression Testing
+    end note
+}
+
+rectangle "September 2024" {
+    note left of "Week 13-14\n(1 September - 15 September)"
+    unordered list
+        - Final Feature Implementation
+        - QA: User Acceptance Testing (UAT)
+        - UI/UX: Final Adjustments
+    end note
+
+    note left of "Week 15-16\n(16 September - 30 September)"
+    unordered list
+        - Backend: Final Optimizations
+        - Frontend: Final Bug Fixes
+        - QA: Final Testing
+    end note
+}
+
+rectangle "October 2024" {
+    note left of "Week 17-18\n(1 October - 15 October)"
+    unordered list
+        - Deployment Preparation
+        - PM: Final Review
+        - Mentor: Feedback and Improvements
+    end note
+
+    note left of "Week 19-20\n(16 October - 31 October)"
+    unordered list
+        - Project Deployment
+        - Post-Deployment Support
+        - Project Closure
+    end note
+}
+@enduml
