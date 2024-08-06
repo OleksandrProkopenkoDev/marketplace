@@ -1,6 +1,8 @@
 package ua.tc.marketplace.util.mapper;
 
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -9,6 +11,7 @@ import ua.tc.marketplace.config.MapperConfig;
 import ua.tc.marketplace.model.dto.user.CreateUserDto;
 import ua.tc.marketplace.model.dto.user.UpdateUserDto;
 import ua.tc.marketplace.model.dto.user.UserDto;
+import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.model.enums.UserRole;
 
@@ -20,14 +23,19 @@ import ua.tc.marketplace.model.enums.UserRole;
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
 
+  @Mapping(target = "favoriteAdIds", source = "favorites", qualifiedByName = "mapAdsToIds")
   UserDto toDto(User entity);
 
-
-  User toEntity(UserDto dto);
-
+  @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "profilePicture", ignore = true)
+  @Mapping(target = "favorites", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "id", ignore = true)
   User toEntity(CreateUserDto dto);
 
+  @Mapping(target = "updatedAt", ignore = true)
+  @Mapping(target = "profilePicture", ignore = true)
+  @Mapping(target = "createdAt", ignore = true)
   @Mapping(
       target = "userRole",
       source = "userRole",
@@ -40,4 +48,8 @@ public interface UserMapper {
     return UserRole.valueOf(userRole.toUpperCase(Locale.ROOT));
   }
 
+  @Named("mapAdsToIds")
+  default List<Long> mapAdsToIds(List<Ad> ads) {
+    return ads.stream().map(Ad::getId).collect(Collectors.toList());
+  }
 }

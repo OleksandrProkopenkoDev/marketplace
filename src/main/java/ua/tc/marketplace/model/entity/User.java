@@ -93,7 +93,7 @@ public class User {
         + profilePicture
         + ", contactInfo="
         + contactInfo
-        + ", favorites="
+        + ", favoriteAdIds="
         + (favorites != null ? favorites.stream().map(Ad::getId).toList() : null)
         + ", createdAt="
         + createdAt

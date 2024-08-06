@@ -5,7 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.ContactInfo;
 import ua.tc.marketplace.model.entity.Photo;
 
@@ -27,14 +26,14 @@ public record UserDto(
     @Schema(example = "Shevchenko") String lastName, // optional
     Photo profilePicture,
     ContactInfo contactInfo,
-    List<Ad> favorites,
+    List<Long> favoriteAdIds,
     LocalDateTime createdAt,
     LocalDateTime updatedAt) {
 
   public UserDto {
     // Default values for nullable fields
-    if (favorites == null) {
-      favorites = new ArrayList<>();
+    if (favoriteAdIds == null) {
+      favoriteAdIds = new ArrayList<>();
     }
   }
 }
