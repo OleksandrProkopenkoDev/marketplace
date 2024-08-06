@@ -52,9 +52,14 @@ public class UserServiceImpl implements UserService {
    * @throws UserNotFoundException If the user is not found.
    */
   @Override
-  public UserDto findUserById(Long id) {
+  public UserDto findUserDtoById(Long id) {
     User user = getUser(id);
     return userMapper.toDto(user);
+  }
+
+  @Override
+  public User findUserById(Long id) {
+    return getUser(id);
   }
 
   /**

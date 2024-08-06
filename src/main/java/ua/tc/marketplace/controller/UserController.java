@@ -36,7 +36,7 @@ public class UserController implements UserOpenApi {
 
   @GetMapping("/{id}")
   public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.findUserById(id));
+    return ResponseEntity.status(HttpStatus.OK).body(userService.findUserDtoById(id));
   }
 
   @PostMapping()
