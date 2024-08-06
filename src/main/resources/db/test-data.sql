@@ -30,39 +30,6 @@ VALUES ('+380 63 123 45 67'),
        ('+380 63 456 78 90'),
        ('+380 63 567 89 01');
 
--- Insert PhotoMetadata
-INSERT INTO photo_metadata (width, height, extension, size)
-VALUES (800, 600, 'jpg', 1.2),
-       (1024, 768, 'png', 1.5),
-       (640, 480, 'jpeg', 0.8),
-       (1920, 1080, 'jpg', 2.5),
-       (1280, 720, 'png', 1.8);
-
--- Insert Photos for Ads
-INSERT INTO photo (path, metadata_id)
-VALUES ('ad/1/ad1_photo1.jpg', 1),
-       ('ad/1/ad1_photo2.jpg', 2),
-       ('ad/1/ad1_photo3.jpg', 3),
-       ('ad/2/ad2_photo1.jpg', 4),
-       ('ad/2/ad2_photo2.jpg', 5),
-       ('ad/2/ad2_photo3.jpg', 1),
-       ('ad/3/ad3_photo1.jpg', 2),
-       ('ad/3/ad3_photo2.jpg', 3),
-       ('ad/3/ad3_photo3.jpg', 4),
-       ('ad/4/ad4_photo1.jpg', 5),
-       ('ad/4/ad4_photo2.jpg', 1),
-       ('ad/4/ad4_photo3.jpg', 2),
-       ('ad/5/ad5_photo1.jpg', 3),
-       ('ad/5/ad5_photo2.jpg', 4),
-       ('ad/5/ad5_photo3.jpg', 5);
-
--- Insert Photos for Users
-INSERT INTO photo (path, metadata_id)
-VALUES ('user/1/profile1.jpg', 1),
-       ('user/2/profile2.jpg', 2),
-       ('user/3/profile3.jpg', 3),
-       ('user/4/profile4.jpg', 4),
-       ('user/5/profile5.jpg', 5);
 
 -- Insert Users
 INSERT INTO app_user (email, password, user_role, first_name, last_name, profile_picture_id,
