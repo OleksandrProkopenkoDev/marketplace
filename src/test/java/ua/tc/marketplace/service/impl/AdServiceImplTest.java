@@ -149,7 +149,6 @@ class AdServiceImplTest {
 
     Category mockCategory = new Category(); // create a mock Category entity
     Ad mockAd = new Ad(); // create a mock Ad entity
-    Category mockCategory = new Category(); // create a mock Category entity
     mockCategory.setAttributes(getAttributes());
     AdDto mockAdDto =
         new AdDto(
