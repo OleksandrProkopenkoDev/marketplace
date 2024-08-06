@@ -27,11 +27,12 @@ class Ad {
   List<Photo> photos
   Photo thumbnail
   Category category
+  List<AdAttribute> adAttributes
   Date createdAt
   Date updatedAt
 }
 
-class ClassificationAttribute {
+class Attribute {
   Long id
   String name
   String valueType (enum)
@@ -40,12 +41,12 @@ class ClassificationAttribute {
 class Category {
   Long id
   String name
-  List<ClassificationAttribute> classificationAttributes
+  List<Attribute> attributes
 }
 
 class Photo {
   Long id
-  String path
+  String filename
   PhotoMetadata metadata
 }
 
@@ -57,13 +58,21 @@ class PhotoMetadata {
   Float size
 }
 
+class AdAttribute {
+  Long id
+  Long adId
+  Long attributeId
+  String value
+}
+
 
 Ad "1" -- "*" Photo
 Ad "1" -- "1" Category
 User "1" -- "*" Ad
 PhotoMetadata "1" -- "1" Photo
 User "1" -- "*" Photo
-ClassificationAttribute "*" -- "*" Category
+Attribute "*" -- "*" Category
 User "1" -- "1" ContactInfo
-
+Ad "*" -- "*" AdAttribute
+Attribute "*" -- "*" AdAttribute
 @enduml

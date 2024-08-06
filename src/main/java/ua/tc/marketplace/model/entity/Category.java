@@ -29,8 +29,8 @@ public class Category {
 
   @ManyToMany
   @JoinTable(
-      name = "category_classification_attributes",
+      name = "category_attributes",
       joinColumns = @JoinColumn(name = "category_id"),
-      inverseJoinColumns = @JoinColumn(name = "classification_attribute_id"))
-  private List<ClassificationAttribute> classificationAttributes;
+      inverseJoinColumns = @JoinColumn(name = "attribute_id"))
+  private List<Attribute> attributes;
 }

@@ -1,4 +1,4 @@
-package ua.tc.marketplace.model.dto.classificationAttribute;
+package ua.tc.marketplace.model.dto.attribute;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,7 +15,7 @@ import ua.tc.marketplace.model.enums.ValueType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ClassificationAttributeDto {
+public class AttributeDto {
 
     /**
      * Unique identifier for the classification attribute.

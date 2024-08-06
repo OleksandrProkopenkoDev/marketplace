@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ua.tc.marketplace.model.dto.attribute.AttributeDto;
 
 import java.util.List;
 
@@ -17,12 +18,14 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateCategoryDTO {
+public class CategoryDto {
+
+    Long id;
 
     /**
      * The name of the category.
      * Cannot be null or empty.
-     * Must be between 1 и 100 characters.
+     * Must be between 1 and 100 characters.
      */
     @NotNull(message = "Category name cannot be null")
     @NotEmpty(message = "Category name cannot be empty")
@@ -30,11 +33,10 @@ public class CreateCategoryDTO {
     private String name;
 
     /**
-     * List of classification attribute IDs associated with the category.
+     * List of classification attribute DTOs associated with the category.
      * Cannot be null or empty.
      */
     @NotNull(message = "Classification attributes cannot be null")
     @NotEmpty(message = "Classification attributes cannot be empty")
-    private List<Long> attributeIds = new ArrayList<>();
+    private List<AttributeDto> attribute = new ArrayList<>();
 }
-

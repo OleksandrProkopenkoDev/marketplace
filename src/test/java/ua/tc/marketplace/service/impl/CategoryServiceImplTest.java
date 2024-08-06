@@ -1,8 +1,11 @@
 package ua.tc.marketplace.service.impl;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,142 +16,136 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
-import ua.tc.marketplace.model.dto.category.CategoryDTO;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
-import ua.tc.marketplace.model.dto.category.UpdateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.CategoryDto;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
+import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
+import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.model.entity.Category;
-import ua.tc.marketplace.model.entity.ClassificationAttribute;
+import ua.tc.marketplace.repository.AttributeRepository;
 import ua.tc.marketplace.repository.CategoryRepository;
-import ua.tc.marketplace.repository.ClassificationAttributeRepository;
-import ua.tc.marketplace.service.impl.CategoryServiceImpl;
 import ua.tc.marketplace.util.mapper.CategoryMapper;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryServiceImplTest {
-    @Mock
-    private ClassificationAttributeRepository attributeRepository;
+  @Mock private AttributeRepository attributeRepository;
 
-    @Mock
-    private CategoryRepository categoryRepository;
+  @Mock private CategoryRepository categoryRepository;
 
-    @Mock
-    private CategoryMapper categoryMapper;
+  @Mock private CategoryMapper categoryMapper;
 
-    @InjectMocks
-    private CategoryServiceImpl categoryService;
+  @InjectMocks private CategoryServiceImpl categoryService;
 
-    @Test
-    void findCategoryById_shouldFindCategory_whenExists() {
-        Long categoryId = 1L;
-        Category category = new Category(); // create a sample Category entity
-        CategoryDTO categoryDto = new CategoryDTO(); // create a sample CategoryDTO
+  @Test
+  void findCategoryById_shouldFindCategory_whenExists() {
+    Long categoryId = 1L;
+    Category category = new Category(); // create a sample Category entity
+    CategoryDto categoryDto = new CategoryDto(); // create a sample CategoryDto
 
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
-        when(categoryMapper.toCategoryDto(category)).thenReturn(categoryDto);
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
+    when(categoryMapper.toCategoryDto(category)).thenReturn(categoryDto);
 
-        CategoryDTO result = categoryService.findById(categoryId);
+    CategoryDto result = categoryService.findById(categoryId);
 
-        assertEquals(categoryDto, result);
-        verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryMapper, times(1)).toCategoryDto(category);
-    }
+    assertEquals(categoryDto, result);
+    verify(categoryRepository, times(1)).findById(categoryId);
+    verify(categoryMapper, times(1)).toCategoryDto(category);
+  }
 
-    @Test
-    void findCategoryById_shouldThrow_whenNotExists() {
-        Long categoryId = 1L;
+  @Test
+  void findCategoryById_shouldThrow_whenNotExists() {
+    Long categoryId = 1L;
 
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.empty());
 
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.findById(categoryId));
+    assertThrows(CategoryNotFoundException.class, () -> categoryService.findById(categoryId));
 
-        verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryMapper, never()).toCategoryDto(any(Category.class));
-    }
+    verify(categoryRepository, times(1)).findById(categoryId);
+    verify(categoryMapper, never()).toCategoryDto(any(Category.class));
+  }
 
-    @Test
-    void createCategory_shouldCreate_whenValidInput() {
-        CreateCategoryDTO createCategoryDto = new CreateCategoryDTO(); // create a sample CreateCategoryDTO
-        Category category = new Category(); // create a sample Category entity
-        CategoryDTO createdCategoryDto = new CategoryDTO(); // create a sample created CategoryDTO
-        List<ClassificationAttribute> attributes = Collections.singletonList(new ClassificationAttribute()); // create a list of attributes
+  @Test
+  void createCategory_shouldCreate_whenValidInput() {
+    CreateCategoryDto createCategoryDto =
+        new CreateCategoryDto(); // create a sample CreateCategoryDto
+    Category category = new Category(); // create a sample Category entity
+    CategoryDto createdCategoryDto = new CategoryDto(); // create a sample created CategoryDto
+    List<Attribute> attributes =
+        Collections.singletonList(new Attribute()); // create a list of attributes
 
-        when(categoryMapper.toEntity(createCategoryDto)).thenReturn(category);
-        when(categoryRepository.save(category)).thenReturn(category);
-        when(categoryMapper.toCategoryDto(category)).thenReturn(createdCategoryDto);
+    when(categoryMapper.toEntity(createCategoryDto)).thenReturn(category);
+    when(categoryRepository.save(category)).thenReturn(category);
+    when(categoryMapper.toCategoryDto(category)).thenReturn(createdCategoryDto);
 
-        // Mock the attribute repository call
+    // Mock the attribute repository call
 
-        CategoryDTO result = categoryService.createCategory(createCategoryDto);
+    CategoryDto result = categoryService.createCategory(createCategoryDto);
 
-        assertEquals(createdCategoryDto, result);
-        verify(categoryRepository, times(1)).save(category);
-        verify(categoryMapper, times(1)).toEntity(createCategoryDto);
-        verify(categoryMapper, times(1)).toCategoryDto(category);
-    }
+    assertEquals(createdCategoryDto, result);
+    verify(categoryRepository, times(1)).save(category);
+    verify(categoryMapper, times(1)).toEntity(createCategoryDto);
+    verify(categoryMapper, times(1)).toCategoryDto(category);
+  }
 
-    @Test
-    void updateCategory_shouldUpdate_whenValidInput() {
-        Long categoryId = 1L;
-        UpdateCategoryDTO updateCategoryDto = new UpdateCategoryDTO(); // create a sample UpdateCategoryDTO
-        Category existingCategory = new Category(); // create an existing Category entity
-        Category updatedCategory = new Category(); // create an updated Category entity
-        CategoryDTO updatedCategoryDto = new CategoryDTO(); // create an updated CategoryDTO
+  @Test
+  void updateCategory_shouldUpdate_whenValidInput() {
+    Long categoryId = 1L;
+    UpdateCategoryDto updateCategoryDto =
+        new UpdateCategoryDto(); // create a sample UpdateCategoryDto
+    Category existingCategory = new Category(); // create an existing Category entity
+    Category updatedCategory = new Category(); // create an updated Category entity
+    CategoryDto updatedCategoryDto = new CategoryDto(); // create an updated CategoryDto
 
-        when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existingCategory));
-        when(categoryRepository.save(existingCategory)).thenReturn(updatedCategory);
-        doNothing().when(categoryMapper).updateEntityFromDto(existingCategory, updateCategoryDto);
-        when(categoryMapper.toCategoryDto(updatedCategory)).thenReturn(updatedCategoryDto);
+    when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(existingCategory));
+    when(categoryRepository.save(existingCategory)).thenReturn(updatedCategory);
+    doNothing().when(categoryMapper).updateEntityFromDto(existingCategory, updateCategoryDto);
+    when(categoryMapper.toCategoryDto(updatedCategory)).thenReturn(updatedCategoryDto);
 
-        CategoryDTO result = categoryService.update(categoryId, updateCategoryDto);
+    CategoryDto result = categoryService.update(categoryId, updateCategoryDto);
 
-        assertEquals(updatedCategoryDto, result);
-        verify(categoryRepository, times(1)).findById(categoryId);
-        verify(categoryRepository, times(1)).save(existingCategory);
-        verify(categoryMapper, times(1)).updateEntityFromDto(existingCategory, updateCategoryDto);
-        verify(categoryMapper, times(1)).toCategoryDto(updatedCategory);
-    }
+    assertEquals(updatedCategoryDto, result);
+    verify(categoryRepository, times(1)).findById(categoryId);
+    verify(categoryRepository, times(1)).save(existingCategory);
+    verify(categoryMapper, times(1)).updateEntityFromDto(existingCategory, updateCategoryDto);
+    verify(categoryMapper, times(1)).toCategoryDto(updatedCategory);
+  }
 
-    @Test
-    void deleteCategory_shouldDelete_whenExists() {
-        Long categoryId = 1L;
+  @Test
+  void deleteCategory_shouldDelete_whenExists() {
+    Long categoryId = 1L;
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(true);
+    when(categoryRepository.existsById(categoryId)).thenReturn(true);
 
-        categoryService.deleteById(categoryId);
+    categoryService.deleteById(categoryId);
 
-        verify(categoryRepository, times(1)).deleteById(categoryId);
-    }
+    verify(categoryRepository, times(1)).deleteById(categoryId);
+  }
 
-    @Test
-    void deleteCategory_shouldThrow_whenNotExists() {
-        Long categoryId = 1L;
+  @Test
+  void deleteCategory_shouldThrow_whenNotExists() {
+    Long categoryId = 1L;
 
-        when(categoryRepository.existsById(categoryId)).thenReturn(false);
+    when(categoryRepository.existsById(categoryId)).thenReturn(false);
 
-        assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteById(categoryId));
+    assertThrows(CategoryNotFoundException.class, () -> categoryService.deleteById(categoryId));
 
-        verify(categoryRepository, times(1)).existsById(categoryId);
-        verify(categoryRepository, never()).deleteById(categoryId);
-    }
+    verify(categoryRepository, times(1)).existsById(categoryId);
+    verify(categoryRepository, never()).deleteById(categoryId);
+  }
 
-    @Test
-    void findAll_shouldReturnPagedCategories() {
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Category> categoryPage = new PageImpl<>(Collections.singletonList(new Category()));
-        CategoryDTO categoryDto = new CategoryDTO();
+  @Test
+  void findAll_shouldReturnPagedCategories() {
+    Pageable pageable = PageRequest.of(0, 10);
+    Page<Category> categoryPage = new PageImpl<>(Collections.singletonList(new Category()));
+    CategoryDto categoryDto = new CategoryDto();
 
-        when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
-        when(categoryMapper.toCategoryDto(any(Category.class))).thenReturn(categoryDto);
+    when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
+    when(categoryMapper.toCategoryDto(any(Category.class))).thenReturn(categoryDto);
 
-        Page<CategoryDTO> result = categoryService.findAll(pageable);
+    Page<CategoryDto> result = categoryService.findAll(pageable);
 
-        assertEquals(1, result.getTotalElements());
-        assertEquals(categoryDto, result.getContent().get(0));
-        verify(categoryRepository, times(1)).findAll(pageable);
-        verify(categoryMapper, times(1)).toCategoryDto(any(Category.class));
-    }
+    assertEquals(1, result.getTotalElements());
+    assertEquals(categoryDto, result.getContent().get(0));
+    verify(categoryRepository, times(1)).findAll(pageable);
+    verify(categoryMapper, times(1)).toCategoryDto(any(Category.class));
+  }
 }

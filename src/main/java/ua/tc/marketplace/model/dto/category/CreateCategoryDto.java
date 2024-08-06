@@ -17,12 +17,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateCategoryDTO {
+public class CreateCategoryDto {
 
     /**
      * The name of the category.
      * Cannot be null or empty.
-     * Must be between 1 and 100 characters.
+     * Must be between 1 и 100 characters.
      */
     @NotNull(message = "Category name cannot be null")
     @NotEmpty(message = "Category name cannot be empty")
@@ -30,10 +30,11 @@ public class UpdateCategoryDTO {
     private String name;
 
     /**
-     * List of classification attribute IDs associated with the category.
+     * List of attribute IDs associated with the category.
      * Cannot be null or empty.
      */
-    @NotNull(message = "Classification attributes cannot be null")
-    @NotEmpty(message = "Classification attributes cannot be empty")
+    @NotNull(message = "Attributes cannot be null")
+    @NotEmpty(message = "Attributes cannot be empty")
     private List<Long> attributeIds = new ArrayList<>();
 }
+

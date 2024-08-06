@@ -1,45 +1,44 @@
 package ua.tc.marketplace.util.mapper;
 
+import java.util.List;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
-import org.mapstruct.IterableMapping;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.model.dto.category.CategoryDTO;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
-import ua.tc.marketplace.model.dto.category.UpdateCategoryDTO;
-import ua.tc.marketplace.model.dto.classificationAttribute.ClassificationAttributeDto;
+import ua.tc.marketplace.model.dto.category.CategoryDto;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
+import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
+import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.model.entity.Category;
-import ua.tc.marketplace.model.entity.ClassificationAttribute;
-import java.util.List;
 
-@Mapper(config = MapperConfig.class, uses = ClassificationAttributeMapper.class)
+@Mapper(config = MapperConfig.class, uses = AttributeMapper.class)
 public interface CategoryMapper {
 
-    @Mapping(source = "classificationAttributes", target = "classificationAttribute")
-    CategoryDTO toCategoryDto(Category entity);
+  @Mapping(source = "attributes", target = "attribute")
+  CategoryDto toCategoryDto(Category entity);
 
-    @Mapping(source = "classificationAttribute", target = "classificationAttributes")
-    Category toEntity(CategoryDTO dto);
+  @Mapping(source = "attribute", target = "attributes")
+  Category toEntity(CategoryDto dto);
 
-    @Mapping(source = "attributeIds", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
-    Category toEntity(CreateCategoryDTO dto);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(source = "attributeIds", target = "attributes", qualifiedByName = "idToAttributeList")
+  Category toEntity(CreateCategoryDto dto);
 
-    @Mapping(source = "classificationAttributes", target = "attributeIds", qualifiedByName = "classificationAttributeToIdList")
-    CreateCategoryDTO toCreateCategoryDto(Category entity);
+  @Mapping(source = "attributes", target = "attributeIds", qualifiedByName = "attributeToIdList")
+  CreateCategoryDto toCreateCategoryDto(Category entity);
 
-    @Mapping(source = "name", target = "name")
-    @Mapping(source = "attributeIds", target = "classificationAttributes", qualifiedByName = "idToClassificationAttributeList")
-    void updateEntityFromDto(@MappingTarget Category category, UpdateCategoryDTO dto);
+  @Mapping(target = "id", ignore = true)
+  @Mapping(source = "name", target = "name")
+  @Mapping(source = "attributeIds", target = "attributes", qualifiedByName = "idToAttributeList")
+  void updateEntityFromDto(@MappingTarget Category category, UpdateCategoryDto dto);
 
-    @Named("classificationAttributeToIdList")
-    @IterableMapping(qualifiedByName = "classificationAttributeToId")
-    List<Long> classificationAttributeToIdList(List<ClassificationAttribute> classificationAttributes);
+  @Named("attributeToIdList")
+  @IterableMapping(qualifiedByName = "attributeToId")
+  List<Long> attributeToIdList(List<Attribute> attributes);
 
-    @Named("idToClassificationAttributeList")
-    @IterableMapping(qualifiedByName = "idToClassificationAttribute")
-    List<ClassificationAttribute> idToClassificationAttributeList(List<Long> ids);
-
-
+  @Named("idToAttributeList")
+  @IterableMapping(qualifiedByName = "idToAttribute")
+  List<Attribute> idToAttributeList(List<Long> ids);
 }

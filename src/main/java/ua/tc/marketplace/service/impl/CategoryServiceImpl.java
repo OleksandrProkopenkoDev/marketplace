@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.category.AttributeNotFoundException;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
-import ua.tc.marketplace.model.dto.category.CategoryDTO;
-import ua.tc.marketplace.model.dto.category.CreateCategoryDTO;
-import ua.tc.marketplace.model.dto.category.UpdateCategoryDTO;
+import ua.tc.marketplace.model.dto.category.CategoryDto;
+import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
+import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
 import ua.tc.marketplace.model.entity.Category;
+import ua.tc.marketplace.repository.AttributeRepository;
 import ua.tc.marketplace.repository.CategoryRepository;
-import ua.tc.marketplace.repository.ClassificationAttributeRepository;
+import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.util.mapper.CategoryMapper;
 
 import java.util.List;
@@ -30,11 +31,11 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class CategoryServiceImpl implements ua.tc.marketplace.service.CategoryService {
+public class CategoryServiceImpl implements CategoryService {
 
   private final CategoryRepository categoryRepository;
   private final CategoryMapper categoryMapper;
-  private final ClassificationAttributeRepository classificationAttributeRepository;
+  private final AttributeRepository attributeRepository;
 
   @Override
   public Category findCategoryById(Long categoryId) {
@@ -45,24 +46,24 @@ public class CategoryServiceImpl implements ua.tc.marketplace.service.CategorySe
 
 
   @Override
-  public Page<CategoryDTO> findAll(Pageable pageable) {
+  public Page<CategoryDto> findAll(Pageable pageable) {
     Page<Category> categories = categoryRepository.findAll(pageable);
     return categories.map(categoryMapper::toCategoryDto);
   }
 
   @Override
-  public CategoryDTO findById(Long id) {
+  public CategoryDto findById(Long id) {
     Category category = findCategoryById(id);
     return categoryMapper.toCategoryDto(category);
   }
 
   @Transactional
   @Override
-  public CategoryDTO createCategory(CreateCategoryDTO categoryDto) {
+  public CategoryDto createCategory(CreateCategoryDto categoryDto) {
     List<Long> attributeIds = categoryDto.getAttributeIds();
 
     Set<Long> notFoundIds = attributeIds.stream()
-            .filter(id -> !classificationAttributeRepository.existsById(id))
+            .filter(id -> !attributeRepository.existsById(id))
             .collect(Collectors.toSet());
 
     if (!notFoundIds.isEmpty()) {
@@ -75,10 +76,10 @@ public class CategoryServiceImpl implements ua.tc.marketplace.service.CategorySe
 
   @Transactional
   @Override
-  public CategoryDTO update(Long id, UpdateCategoryDTO categoryDto) {
+  public CategoryDto update(Long id, UpdateCategoryDto categoryDto) {
     List<Long> attributeIds = categoryDto.getAttributeIds();
     Set<Long> notFoundIds = attributeIds.stream()
-            .filter(ids -> !classificationAttributeRepository.existsById(ids))
+            .filter(ids -> !attributeRepository.existsById(ids))
             .collect(Collectors.toSet());
 
     if (!notFoundIds.isEmpty()) {
