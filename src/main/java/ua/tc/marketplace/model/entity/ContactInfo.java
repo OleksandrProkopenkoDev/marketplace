@@ -10,6 +10,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Entity class representing contact information.
+ *
+ * <p>This class defines the structure of contact information stored in the database. It includes
+ * properties such as ID and phone number.
+ */
 @Builder
 @Data
 @NoArgsConstructor
