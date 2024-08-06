@@ -33,12 +33,14 @@ import ua.tc.marketplace.service.CategoryService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.AdMapper;
+import ua.tc.marketplace.util.mapper.UserMapper;
 
 @ExtendWith(MockitoExtension.class)
 class AdServiceImplTest {
 
   @Mock private AdRepository adRepository;
   @Mock private AdMapper adMapper;
+  @Mock private UserMapper userMapper;
   @Mock private PhotoStorageService photoService;
   @Mock private UserService userService;
   @Mock private CategoryService categoryService;
