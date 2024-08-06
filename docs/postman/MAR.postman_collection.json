@@ -287,12 +287,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/api/v1/file/ad/1/photo/47",
-									"protocol": "http",
+									"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/file/ad/1/photo/47",
+									"protocol": "https",
 									"host": [
-										"localhost"
+										"marketplace-production-c9c4",
+										"up",
+										"railway",
+										"app"
 									],
-									"port": "8080",
 									"path": [
 										"api",
 										"v1",
@@ -534,160 +536,242 @@
 			]
 		},
 		{
-			"name": "Photo on Server",
+			"name": "Photo On Server",
 			"item": [
 				{
-					"name": "getAllPhotos by adId",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad/1",
-							"protocol": "https",
-							"host": [
-								"marketplace-production-c9c4",
-								"up",
-								"railway",
-								"app"
-							],
-							"path": [
-								"api",
-								"v1",
-								"photo",
-								"ad",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getPhoto by name",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/file/ad/1/6c726680-ab3c-456a-bac2-822725e01328.jpg",
-							"protocol": "https",
-							"host": [
-								"marketplace-production-c9c4",
-								"up",
-								"railway",
-								"app"
-							],
-							"path": [
-								"api",
-								"v1",
-								"file",
-								"ad",
-								"1",
-								"6c726680-ab3c-456a-bac2-822725e01328.jpg"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "getAllPhotoFiles by adId",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8080/api/v1/file/ad/1",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8080",
-							"path": [
-								"api",
-								"v1",
-								"file",
-								"ad",
-								"1"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Save Ad Photos",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "files",
-									"type": "file",
-									"src": "postman-cloud:///1ef3ebc6-93b1-4c30-ac2a-d972312d13c7"
-								},
-								{
-									"key": "files",
-									"type": "file",
-									"src": "postman-cloud:///1ef3ebc6-82ba-4800-90f1-9dfe4178484d"
-								},
-								{
-									"key": "adId",
-									"value": "1",
-									"contentType": "",
-									"type": "text"
+					"name": "Ad",
+					"item": [
+						{
+							"name": "getPhotoFILE by Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/file/ad/1/photo/28",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"file",
+										"ad",
+										"1",
+										"photo",
+										"28"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad",
-							"protocol": "https",
-							"host": [
-								"marketplace-production-c9c4",
-								"up",
-								"railway",
-								"app"
-							],
-							"path": [
-								"api",
-								"v1",
-								"photo",
-								"ad"
-							]
+						{
+							"name": "getAllPhotos by adId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/photo/ad/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "getAllPhotoFiles by adId",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/file/ad/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"file",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Save Ad Photos",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "files",
+											"type": "file",
+											"src": "postman-cloud:///1ef3ebc6-93b1-4c30-ac2a-d972312d13c7"
+										},
+										{
+											"key": "files",
+											"type": "file",
+											"src": "postman-cloud:///1ef3ebc6-82ba-4800-90f1-9dfe4178484d"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{server}}/api/v1/photo/ad/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Ad Photos",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "[44, 42, 46, 45]",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{server}}/api/v1/photo/ad/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"ad",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Delete Ad Photos",
-					"request": {
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "[41]",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "User",
+					"item": [
+						{
+							"name": "Save User Profile Picture",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "file",
+											"type": "file",
+											"src": "postman-cloud:///1ef43655-9cb0-4550-9973-222ca79bdb52"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{server}}/api/v1/photo/user/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "https://marketplace-production-c9c4.up.railway.app/api/v1/photo/ad/1",
-							"protocol": "https",
-							"host": [
-								"marketplace-production-c9c4",
-								"up",
-								"railway",
-								"app"
-							],
-							"path": [
-								"api",
-								"v1",
-								"photo",
-								"ad",
-								"1"
-							]
+						{
+							"name": "Get User's profile picture",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/photo/user/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's profile picture FILE",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/file/user/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"file",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User's profile picture",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{server}}/api/v1/photo/user/1",
+									"host": [
+										"{{server}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"photo",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			]
 		},
@@ -900,6 +984,109 @@
 					"response": []
 				},
 				{
+					"name": "Find All Ads Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ad?priceMin=100.0&priceMax=400&page=0&size=5&sort=price,desc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ad"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "New",
+									"disabled": true
+								},
+								{
+									"key": "authorId",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "description",
+									"value": "fish",
+									"disabled": true
+								},
+								{
+									"key": "priceMin",
+									"value": "100.0"
+								},
+								{
+									"key": "priceMax",
+									"value": "400"
+								},
+								{
+									"key": "category",
+									"value": "3",
+									"disabled": true
+								},
+								{
+									"key": "attribute_breed",
+									"value": "Retriever",
+									"disabled": true
+								},
+								{
+									"key": "attribute_age",
+									"value": "2",
+									"disabled": true
+								},
+								{
+									"key": "attribute_size",
+									"value": "Big",
+									"disabled": true
+								},
+								{
+									"key": "attribute_gender",
+									"value": "Female",
+									"disabled": true
+								},
+								{
+									"key": "attribute_coat_length",
+									"value": "Medium",
+									"disabled": true
+								},
+								{
+									"key": "attribute_color",
+									"value": "Grey",
+									"disabled": true
+								},
+								{
+									"key": "attribute_health_condition",
+									"value": "Healthy",
+									"disabled": true
+								},
+								{
+									"key": "attribute_pet_name",
+									"value": "Rocky",
+									"disabled": true
+								},
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "5"
+								},
+								{
+									"key": "sort",
+									"value": "price,desc"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Create New Ad With Photos",
 					"request": {
 						"method": "POST",
@@ -971,7 +1158,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ad/9",
+							"raw": "http://localhost:8080/api/v1/ad/16",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -981,7 +1168,7 @@
 								"api",
 								"v1",
 								"ad",
-								"9"
+								"16"
 							]
 						}
 					},
@@ -1002,7 +1189,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8080/api/v1/ad/2",
+							"raw": "http://localhost:8080/api/v1/ad/17",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1012,7 +1199,7 @@
 								"api",
 								"v1",
 								"ad",
-								"2"
+								"17"
 							]
 						}
 					},
@@ -1063,6 +1250,35 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server",
+			"value": "https://marketplace-production-c9c4.up.railway.app",
+			"type": "string"
 		}
 	]
 }

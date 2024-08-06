@@ -3,6 +3,7 @@ package ua.tc.marketplace.util.openapi;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.util.Map;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
@@ -29,7 +31,8 @@ public interface AdOpenApi {
       summary = "Get all advertisements",
       description = "Retrieves a pageable list of all advertisements.")
   @GetMapping
-  ResponseEntity<Page<AdDto>> getAllAds(@PageableDefault Pageable pageable);
+  ResponseEntity<Page<AdDto>> getAllAds(
+      @RequestParam Map<String, String> params, @PageableDefault(sort = "id") Pageable pageable);
 
   @Operation(
       summary = "Get advertisement by ID",

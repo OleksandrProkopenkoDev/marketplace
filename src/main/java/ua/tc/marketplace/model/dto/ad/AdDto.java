@@ -33,4 +33,5 @@ public record AdDto(
     @NotNull(message = "Category ID cannot be null") Long categoryId,
     List<AdAttributeDto> adAttributes,
     LocalDateTime createdAt,
-    LocalDateTime updatedAt) {}
+    LocalDateTime updatedAt) {
+}
