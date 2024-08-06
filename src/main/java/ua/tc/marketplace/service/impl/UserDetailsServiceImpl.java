@@ -15,10 +15,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private UserRepository repository;
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-      //Let email be unique
-      //TODO make changes in flyway migration
+      //TODO make changes in flyway migration, Let email be unique
       Optional<User> user = repository.findByEmail(email);
       return user.map(UserDetailsImpl::new)
           .orElseThrow(() -> new UsernameNotFoundException(email + " not found"));

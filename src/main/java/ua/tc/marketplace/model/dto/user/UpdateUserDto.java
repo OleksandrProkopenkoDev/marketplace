@@ -2,11 +2,17 @@ package ua.tc.marketplace.model.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import java.util.List;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.ContactInfo;
-import ua.tc.marketplace.model.entity.Photo;
 
+import java.util.List;
+
+/**
+ * Data Transfer Object (DTO) for updating an existing user.
+ * Contains user information for updating an existing user account.
+ *
+ * <p>Validation constraints are applied to ensure data integrity and consistency.
+ */
 public record UpdateUserDto(
     Long id,
     @Schema(example = "taras@shevchenko.ua")

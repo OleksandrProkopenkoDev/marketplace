@@ -3,8 +3,13 @@ package ua.tc.marketplace.model.dto.user;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import ua.tc.marketplace.model.entity.ContactInfo;
-import ua.tc.marketplace.model.entity.Photo;
 
+/**
+ * Data Transfer Object (DTO) specifically for creating new users.
+ * Contains user information required for creating a new user account.
+ *
+ * <p>Validation constraints are applied to ensure data integrity and consistency.
+ */
 public record CreateUserDto(
     @Schema(example = "taras@shevchenko.ua")
     @NotBlank

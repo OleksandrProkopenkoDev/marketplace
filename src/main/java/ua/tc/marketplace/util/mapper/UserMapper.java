@@ -12,6 +12,11 @@ import ua.tc.marketplace.model.dto.user.UserDto;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.model.enums.UserRole;
 
+/**
+ * Mapper interface using MapStruct for converting between User entities and DTOs. Defines mappings
+ * for converting User to UserDto, creating User from UserDto or CreateUserDto, and updating an
+ * existing User entity with fields from UpdateUserDto.
+ */
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
 

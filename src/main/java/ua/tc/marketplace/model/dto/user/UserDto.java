@@ -9,6 +9,13 @@ import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.ContactInfo;
 import ua.tc.marketplace.model.entity.Photo;
 
+/**
+ * Data Transfer Object (DTO) representing a user.
+ * Used for transferring user data between layers of the application.
+ * This DTO includes all user information.
+ *
+ * <p>Validation constraints are applied to ensure data integrity and consistency.
+ */
 public record UserDto(
     Long id,
     @Schema(example = "taras@shevchenko.ua") @NotBlank String email,
