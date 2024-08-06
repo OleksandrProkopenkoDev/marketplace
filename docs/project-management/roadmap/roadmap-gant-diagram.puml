@@ -1,0 +1,55 @@
+@startgantt
+Project starts 2024-06-01
+
+[Project Kickoff] starts 2024-06-01
+[Team Introduction] starts after [Project Kickoff] for 0 days
+[Project Goals and Objectives] starts after [Project Kickoff] for 0 days
+[Initial Requirement Gathering] starts after [Project Kickoff] for 0 days
+[Configure development tools] starts after [Project Kickoff] for 0 days
+[Set up project repositories] starts after [Project Kickoff] for 0 days
+
+[Detailed Requirement Analysis] starts after [Project Kickoff] + 15 days
+[Create user stories and acceptance criteria] starts after [Detailed Requirement Analysis] for 0 days
+[Prioritize features for MVP] starts after [Detailed Requirement Analysis] for 0 days
+[Initial wireframes and mockups] starts after [Detailed Requirement Analysis] for 0 days
+[User flow diagrams] starts after [Detailed Requirement Analysis] for 0 days
+
+[User Authentication and Authorization] starts after [Project Goals and Objectives] + 15 days
+[Database setup and initial schema design] starts after [Project Goals and Objectives] + 15 days
+[User login and registration pages] starts after [Project Goals and Objectives] + 15 days
+[Initial website layout and navigation] starts after [Project Goals and Objectives] + 15 days
+
+[API for animal registration and adoption applications] starts after [Initial wireframes and mockups] + 15 days
+[Integration with frontend for authentication] starts after [Initial wireframes and mockups] + 15 days
+[Animal registration and adoption forms] starts after [Initial wireframes and mockups] + 15 days
+[Responsive design implementation] starts after [Initial wireframes and mockups] + 15 days
+
+[Email notifications and communication system] starts after [User Authentication and Authorization] + 15 days
+[Advanced search and filtering for animal listings] starts after [User Authentication and Authorization] + 15 days
+[Search and filter functionality for animal listings] starts after [User Authentication and Authorization] + 31 days
+[Displaying animal details] starts after [User Authentication and Authorization] + 31 days
+
+[Refine mockups based on feedback] starts after [Search and filter functionality for animal listings] + 15 days
+[Design for meeting scheduling and adoption confirmation] starts after [Search and filter functionality for animal listings] + 15 days
+
+[Meeting scheduling system] starts after [Refine mockups based on feedback] + 15 days
+[Adoption status tracking] starts after [Refine mockups based on feedback] + 15 days
+[UI for meeting scheduling and adoption status updates] starts after [Design for meeting scheduling and adoption confirmation] + 15 days
+[Improved user feedback mechanisms] starts after [Design for meeting scheduling and adoption confirmation] + 15 days
+
+[Finalize all designs] starts after [UI for meeting scheduling and adoption status updates] + 15 days
+[Usability testing and improvements] starts after [UI for meeting scheduling and adoption status updates] + 15 days
+
+[Last-minute feature implementations] starts after [Usability testing and improvements] + 15 days
+[Performance optimization] starts after [Usability testing and improvements] + 15 days
+
+[Regression testing] starts after [Last-minute feature implementations] + 15 days
+[Final bug fixes] starts after [Last-minute feature implementations] + 15 days
+
+[User Acceptance Testing] starts after [Regression testing] + 15 days
+[Collect feedback from selected users] starts after [User Acceptance Testing] for 0 days
+[Final adjustments based on feedback] starts after [User Acceptance Testing] for 0 days
+[Documentation and training materials] starts after [User Acceptance Testing] for 0 days
+[Project retrospective and lessons learned] starts after [User Acceptance Testing] for 0 days
+
+@endgantt

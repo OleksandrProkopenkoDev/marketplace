@@ -1,13 +1,7 @@
 package ua.tc.marketplace.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,8 +29,8 @@ public class Category {
 
   @ManyToMany
   @JoinTable(
-      name = "category_classification_attributes",
+      name = "category_attributes",
       joinColumns = @JoinColumn(name = "category_id"),
-      inverseJoinColumns = @JoinColumn(name = "classification_attribute_id"))
-  private List<ClassificationAttribute> classificationAttributes;
+      inverseJoinColumns = @JoinColumn(name = "attribute_id"))
+  private List<Attribute> attributes;
 }

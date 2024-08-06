@@ -14,7 +14,7 @@ import ua.tc.marketplace.model.entity.Ad;
  * for converting Ad to AdDto, extracting primitive fields from CreateAdDto, and updating an
  * existing Ad entity with fields from UpdateAdDto.
  */
-@Mapper(config = MapperConfig.class)
+@Mapper(config = MapperConfig.class, uses = AdAttributeMapper.class)
 public interface AdMapper {
 
   @Mapping(target = "categoryId", source = "category.id")
@@ -28,6 +28,7 @@ public interface AdMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "author", ignore = true)
+  @Mapping(target = "adAttributes", ignore = true)
   Ad getPrimitiveFields(CreateAdDto dto);
 
   @Mapping(target = "updatedAt", ignore = true)
@@ -37,5 +38,7 @@ public interface AdMapper {
   @Mapping(target = "createdAt", ignore = true)
   @Mapping(target = "category", ignore = true)
   @Mapping(target = "author", ignore = true)
+  @Mapping(target = "adAttributes", ignore = true)
   void updateAd(UpdateAdDto dto, @MappingTarget Ad ad);
+
 }
