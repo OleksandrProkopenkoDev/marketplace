@@ -81,7 +81,6 @@ class CategoryServiceImplTest {
         when(categoryMapper.toCategoryDto(category)).thenReturn(createdCategoryDto);
 
         // Mock the attribute repository call
-        when(attributeRepository.findAllById(createCategoryDto.getAttributeIds())).thenReturn(attributes);
 
         CategoryDTO result = categoryService.createCategory(createCategoryDto);
 

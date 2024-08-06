@@ -3,6 +3,7 @@ package ua.tc.marketplace.model.dto.category;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,5 +38,5 @@ public class CategoryDTO {
      */
     @NotNull(message = "Classification attributes cannot be null")
     @NotEmpty(message = "Classification attributes cannot be empty")
-    private List<ClassificationAttributeDto> classificationAttribute;
+    private List<ClassificationAttributeDto> classificationAttribute  = new ArrayList<>();
 }
