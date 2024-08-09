@@ -1,4 +1,19 @@
 @startuml
+class Article{
+  title: String
+  content: String
+  author: User
+  createdAt: LocalDateTime
+  updatedAt: LocalDateTime
+  photos: List<Photo>
+}
+
+class Location {
+  country: String
+  city: String
+  zipcode: String
+}
+
 class User {
   Long id
   String email
@@ -9,6 +24,7 @@ class User {
   Photo profilePicture
   ContactInfo contactInfo
   List<Ad> favorites
+  Location location;
   DateTime createdAt
   DateTime updatedAt
 }
@@ -28,6 +44,7 @@ class Ad {
   Photo thumbnail
   Category category
   List<AdAttribute> adAttributes
+  Location location;
   Date createdAt
   Date updatedAt
 }
