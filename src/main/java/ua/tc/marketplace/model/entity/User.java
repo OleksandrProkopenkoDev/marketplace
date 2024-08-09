@@ -13,6 +13,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -57,12 +58,13 @@ public class User {
   @OneToOne(cascade = CascadeType.ALL)
   private ContactInfo contactInfo;
 
+  @Builder.Default
   @ManyToMany
   @JoinTable(
       name = "user_favorites",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "ad_id"))
-  private List<Ad> favorites;
+  private List<Ad> favorites = new ArrayList<>();
 
   @CreationTimestamp
   private LocalDateTime createdAt;
