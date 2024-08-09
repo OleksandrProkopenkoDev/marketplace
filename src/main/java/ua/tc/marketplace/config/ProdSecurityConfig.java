@@ -3,6 +3,7 @@ package ua.tc.marketplace.config;
 import jakarta.annotation.Nonnull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -22,10 +23,11 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
-public class SecurityConfig {
+@Profile("prod")
+public class ProdSecurityConfig {
 
   private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
-  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE};
+  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**, /api/v1/demo, /api/v1/demo/all", DEFAULT_SUCCESS_PAGE};
   private static final String CREATE_USER_POST_URL = "/api/v1/user";
 
   @Bean
@@ -35,7 +37,11 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
     http
+        .requiresChannel(channel -> channel
+            .anyRequest().requiresSecure() // Enforce HTTPS
+        )
         .csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
 //        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
