@@ -26,7 +26,12 @@ public class SecurityConfig {
 
   private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
   private static final String[] WHITELIST = {
-    "/v3/api-docs/**", "/swagger-ui/**, /api/v1/demo, /api/v1/demo/all", DEFAULT_SUCCESS_PAGE
+    "/v3/api-docs/**",
+    "/swagger-ui/**",
+    "/swagger-ui.html",
+    "/api/v1/demo",
+    "/api/v1/demo/all",
+    DEFAULT_SUCCESS_PAGE
   };
   private static final String CREATE_USER_POST_URL = "/api/v1/user";
 

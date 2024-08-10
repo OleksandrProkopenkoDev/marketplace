@@ -1,6 +1,15 @@
 package ua.tc.marketplace.config;
 
+import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.Paths;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import io.swagger.v3.oas.models.responses.ApiResponse;
+import io.swagger.v3.oas.models.responses.ApiResponses;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -31,6 +40,36 @@ public class OpenApiConfig {
             new io.swagger.v3.oas.models.info.Info()
                 .title(TITLE)
                 .description(MARKETPLACE_APP_DESCRIPTION)
-                .version(DOCUMENTATION_VERSION));
+                .version(DOCUMENTATION_VERSION))
+        .addServersItem(
+            new Server()
+                .url("https://marketplace-production-c9c4.up.railway.app")
+                .description("Production Server"))
+        .addServersItem(new Server().url("http://localhost:8080").description("Local Server"))
+        .components(
+            new Components()
+                .addSecuritySchemes(
+                    "basicScheme",
+                    new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
+        .addSecurityItem(new SecurityRequirement().addList("basicScheme"))
+        .paths(
+            new Paths()
+                .addPathItem(
+                    "/login",
+                    new PathItem()
+                        .post(
+                            new io.swagger.v3.oas.models.Operation()
+                                .addParametersItem(
+                                    new Parameter().name("username").in("query").required(true))
+                                .addParametersItem(
+                                    new Parameter().name("password").in("query").required(true))
+                                .responses(
+                                    new ApiResponses()
+                                        .addApiResponse(
+                                            "200",
+                                            new ApiResponse().description("Login successful"))
+                                        .addApiResponse(
+                                            "401",
+                                            new ApiResponse().description("Unauthorized"))))));
   }
 }
