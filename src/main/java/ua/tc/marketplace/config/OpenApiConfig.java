@@ -1,12 +1,8 @@
 package ua.tc.marketplace.config;
 
+import java.util.List;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.PathItem;
-import io.swagger.v3.oas.models.Paths;
-import io.swagger.v3.oas.models.parameters.Parameter;
-import io.swagger.v3.oas.models.responses.ApiResponse;
-import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
@@ -46,30 +42,11 @@ public class OpenApiConfig {
                 .url("https://marketplace-production-c9c4.up.railway.app")
                 .description("Production Server"))
         .addServersItem(new Server().url("http://localhost:8080").description("Local Server"))
-        .components(
-            new Components()
-                .addSecuritySchemes(
-                    "basicScheme",
-                    new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("basic")))
-        .addSecurityItem(new SecurityRequirement().addList("basicScheme"))
-        .paths(
-            new Paths()
-                .addPathItem(
-                    "/login",
-                    new PathItem()
-                        .post(
-                            new io.swagger.v3.oas.models.Operation()
-                                .addParametersItem(
-                                    new Parameter().name("username").in("query").required(true))
-                                .addParametersItem(
-                                    new Parameter().name("password").in("query").required(true))
-                                .responses(
-                                    new ApiResponses()
-                                        .addApiResponse(
-                                            "200",
-                                            new ApiResponse().description("Login successful"))
-                                        .addApiResponse(
-                                            "401",
-                                            new ApiResponse().description("Unauthorized"))))));
+        .components(new Components()
+            .addSecuritySchemes("basicAuth",
+                new SecurityScheme()
+                    .type(SecurityScheme.Type.HTTP)
+                    .scheme("basic")))
+        .security(List.of(new SecurityRequirement().addList("basicAuth")));
   }
 }

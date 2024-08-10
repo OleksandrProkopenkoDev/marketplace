@@ -4,9 +4,11 @@ import jakarta.annotation.Nonnull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -24,6 +26,7 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+  private static final String PERMIT_ALL = "/**";
   private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
   private static final String[] WHITELIST = {
     "/v3/api-docs/**",
@@ -31,6 +34,8 @@ public class SecurityConfig {
     "/swagger-ui.html",
     "/api/v1/demo",
     "/api/v1/demo/all",
+    "/api/v1/auth/login",
+    PERMIT_ALL,
     DEFAULT_SUCCESS_PAGE
   };
   private static final String CREATE_USER_POST_URL = "/api/v1/user";
@@ -84,5 +89,11 @@ public class SecurityConfig {
             .allowCredentials(false);
       }
     };
+  }
+
+  @Bean
+  public AuthenticationManager authenticationManager(
+      AuthenticationConfiguration authenticationConfiguration) throws Exception {
+    return authenticationConfiguration.getAuthenticationManager();
   }
 }
