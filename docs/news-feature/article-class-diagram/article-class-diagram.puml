@@ -1,0 +1,139 @@
+@startuml
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+}
+
+class Article {
+  Long id
+  String title
+  String content
+  User author
+  LocalDateTime createdAt
+  LocalDateTime updatedAt
+  List<Photo> photos
+  List<Tag> tags
+  Category category
+  String metaDescription
+  String structuredData
+  ArticleStatus status
+  Boolean isFeatured
+  String slug
+  List<Comment> comments
+  Integer likes
+}
+
+class Comment {
+  Long id
+  User author
+  String text
+  LocalDateTime createdAt
+}
+
+class Location {
+  Long id
+  String country
+  String city
+  String zipcode
+}
+
+class User {
+  Long id
+  String email
+  String password
+  Enum userRole
+  String firstName
+  String lastName (optional)
+  Photo profilePicture
+  ContactInfo contactInfo
+  List<Ad> favorites
+  List<Comment> comments //for Shelter page
+  Location location
+  LocalDateTime createdAt
+  LocalDateTime updatedAt
+}
+
+class ContactInfo {
+  Long id
+  String phone
+  String email
+  String website
+  String instagram
+  String telegram
+  String facebook
+  String mission
+  String policy
+}
+
+class Ad {
+  Long id
+  User author
+  String title
+  String description
+  BigDecimal price
+  List<Photo> photos
+  Photo thumbnail
+  Category category
+  List<AdAttribute> adAttributes
+  Location location
+  LocalDateTime createdAt
+  LocalDateTime updatedAt
+}
+
+class Attribute {
+  Long id
+  String name
+  String valueType (enum)
+}
+
+class Category {
+  Long id
+  String name
+  List<Attribute> attributes
+}
+
+class Photo {
+  Long id
+  String filename
+  PhotoMetadata metadata
+  String altText
+}
+
+class PhotoMetadata {
+  Long id
+  Integer width
+  Integer height
+  String extension
+  Float size
+}
+
+class AdAttribute {
+  Long id
+  Long adId
+  Long attributeId
+  String value
+}
+
+class Tag {
+  Long id
+  String name
+}
+
+Article "1" -- "*" Photo
+Article "*" -- "*" Tag
+Article "1" -- "1" Category
+Article "1" -- "1" ArticleStatus
+Ad "1" -- "*" Photo
+Ad "1" -- "1" Category
+User "1" -- "*" Ad
+User "1" -- "1" Location
+User "1" -- "*" Comment
+PhotoMetadata "1" -- "1" Photo
+User "1" -- "*" Photo
+Attribute "*" -- "*" Category
+User "1" -- "1" ContactInfo
+Ad "*" -- "*" AdAttribute
+Attribute "*" -- "*" AdAttribute
+
+@enduml
