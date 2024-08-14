@@ -20,7 +20,6 @@ class Article {
   ArticleStatus status
   Boolean isFeatured
   String slug
-  List<Comment> comments
   Integer likes
 }
 
@@ -49,9 +48,15 @@ class User {
   ContactInfo contactInfo
   List<Ad> favorites
   List<Comment> comments //for Shelter page
+  List<Rating> ratings
   Location location
   LocalDateTime createdAt
   LocalDateTime updatedAt
+}
+
+class Rating{
+  Long id
+  Integer value
 }
 
 class ContactInfo {
@@ -129,6 +134,7 @@ Ad "1" -- "1" Category
 User "1" -- "*" Ad
 User "1" -- "1" Location
 User "1" -- "*" Comment
+User "1" -- "*" Rating
 PhotoMetadata "1" -- "1" Photo
 User "1" -- "*" Photo
 Attribute "*" -- "*" Category
