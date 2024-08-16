@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +28,11 @@ public class JwtUsernameAndPasswordAuthenticationFilter
 
 
     private final AuthenticationManager authenticationManager;
-    private final JwtConfig jwtConfig;
+//    private final JwtConfig jwtConfig;
+@Value("${jwt.token-prefix}")
+private String tokenPrefix;
+    @Value("${jwt.token-expiration-after-days}")
+    private String tokenExpirationAfterDays;
     private final SecretKey secretKey;
 
     @Override
@@ -57,21 +62,21 @@ public class JwtUsernameAndPasswordAuthenticationFilter
             HttpServletResponse response,
             FilterChain chain,
             Authentication authResult) throws IOException, ServletException {
-        User authUser = (User)authResult.getPrincipal();
+        User authUser = (User) authResult.getPrincipal();
         String token = Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("userId", authUser.getId())
                 .claim("email", authUser.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()).atStartOfDay().toInstant( ZoneOffset.UTC)))
+                .setExpiration(Date.from(LocalDate.now().plusDays(Long.parseLong(tokenExpirationAfterDays)).atStartOfDay().toInstant(ZoneOffset.UTC)))
                 .signWith(secretKey)
                 .compact();
         response.addHeader(
-                jwtConfig.getAuthorizationHeader(),
-                jwtConfig.getTokenPrefix()+token );
+                "Authorization",
+                tokenPrefix+ token);
 //		next filter
 
     }
 
 
-
+}

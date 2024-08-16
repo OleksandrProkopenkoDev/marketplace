@@ -9,6 +9,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,9 @@ import java.util.Set;
 public class JwtTokenVerifier extends OncePerRequestFilter {
 
     private final SecretKey secretKey;
-    private final JwtConfig jwtConfig;
+//    private final JwtConfig jwtConfig;
+@Value("${jwt.token-prefix}")
+private String tokenPrefix;
 
     @Override
     protected void doFilterInternal(
@@ -34,16 +37,16 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
             throws ServletException, IOException {
 
 //		get the token from the header
-        String authorizationHeader = request.getHeader(jwtConfig.getAuthorizationHeader());
+        String authorizationHeader = request.getHeader("Authorization");
         //if token is not present -> not authorized and go to next filter
         if(Strings.isNullOrEmpty(authorizationHeader)
-                || !authorizationHeader.startsWith(jwtConfig.getTokenPrefix())) {
+                || !authorizationHeader.startsWith(tokenPrefix)) {
             filterChain.doFilter(request, response);
             return;
         }
 
 
-        String token = authorizationHeader.replace(jwtConfig.getTokenPrefix(), "");
+        String token = authorizationHeader.replace(tokenPrefix, "");
         try {
             Jws<Claims> claimsJws =
                     Jwts.parser()

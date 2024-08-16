@@ -16,6 +16,6 @@ spring:
 
   #Jwt properties
   jwt:
-    secret-key: this is very secret string for best security
+    secret: my-very-secret-key
     token-prefix: Bearer
     token-expiration-after-days: 14
