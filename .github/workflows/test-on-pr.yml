@@ -1,12 +1,12 @@
-name: Test on PR
+name: Test-on-PR
 
 on:
   pull_request:
     branches:
-      - '*'
+      - '**'
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
             ${{ runner.os }}-maven-
 
       - name: Run tests with Maven
-        run: mvn test
+        run: mvn clean test
 
       - name: Archive test results
         if: failure()
