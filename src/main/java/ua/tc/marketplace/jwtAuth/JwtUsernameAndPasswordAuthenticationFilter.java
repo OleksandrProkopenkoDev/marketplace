@@ -28,11 +28,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter
 
 
     private final AuthenticationManager authenticationManager;
-//    private final JwtConfig jwtConfig;
-@Value("${jwt.token-prefix}")
-private String tokenPrefix;
-    @Value("${jwt.token-expiration-after-days}")
-    private String tokenExpirationAfterDays;
+    private final JwtConfig jwtConfig;
     private final SecretKey secretKey;
 
     @Override
@@ -68,12 +64,12 @@ private String tokenPrefix;
                 .claim("userId", authUser.getId())
                 .claim("email", authUser.getEmail())
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(LocalDate.now().plusDays(Long.parseLong(tokenExpirationAfterDays)).atStartOfDay().toInstant(ZoneOffset.UTC)))
+                .setExpiration(Date.from(LocalDate.now().plusDays(jwtConfig.getTokenExpirationAfterDays()).atStartOfDay().toInstant(ZoneOffset.UTC)))
                 .signWith(secretKey)
                 .compact();
         response.addHeader(
                 "Authorization",
-                tokenPrefix+ token);
+                jwtConfig.getTokenPrefix()+ token);
 //		next filter
 
     }

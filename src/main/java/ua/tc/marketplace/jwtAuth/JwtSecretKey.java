@@ -10,16 +10,13 @@ import org.springframework.context.annotation.Configuration;
 import javax.crypto.SecretKey;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Configuration
 public class JwtSecretKey {
 
-//    private final JwtConfig jwtConfig;
-    @Value("${jwt.secret}")
-    private String secret;
+    private final JwtConfig jwtConfig;
 
     @Bean
     SecretKey secretKey() {
-        return Keys.hmacShaKeyFor(secret.getBytes());
+        return Keys.hmacShaKeyFor(jwtConfig.getSecretKey().getBytes());
     }
 }

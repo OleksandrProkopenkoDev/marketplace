@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import ua.tc.marketplace.jwtAuth.AuthRequest;
 import ua.tc.marketplace.model.dto.user.UserDto;
 import ua.tc.marketplace.model.entity.User;
+import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.util.mapper.UserMapper;
 
 @RequiredArgsConstructor
@@ -18,6 +19,7 @@ public class AuthService {
 
     private final AuthenticationManager authenticationManager;
     private final UserMapper userMapper;
+    private final UserRepository userRepository;
 
     public UserDto authentificate(AuthRequest requestBody) {
         Authentication auth = authenticationManager.authenticate(
@@ -25,10 +27,11 @@ public class AuthService {
                         requestBody.email(),
                         requestBody.password())
         );//if auth failed, redirecting to login. Code below is not run
-        SecurityContextHolder.getContext().setAuthentication(auth);
-        User authUser = (User)auth.getPrincipal();
+//        SecurityContextHolder.getContext().setAuthentication(auth);
+//        User authUser = (User)auth.getPrincipal();
 
-        return  userMapper.toDto(authUser);
+        return  userMapper.toDto(userRepository.findByEmail(requestBody.email()).orElseThrow());
+//        return  userMapper.toDto(authUserauthUser);
     }
 
 }
