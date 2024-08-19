@@ -1,15 +1,12 @@
 package ua.tc.marketplace.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import ua.tc.marketplace.jwtAuth.AuthRequest;
+import ua.tc.marketplace.model.auth.AuthRequest;
 import ua.tc.marketplace.model.dto.user.UserDto;
-import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.util.mapper.UserMapper;
 

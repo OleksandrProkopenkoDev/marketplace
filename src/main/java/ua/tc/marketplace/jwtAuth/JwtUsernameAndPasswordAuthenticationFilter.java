@@ -7,17 +7,16 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ua.tc.marketplace.model.auth.AuthRequest;
 import ua.tc.marketplace.model.entity.User;
 
 import javax.crypto.SecretKey;
 import java.io.IOException;
-import java.security.Key;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.Date;

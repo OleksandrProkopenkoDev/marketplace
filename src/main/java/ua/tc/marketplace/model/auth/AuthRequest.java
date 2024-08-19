@@ -1,4 +1,4 @@
-package ua.tc.marketplace.jwtAuth;
+package ua.tc.marketplace.model.auth;
 
 public record AuthRequest(
         String email,
