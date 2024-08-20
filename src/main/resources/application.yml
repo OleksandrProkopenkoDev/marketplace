@@ -16,6 +16,6 @@ spring:
 
   #Jwt properties
 jwt:
-  secretKey: my-very-secret-key_my-very-secret-key
+  secretKey: FC80F451C01186135C05853AED4FB52FCF8F4563E5A00FDEA7C406A3CAC8307B
   token-prefix: Bearer
   token-expiration-after-days: 14

@@ -2,41 +2,48 @@ package ua.tc.marketplace.jwtAuth;
 
 import io.jsonwebtoken.*;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.stereotype.Component;
 import ua.tc.marketplace.model.entity.User;
 
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+@Component
+@AllArgsConstructor
 public class JwtUtil {
-    private final String secret_key = "mysecretkey";
-    private long accessTokenValidity = 60*60*1000;
+//    private long accessTokenValidity = 60*60*1000;
+//    private final String secret_key = jwtConfig.getSecretKey();
+//    private final String TOKEN_HEADER = "Authorization";
+//    private final String TOKEN_PREFIX = "Bearer ";
+//    private final JwtParser jwtParser;
+    private final JwtConfig jwtConfig;
 
-    private final JwtParser jwtParser;
 
-    private final String TOKEN_HEADER = "Authorization";
-    private final String TOKEN_PREFIX = "Bearer ";
-
-    public JwtUtil(){
-        this.jwtParser = Jwts.parser().setSigningKey(secret_key);
-    }
+//    public JwtUtil(){
+//        this.jwtParser = Jwts.parser().setSigningKey(jwtConfig.getSecretKey());
+//    }
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
         claims.put("firstName",user.getFirstName());
         claims.put("lastName",user.getLastName());
         Date tokenCreateTime = new Date();
-        Date tokenValidity = new Date(tokenCreateTime.getTime() + TimeUnit.MINUTES.toMillis(accessTokenValidity));
+        Date tokenValidity = new Date(tokenCreateTime.getTime()
+                + TimeUnit.MINUTES.toMillis(jwtConfig.getTokenExpirationAfterDays()*24*60));
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
-                .signWith(SignatureAlgorithm.HS256, secret_key)
+                .signWith(SignatureAlgorithm.HS256, jwtConfig.getSecretKey())
                 .compact();
     }
 
     private Claims parseJwtClaims(String token) {
-        return jwtParser.parseClaimsJws(token).getBody();
+        return Jwts.parser()
+                .setSigningKey(jwtConfig.getSecretKey())
+                .parseClaimsJws(token).getBody();
     }
 
     public Claims resolveClaims(HttpServletRequest req) {
@@ -57,9 +64,9 @@ public class JwtUtil {
 
     public String resolveToken(HttpServletRequest request) {
 
-        String bearerToken = request.getHeader(TOKEN_HEADER);
-        if (bearerToken != null && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(TOKEN_PREFIX.length());
+        String bearerToken = request.getHeader(jwtConfig.getAuthorizationHeader());
+        if (bearerToken != null && bearerToken.startsWith(jwtConfig.getTokenPrefix())) {
+            return bearerToken.substring(jwtConfig.getTokenPrefix().length());
         }
         return null;
     }

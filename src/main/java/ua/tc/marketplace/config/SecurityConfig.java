@@ -1,6 +1,7 @@
 package ua.tc.marketplace.config;
 
 import jakarta.annotation.Nonnull;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,21 +14,25 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import ua.tc.marketplace.jwtAuth.JwtAuthorizationFilter;
 import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
+@AllArgsConstructor
 public class SecurityConfig {
-
+  private final JwtAuthorizationFilter jwtAuthorizationFilter;
   private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
-  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE, "/api/v1/auth**"};
+  private static final String[] WHITELIST = {"/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE, "/api/v1/auth/**"};
   private static final String CREATE_USER_POST_URL = "/api/v1/user";
 
   @Bean
@@ -40,7 +45,8 @@ public class SecurityConfig {
     http
         .csrf(AbstractHttpConfigurer::disable)
         .cors(Customizer.withDefaults())
-//        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(
             config ->
                 config.requestMatchers(WHITELIST).permitAll()
