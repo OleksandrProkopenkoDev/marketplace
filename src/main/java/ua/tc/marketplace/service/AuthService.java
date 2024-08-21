@@ -1,34 +1,14 @@
 package ua.tc.marketplace.service;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 import ua.tc.marketplace.model.auth.AuthRequest;
-import ua.tc.marketplace.model.dto.user.UserDto;
-import ua.tc.marketplace.repository.UserRepository;
-import ua.tc.marketplace.util.mapper.UserMapper;
+import ua.tc.marketplace.model.auth.AuthResponse;
 
-@RequiredArgsConstructor
-@Service
-public class AuthService {
+/**
+ * Service interface defining operations for managing advertisements. Includes methods for
+ * retrieving, creating, updating, and deleting advertisements.
+ */
+public interface AuthService {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserMapper userMapper;
-    private final UserRepository userRepository;
-
-    public UserDto authentificate(AuthRequest requestBody) {
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        requestBody.email(),
-                        requestBody.password())
-        );//if auth failed, redirecting to login. Code below is not run
-//        SecurityContextHolder.getContext().setAuthentication(auth);
-//        User authUser = (User)auth.getPrincipal();
-
-        return  userMapper.toDto(userRepository.findByEmail(requestBody.email()).orElseThrow());
-//        return  userMapper.toDto(authUserauthUser);
-    }
+    AuthResponse authentificate(AuthRequest requestBody) ;
 
 }
