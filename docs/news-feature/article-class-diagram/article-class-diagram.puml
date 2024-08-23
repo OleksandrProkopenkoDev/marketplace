@@ -32,6 +32,8 @@ class Comment {
 
 class Location {
   Long id
+  double latitude
+  double longitude
   String country
   String city
   String zipcode

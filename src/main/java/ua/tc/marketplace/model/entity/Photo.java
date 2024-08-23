@@ -31,6 +31,8 @@ public class Photo {
 
   private String filename;
 
+  private String altText;
+
   @OneToOne(cascade = CascadeType.ALL)
   private PhotoMetadata metadata;
 }

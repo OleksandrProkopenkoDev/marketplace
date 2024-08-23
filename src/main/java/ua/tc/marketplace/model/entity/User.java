@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -65,6 +66,19 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "ad_id"))
   private List<Ad> favorites = new ArrayList<>();
+
+  @Builder.Default
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "shelter_id")
+  private List<Comment> comments = new ArrayList<>();
+
+  @Builder.Default
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "shelter_id")
+  private List<Rating> ratings = new ArrayList<>();
+
+  @OneToOne(cascade = CascadeType.ALL)
+  private Location location;
 
   @CreationTimestamp
   private LocalDateTime createdAt;
