@@ -1,12 +1,16 @@
 package ua.tc.marketplace.util.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
+import org.mapstruct.Mapping;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.exception.category.AttributeNotFoundException;
+import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
+import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
 import ua.tc.marketplace.model.dto.attribute.AttributeDto;
+import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
+import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.repository.AttributeRepository;
 
@@ -22,6 +26,13 @@ public abstract class AttributeMapper {
 
   public abstract Attribute toEntity(AttributeDto dto);
 
+  @Mapping(target = "id", ignore = true)
+  public abstract Attribute toEntity(CreateAttributeDTO dto);
+
+  @Mapping(target = "id", ignore = true)
+  public abstract void updateEntityFromDto(UpdateAttributeDTO dto, @MappingTarget Attribute entity);
+
+
   @Named("attributeToId")
   public Long attributeToId(Attribute attribute) {
     return attribute != null ? attribute.getId() : null;
@@ -33,6 +44,6 @@ public abstract class AttributeMapper {
       return null;
     }
     return attributeRepository.findById(id)
-            .orElseThrow(() -> new AttributeNotFoundException(Set.of(id)));
+            .orElseThrow(() -> new InvalidAttributeIdsException(Set.of(id)));
   }
 }

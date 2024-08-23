@@ -1,4 +1,4 @@
-package ua.tc.marketplace.exception.category;
+package ua.tc.marketplace.exception.attribute;
 
 import org.springframework.http.HttpStatus;
 import ua.tc.marketplace.exception.model.CustomRuntimeException;
