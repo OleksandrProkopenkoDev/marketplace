@@ -26,6 +26,7 @@ class Article {
 class Comment {
   Long id
   User author
+  User shelter
   String text
   LocalDateTime createdAt
 }
