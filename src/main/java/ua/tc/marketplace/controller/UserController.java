@@ -39,11 +39,6 @@ public class UserController implements UserOpenApi {
     return ResponseEntity.status(HttpStatus.OK).body(userService.findUserDtoById(id));
   }
 
-  @PostMapping()
-  public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserDto userDto) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.createUser(userDto));
-  }
-
   @PutMapping()
   public ResponseEntity<UserDto> updateUser(@RequestBody @Valid UpdateUserDto userDto) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.updateUser(userDto));

@@ -2,6 +2,8 @@ package ua.tc.marketplace.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ua.tc.marketplace.model.auth.AuthRequest;
+import ua.tc.marketplace.model.auth.AuthResponse;
 import ua.tc.marketplace.model.dto.user.CreateUserDto;
 import ua.tc.marketplace.model.dto.user.UpdateUserDto;
 import ua.tc.marketplace.model.dto.user.UserDto;
@@ -20,4 +22,8 @@ public interface UserService {
   UserDto updateUser(UpdateUserDto updateUserDto);
 
   void deleteUserById(Long id);
+
+  User findUserByEmail(String email);
+
+  AuthResponse authentificate(AuthRequest authRequest);
 }
