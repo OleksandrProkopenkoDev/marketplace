@@ -73,7 +73,7 @@ public class AttributeServiceImpl implements AttributeService {
   @Override
   public void deleteById(Long id) {
     if (!attributeRepository.existsById(id)) {
-      throw new InvalidAttributeIdsException(Set.of(id));
+      throw new AttributeNotFoundException(id);
     }
     attributeRepository.deleteById(id);
   }
