@@ -13,7 +13,7 @@ import ua.tc.marketplace.model.auth.AuthRequest;
 import ua.tc.marketplace.service.AuthService;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/user")
 @RequiredArgsConstructor
 public class AuthController {
 
