@@ -71,19 +71,6 @@ public class SecurityConfig {
     return new BCryptPasswordEncoder();
   }
 
-  //  @Bean
-  //  public WebMvcConfigurer corsConfigurer() {
-  //    return new WebMvcConfigurer() {
-  //      @Override
-  //      public void addCorsMappings(@Nonnull CorsRegistry registry) {
-  //        registry.addMapping("/**")
-  //            .allowedOrigins("*")
-  //            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-  //            .allowedHeaders("*")
-  //            .allowCredentials(false);
-  //      }
-  //    };
-  //  }
 
   @Bean
   AuthenticationManager authenticationManager(
