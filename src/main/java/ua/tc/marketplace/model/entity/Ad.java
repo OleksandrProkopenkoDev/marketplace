@@ -51,6 +51,9 @@ public class Ad {
 
   private BigDecimal price;
 
+  @OneToOne(cascade = CascadeType.ALL)
+  private Location location;
+
   @Builder.Default
   @OneToMany(cascade = CascadeType.ALL)
   @JoinColumn(name = "ad_id")
