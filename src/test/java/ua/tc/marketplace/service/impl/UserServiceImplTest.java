@@ -105,6 +105,9 @@ class UserServiceImplTest {
             null,
             null,
             Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            null,
             null,
             null);
     // User Dto after mapping from saved entity
@@ -181,6 +184,9 @@ class UserServiceImplTest {
             null,
             null,
             Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            null,
             null,
             null);
 
@@ -196,6 +202,9 @@ class UserServiceImplTest {
             null,
             null,
             Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            null,
             null,
             null);
 
@@ -297,6 +306,9 @@ class UserServiceImplTest {
             null,
             null,
             Collections.emptyList(),
+            Collections.emptyList(),
+            Collections.emptyList(),
+            null,
             null,
             null);
 

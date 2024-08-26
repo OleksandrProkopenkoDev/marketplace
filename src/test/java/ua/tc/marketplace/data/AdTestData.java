@@ -120,6 +120,7 @@ public final class AdTestData {
         updateAdDto.title(),
         updateAdDto.description(),
         updateAdDto.price(),
+        null,
         null, // Assuming no photos in this test case
         null, // Assuming no thumbnail in this test case
         mockCategory,
