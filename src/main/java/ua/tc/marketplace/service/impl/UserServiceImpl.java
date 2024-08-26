@@ -25,9 +25,10 @@ import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.UserMapper;
 
 import java.util.stream.Collectors;
+
 /**
- * Implementation of the {@link UserService} interface.
- * Provides methods for creating, retrieving, updating, and deleting users.
+ * Implementation of the {@link UserService} interface. Provides methods for creating, retrieving,
+ * updating, and deleting users.
  */
 @RequiredArgsConstructor
 @Service
@@ -39,7 +40,6 @@ public class UserServiceImpl implements UserService {
   private final AuthenticationManager authenticationManager;
   private final JwtUtil jwtUtil;
   private final JwtConfig jwtConfig;
-  private final UserService userService;
 
   /**
    * Retrieves a paginated list of all users.
@@ -84,8 +84,7 @@ public class UserServiceImpl implements UserService {
   public UserDto createUser(CreateUserDto createUserDto) {
     User user = userMapper.toEntity(createUserDto);
     user.setPassword(passwordEncoder.encode(createUserDto.password()));
-    return userMapper.toDto(
-        userRepository.save(user));
+    return userMapper.toDto(userRepository.save(user));
   }
 
   /**
@@ -123,9 +122,8 @@ public class UserServiceImpl implements UserService {
    * @return The found User entity.
    * @throws UserNotFoundException If the user is not found.
    */
-  private User getUser (Long id){
-    return userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException(id));
+  private User getUser(Long id) {
+    return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
   }
 
   /**
@@ -137,7 +135,7 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public User findUserByEmail(String email) {
-    return userRepository.findByEmail(email).orElseThrow(()->new UserNotFoundException(email));
+    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
   }
 
   /**
@@ -150,14 +148,12 @@ public class UserServiceImpl implements UserService {
   @Override
   public AuthResponse authentificate(AuthRequest authRequest) {
     Authentication authentication =
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
     String email = authentication.getName();
-    User user = userService.findUserByEmail(email);
+    User user = findUserByEmail(email);
     String token = jwtUtil.createToken(user);
-    AuthResponse authResponse = new AuthResponse(email,token,"",jwtConfig.getTokenExpirationAfterDays() * 24L*60L*60L);
-    return authResponse;
+    return new AuthResponse(
+        email, token, "", jwtConfig.getTokenExpirationAfterDays() * 24L * 60L * 60L);
   }
-
-
 }
