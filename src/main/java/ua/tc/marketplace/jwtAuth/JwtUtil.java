@@ -15,11 +15,7 @@ import java.util.concurrent.TimeUnit;
 @AllArgsConstructor
 public class JwtUtil {
     private final JwtConfig jwtConfig;
-    private static String HEADER_NAME = jwtConfig.getAuthorizationHeader();
 
-    public JwtUtil(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
-    }
 
     public String createToken(User user) {
         Claims claims = Jwts.claims().setSubject(user.getEmail());
