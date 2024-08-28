@@ -28,4 +28,11 @@ public class ContactInfo {
   private Long id;
 
   private String phone;
+  private String email;
+  private String website;
+  private String instagram;
+  private String telegram;
+  private String facebook;
+  private String mission;
+  private String policy;
 }

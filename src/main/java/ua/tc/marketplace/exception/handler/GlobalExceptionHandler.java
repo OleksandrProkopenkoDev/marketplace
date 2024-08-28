@@ -40,6 +40,25 @@ import ua.tc.marketplace.exception.model.ErrorResponse;
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @ExceptionHandler({
+      CustomRuntimeException.class,
+      CustomIllegalStateException.class,
+      CustomIOException.class
+  })
+  protected ResponseEntity<ErrorResponse> handleCustomExceptions(
+      CustomRuntimeException ex, ServletWebRequest request) {
+    final HttpStatus status = ex.getHttpStatus();
+    final ErrorResponse errorResponseBody = buildErrorResponse(ex, request, status);
+    writeErrorLog(errorResponseBody);
+    return ResponseEntity.status(status).body(errorResponseBody);
+  }
+
+  private ErrorResponse buildErrorResponse(
+      final Exception ex, final ServletWebRequest request, final HttpStatus status) {
+    final String requestURI = getRequestURI(request);
+    return new ErrorResponse(status.value(), ex.getMessage(), requestURI);
+  }
+
+  @ExceptionHandler({
       AuthenticationException.class,
       AccessDeniedException.class,
       UsernameNotFoundException.class
@@ -57,18 +76,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return ResponseEntity.status(status).body(errorResponseBody);
   }
 
-  @ExceptionHandler({
-      CustomRuntimeException.class,
-      CustomIllegalStateException.class,
-      CustomIOException.class
-  })
-  protected ResponseEntity<ErrorResponse> handleCustomExceptions(
-      CustomRuntimeException ex, ServletWebRequest request) {
-    final HttpStatus status = ex.getHttpStatus();
-    final ErrorResponse errorResponseBody = buildErrorResponse(ex, request, status);
-    writeErrorLog(errorResponseBody);
-    return ResponseEntity.status(status).body(errorResponseBody);
-  }
+
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
@@ -92,11 +100,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseBody, headers, status);
   }
 
-  private ErrorResponse buildErrorResponse(
-      final Exception ex, final ServletWebRequest request, final HttpStatus status) {
-    final String requestURI = getRequestURI(request);
-    return new ErrorResponse(status.value(), ex.getMessage(), requestURI);
-  }
+
 
   private ErrorResponse buildErrorResponse(
       ProblemDetail detail, HttpStatus status, WebRequest request) {
