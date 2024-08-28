@@ -18,5 +18,5 @@ import ua.tc.marketplace.model.entity.Category;
  */
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-
+    boolean existsByAttributes_Id(Long attributeId);
 }

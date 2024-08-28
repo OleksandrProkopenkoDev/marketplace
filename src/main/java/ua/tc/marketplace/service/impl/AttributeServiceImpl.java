@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.tc.marketplace.exception.attribute.AttributeDeletionException;
 import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
 import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
 import ua.tc.marketplace.model.dto.attribute.AttributeDto;
@@ -12,10 +13,13 @@ import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.repository.AttributeRepository;
+import ua.tc.marketplace.repository.CategoryRepository;
 import ua.tc.marketplace.service.AttributeService;
 import ua.tc.marketplace.util.mapper.AttributeMapper;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link ua.tc.marketplace.service.AttributeService} interface for managing
@@ -33,6 +37,7 @@ public class AttributeServiceImpl implements AttributeService {
 
   private final AttributeRepository attributeRepository;
   private final AttributeMapper attributeMapper;
+  private final CategoryRepository categoryRepository;
   @Override
   public Attribute findAttributeById(Long attributeId) {
     return attributeRepository
@@ -41,9 +46,11 @@ public class AttributeServiceImpl implements AttributeService {
   }
 
   @Override
-  public Page<AttributeDto> findAll(Pageable pageable) {
+  public List<AttributeDto> findAll(Pageable pageable) {
     Page<Attribute> attributes = attributeRepository.findAll(pageable);
-    return attributes.map(attributeMapper::toDto);
+    return attributes.stream()
+            .map(attributeMapper::toDto)
+            .collect(Collectors.toList());
   }
 
   @Override
@@ -75,7 +82,17 @@ public class AttributeServiceImpl implements AttributeService {
     if (!attributeRepository.existsById(id)) {
       throw new AttributeNotFoundException(id);
     }
+
+    if (isAttributeLinkedToCategory(id)) {
+      throw new AttributeDeletionException();
+    }
+
     attributeRepository.deleteById(id);
+  }
+
+  private boolean isAttributeLinkedToCategory(Long attributeId) {
+
+    return categoryRepository.existsByAttributes_Id(attributeId);
   }
 
 

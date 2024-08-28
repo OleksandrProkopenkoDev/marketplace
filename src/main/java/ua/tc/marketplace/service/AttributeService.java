@@ -7,6 +7,8 @@ import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
 
+import java.util.List;
+
 public interface AttributeService {
 
   Attribute findAttributeById(Long attributeId);
@@ -19,5 +21,5 @@ public interface AttributeService {
 
   AttributeDto findById(Long id);
 
-  Page<AttributeDto> findAll(Pageable pageable);
+  List<AttributeDto> findAll(Pageable pageable);
 }

@@ -13,6 +13,8 @@ import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.service.AttributeService;
 
+import java.util.List;
+
 /**
  * AttributeController handles HTTP requests related to CRUD operations for the Attribute entity. It
  * provides an API for retrieving, creating, updating, and deleting attributes.
@@ -26,9 +28,9 @@ public class AttributeController {
     private final AttributeService attributeService;
 
     @GetMapping
-    public ResponseEntity<Page<AttributeDto>> getAllAttributes(Pageable pageable) {
+    public ResponseEntity<List<AttributeDto>> getAllAttributes(Pageable pageable) {
         log.info("Request to get all attributes");
-        Page<AttributeDto> attributes = attributeService.findAll(pageable);
+        List<AttributeDto> attributes = attributeService.findAll(pageable);
         log.info("Attributes were retrieved successfully");
         return ResponseEntity.ok(attributes);
     }

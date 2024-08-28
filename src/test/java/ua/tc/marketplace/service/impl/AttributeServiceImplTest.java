@@ -10,15 +10,18 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import ua.tc.marketplace.exception.attribute.AttributeDeletionException;
 import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
 import ua.tc.marketplace.model.dto.attribute.AttributeDto;
 import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.repository.AttributeRepository;
+import ua.tc.marketplace.repository.CategoryRepository;
 import ua.tc.marketplace.util.mapper.AttributeMapper;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,6 +33,9 @@ class AttributeServiceImplTest {
 
     @Mock
     private AttributeRepository attributeRepository;
+
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Mock
     private AttributeMapper attributeMapper;
@@ -79,19 +85,21 @@ class AttributeServiceImplTest {
     }
 
     @Test
-    void findAll_ShouldReturnPageOfAttributes() {
+    void findAll_ShouldReturnListOfAttributes() {
         Pageable pageable = PageRequest.of(0, 10);
         Page<Attribute> attributesPage = new PageImpl<>(Collections.singletonList(attribute));
 
         when(attributeRepository.findAll(pageable)).thenReturn(attributesPage);
         when(attributeMapper.toDto(attribute)).thenReturn(attributeDto);
 
-        Page<AttributeDto> result = attributeService.findAll(pageable);
+        List<AttributeDto> result = attributeService.findAll(pageable);
 
         assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
+        assertEquals(1, result.size());
+        assertEquals(attributeDto, result.get(0));
         verify(attributeRepository, times(1)).findAll(pageable);
     }
+
 
     @Test
     void createAttribute_ShouldReturnSavedAttribute() {
@@ -120,8 +128,11 @@ class AttributeServiceImplTest {
     }
 
     @Test
-    void deleteById_ShouldDeleteAttribute_WhenAttributeExists() {
+    void deleteById_ShouldDeleteAttribute_WhenAttributeExistsAndNotLinkedToCategory() {
+
         when(attributeRepository.existsById(1L)).thenReturn(true);
+
+        when(categoryRepository.existsByAttributes_Id(1L)).thenReturn(false);
 
         attributeService.deleteById(1L);
 
@@ -129,11 +140,17 @@ class AttributeServiceImplTest {
     }
 
     @Test
-    void deleteById_ShouldThrowException_WhenAttributeDoesNotExist() {
-        when(attributeRepository.existsById(1L)).thenReturn(false);
+    void deleteById_ShouldThrowException_WhenAttributeIsLinkedToCategory() {
 
-        assertThrows(AttributeNotFoundException.class, () -> attributeService.deleteById(1L));
-        verify(attributeRepository, times(1)).existsById(1L);
+        when(attributeRepository.existsById(1L)).thenReturn(true);
+
+        when(categoryRepository.existsByAttributes_Id(1L)).thenReturn(true);
+
+        AttributeDeletionException exception = assertThrows(AttributeDeletionException.class, () -> attributeService.deleteById(1L));
+        assertEquals("Неможливо видалити атрибут, який зв'язаний з існуючою категорією", exception.getMessage());
+
+
+        verify(attributeRepository, never()).deleteById(1L);
     }
 }
 
