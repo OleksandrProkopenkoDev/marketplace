@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ua.tc.marketplace.config.UserDetailsImpl;
+import ua.tc.marketplace.exception.model.ErrorResponse;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
+    private final UserDetailsImpl userDetails;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
@@ -35,7 +38,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             String accessToken = jwtUtil.resolveToken(request);
             if (accessToken == null ) {
-                filterChain.doFilter(request, response);
+                ErrorResponse errorResponse = new ErrorResponse(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Missing token",
+                        request.getRequestURI());
+                errorResponse.appendToResponse(response,mapper);
+                //TODO we should think of one place for errorResponse messages
                 return;
             }
             Claims claims = jwtUtil.resolveClaims(request);
@@ -43,22 +51,44 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             if(claims != null & jwtUtil.validateClaims(claims)){
                 String email = claims.getSubject();
                 Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(email,"",new ArrayList<>());
+                        new UsernamePasswordAuthenticationToken(email,"", userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+            } else {
+                ErrorResponse errorResponse = new ErrorResponse(
+                        HttpServletResponse.SC_UNAUTHORIZED,
+                        "Expired token",
+                        request.getRequestURI());
+                errorResponse.appendToResponse(response,mapper);
+                //TODO we should think of one place for errorResponse messages
+                return;
             }
 
         }catch (Exception e){
-
-            errorDetails.put("message", "Authentication Error");
-            errorDetails.put("details",e.getMessage());
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-
-            mapper.writeValue(response.getWriter(), errorDetails);
-
+//            responseErrorMessage(response,"Invalid or missing token",request.getRequestURI());
+            ErrorResponse errorResponse = new ErrorResponse(
+                    HttpServletResponse.SC_UNAUTHORIZED,
+                    "Invalid or missing token",
+                    request.getRequestURI());
+            errorResponse.appendToResponse(response,mapper);
+            return;
         }
         filterChain.doFilter(request, response);
-
-
     }
+
+    private void responseErrorMessage(HttpServletResponse response,
+                                      String message,
+                                      String requestUri) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        ErrorResponse errorResponse = new ErrorResponse(
+                HttpServletResponse.SC_UNAUTHORIZED,
+                message,
+                requestUri);
+        String errorResponseJson = mapper.writeValueAsString(errorResponse);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(errorResponseJson);
+    }
+
+
+
+
 }

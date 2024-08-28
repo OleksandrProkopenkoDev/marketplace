@@ -23,7 +23,7 @@ public class JwtUtil {
         claims.put("lastName",user.getLastName());
         Date tokenCreateTime = new Date();
         Date tokenValidity = new Date(tokenCreateTime.getTime()
-                + TimeUnit.MINUTES.toMillis(jwtConfig.getTokenExpirationAfterDays()*24*60));
+                + TimeUnit.SECONDS.toMillis(jwtConfig.getTokenExpirationAfterSeconds()));
         return Jwts.builder()
                 .setClaims(claims)
                 .setExpiration(tokenValidity)
@@ -62,21 +62,11 @@ public class JwtUtil {
         return null;
     }
 
-    public boolean validateClaims(Claims claims) throws AuthenticationException {
-        try {
+    public boolean validateClaims(Claims claims)  {
+//        try {
             return claims.getExpiration().after(new Date());
-        } catch (Exception e) {
-            throw e;
-        }
+//        } catch (Exception e) {
+//            throw e;
+//        }
     }
-
-    public String getEmail(Claims claims) {
-        return claims.getSubject();
-    }
-
-    private List<String> getRoles(Claims claims) {
-        return (List<String>) claims.get("roles");
-    }
-
-
 }

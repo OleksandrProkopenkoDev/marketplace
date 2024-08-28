@@ -2,6 +2,7 @@ package ua.tc.marketplace.util.openapi;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +26,7 @@ public interface AuthOpenApi {
           summary = "Authenticates a user",
           description = "Authenticates a user and creates jwt token.")
 //  @PostMapping("/login")
-  ResponseEntity authenticate(@RequestBody AuthRequest authRequest);
+  ResponseEntity authenticate(@RequestBody AuthRequest authRequest, HttpServletRequest request);
 
   @Operation(
       summary = "Create a new user",

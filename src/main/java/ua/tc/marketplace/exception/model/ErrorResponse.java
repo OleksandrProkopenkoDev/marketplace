@@ -1,9 +1,15 @@
 package ua.tc.marketplace.exception.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
+
+import java.io.IOException;
 import java.time.LocalDateTime;
+
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
+import org.springframework.http.MediaType;
 
 /**
  * Represents an error response returned by the API. Contains information about the error message,
@@ -33,6 +39,13 @@ public class ErrorResponse {
     this.status = status;
     this.message = message;
     this.path = path;
+  }
+
+  public void appendToResponse(HttpServletResponse response, ObjectMapper mapper) throws IOException {
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    String errorResponseJson = mapper.writeValueAsString(this);
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+    response.getWriter().write(errorResponseJson);
   }
 
 }

@@ -154,6 +154,6 @@ public class UserServiceImpl implements UserService {
     User user = findUserByEmail(email);
     String token = jwtUtil.createToken(user);
     return new AuthResponse(
-        email, token, "", jwtConfig.getTokenExpirationAfterDays() * 24L * 60L * 60L);
+        email, token, "", jwtConfig.getTokenExpirationAfterSeconds());
   }
 }

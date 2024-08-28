@@ -17,8 +17,13 @@ public class JwtConfig {
     private String secretKey;
     private String tokenPrefix;
     private Integer tokenExpirationAfterDays;
+    private static Long SECONDS_PER_DAY = 24L * 60L * 60L;
 
     public String getAuthorizationHeader() {
         return HttpHeaders.AUTHORIZATION;
+    }
+
+    public Long getTokenExpirationAfterSeconds(){
+        return tokenExpirationAfterDays * SECONDS_PER_DAY;
     }
 }
