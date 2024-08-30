@@ -1,5 +1,6 @@
 package ua.tc.marketplace.jwtAuth;
 
+import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import javax.crypto.SecretKey;
+
 @Getter
 @Setter
 @Configuration
@@ -15,6 +18,7 @@ import org.springframework.http.HttpHeaders;
 public class JwtConfig {
 
     private String secretKey;
+    private SecretKey secretKeyHmac;
     private String tokenPrefix;
     private Integer tokenExpirationAfterDays;
     private static Long SECONDS_PER_DAY = 24L * 60L * 60L;
@@ -25,5 +29,8 @@ public class JwtConfig {
 
     public Long getTokenExpirationAfterSeconds(){
         return tokenExpirationAfterDays * SECONDS_PER_DAY;
+    }
+    public SecretKey getSecretKeyHmac() {
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 }

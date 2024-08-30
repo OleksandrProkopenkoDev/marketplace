@@ -8,87 +8,55 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ua.tc.marketplace.config.UserDetailsImpl;
 import ua.tc.marketplace.exception.model.ErrorResponse;
+import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 @AllArgsConstructor
+@Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
     private final ObjectMapper mapper;
-    private final UserDetailsImpl userDetails;
+    private final UserDetailsServiceImpl userDetailsService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        Map<String, Object> errorDetails = new HashMap<>();
         try {
             String accessToken = jwtUtil.resolveToken(request);
-            if (accessToken == null ) {
-                ErrorResponse errorResponse = new ErrorResponse(
-                        HttpServletResponse.SC_UNAUTHORIZED,
-                        "Missing token",
-                        request.getRequestURI());
-                errorResponse.appendToResponse(response,mapper);
-                //TODO we should think of one place for errorResponse messages
+            if (accessToken == null) {
+                filterChain.doFilter(request, response);
                 return;
             }
             Claims claims = jwtUtil.resolveClaims(request);
-
-            if(claims != null & jwtUtil.validateClaims(claims)){
+            if (claims != null && jwtUtil.validateClaims(claims)) {
                 String email = claims.getSubject();
+                log.debug("Authorities - {}", userDetailsService.loadUserByUsername(email).getAuthorities().toString());
                 Authentication authentication =
-                        new UsernamePasswordAuthenticationToken(email,"", userDetails.getAuthorities());
+                        new UsernamePasswordAuthenticationToken(
+                                email, "",
+                                userDetailsService.loadUserByUsername(email).getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-            } else {
-                ErrorResponse errorResponse = new ErrorResponse(
-                        HttpServletResponse.SC_UNAUTHORIZED,
-                        "Expired token",
-                        request.getRequestURI());
-                errorResponse.appendToResponse(response,mapper);
-                //TODO we should think of one place for errorResponse messages
-                return;
             }
 
-        }catch (Exception e){
-//            responseErrorMessage(response,"Invalid or missing token",request.getRequestURI());
+        } catch (Exception e) {
+            log.info("Authentication error - {}", e.toString());
             ErrorResponse errorResponse = new ErrorResponse(
                     HttpServletResponse.SC_UNAUTHORIZED,
-                    "Invalid or missing token",
+                    e.getMessage(),
                     request.getRequestURI());
-            errorResponse.appendToResponse(response,mapper);
+            errorResponse.appendToResponse(response, mapper);
             return;
         }
         filterChain.doFilter(request, response);
     }
-
-    private void responseErrorMessage(HttpServletResponse response,
-                                      String message,
-                                      String requestUri) throws IOException {
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        ErrorResponse errorResponse = new ErrorResponse(
-                HttpServletResponse.SC_UNAUTHORIZED,
-                message,
-                requestUri);
-        String errorResponseJson = mapper.writeValueAsString(errorResponse);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.getWriter().write(errorResponseJson);
-    }
-
-
-
-
 }

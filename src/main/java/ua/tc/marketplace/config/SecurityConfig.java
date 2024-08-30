@@ -45,6 +45,7 @@ public class SecurityConfig {
         .cors(Customizer.withDefaults())
         .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+        .authenticationProvider(authenticationProvider())
         .authorizeHttpRequests(
             config ->
                 config
