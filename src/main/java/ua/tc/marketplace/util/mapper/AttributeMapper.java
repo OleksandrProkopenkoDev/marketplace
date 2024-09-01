@@ -6,9 +6,8 @@ import org.mapstruct.Named;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.mapstruct.Mapping;
 import ua.tc.marketplace.config.MapperConfig;
-import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
 import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
-import ua.tc.marketplace.model.dto.attribute.AttributeDto;
+import ua.tc.marketplace.model.dto.attribute.AttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
@@ -22,9 +21,9 @@ public abstract class AttributeMapper {
   @Autowired
   protected AttributeRepository attributeRepository;
 
-  public abstract AttributeDto toDto(Attribute entity);
+  public abstract AttributeDTO toDto(Attribute entity);
 
-  public abstract Attribute toEntity(AttributeDto dto);
+  public abstract Attribute toEntity(AttributeDTO dto);
 
   @Mapping(target = "id", ignore = true)
   public abstract Attribute toEntity(CreateAttributeDTO dto);

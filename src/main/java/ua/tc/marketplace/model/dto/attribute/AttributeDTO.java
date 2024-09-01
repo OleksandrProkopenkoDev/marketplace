@@ -15,7 +15,7 @@ import ua.tc.marketplace.model.enums.ValueType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AttributeDto {
+public class AttributeDTO {
 
     /**
      * Unique identifier for the classification attribute.

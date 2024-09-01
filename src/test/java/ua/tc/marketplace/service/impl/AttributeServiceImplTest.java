@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.exception.attribute.AttributeDeletionException;
 import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
-import ua.tc.marketplace.model.dto.attribute.AttributeDto;
+import ua.tc.marketplace.model.dto.attribute.AttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
@@ -44,7 +44,7 @@ class AttributeServiceImplTest {
     private AttributeServiceImpl attributeService;
 
     private Attribute attribute;
-    private AttributeDto attributeDto;
+    private AttributeDTO attributeDto;
     private CreateAttributeDTO createAttributeDTO;
     private UpdateAttributeDTO updateAttributeDTO;
 
@@ -54,7 +54,7 @@ class AttributeServiceImplTest {
         attribute.setId(1L);
         attribute.setName("Test Attribute");
 
-        attributeDto = new AttributeDto();
+        attributeDto = new AttributeDTO();
         attributeDto.setId(1L);
         attributeDto.setName("Test Attribute");
 
@@ -92,7 +92,7 @@ class AttributeServiceImplTest {
         when(attributeRepository.findAll(pageable)).thenReturn(attributesPage);
         when(attributeMapper.toDto(attribute)).thenReturn(attributeDto);
 
-        List<AttributeDto> result = attributeService.findAll(pageable);
+        List<AttributeDTO> result = attributeService.findAll(pageable);
 
         assertNotNull(result);
         assertEquals(1, result.size());
@@ -107,7 +107,7 @@ class AttributeServiceImplTest {
         when(attributeRepository.save(any(Attribute.class))).thenReturn(attribute);
         when(attributeMapper.toDto(attribute)).thenReturn(attributeDto);
 
-        AttributeDto result = attributeService.createAttribute(createAttributeDTO);
+        AttributeDTO result = attributeService.createAttribute(createAttributeDTO);
 
         assertNotNull(result);
         assertEquals(attribute.getId(), result.getId());
@@ -120,7 +120,7 @@ class AttributeServiceImplTest {
         when(attributeRepository.save(any(Attribute.class))).thenReturn(attribute);
         when(attributeMapper.toDto(attribute)).thenReturn(attributeDto);
 
-        AttributeDto result = attributeService.update(1L, updateAttributeDTO);
+        AttributeDTO result = attributeService.update(1L, updateAttributeDTO);
 
         assertNotNull(result);
         assertEquals(attribute.getId(), result.getId());
@@ -132,7 +132,7 @@ class AttributeServiceImplTest {
 
         when(attributeRepository.existsById(1L)).thenReturn(true);
 
-        when(categoryRepository.existsByAttributes_Id(1L)).thenReturn(false);
+        when(categoryRepository.existsByAttributesId(1L)).thenReturn(false);
 
         attributeService.deleteById(1L);
 
@@ -144,10 +144,10 @@ class AttributeServiceImplTest {
 
         when(attributeRepository.existsById(1L)).thenReturn(true);
 
-        when(categoryRepository.existsByAttributes_Id(1L)).thenReturn(true);
+        when(categoryRepository.existsByAttributesId(1L)).thenReturn(true);
 
         AttributeDeletionException exception = assertThrows(AttributeDeletionException.class, () -> attributeService.deleteById(1L));
-        assertEquals("Неможливо видалити атрибут, який зв'язаний з існуючою категорією", exception.getMessage());
+        assertEquals("Cannot delete an attribute that is associated with an existing category", exception.getMessage());
 
 
         verify(attributeRepository, never()).deleteById(1L);

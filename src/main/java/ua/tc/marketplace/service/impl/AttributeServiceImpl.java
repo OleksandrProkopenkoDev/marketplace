@@ -7,8 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.attribute.AttributeDeletionException;
 import ua.tc.marketplace.exception.attribute.AttributeNotFoundException;
-import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
-import ua.tc.marketplace.model.dto.attribute.AttributeDto;
+import ua.tc.marketplace.model.dto.attribute.AttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
 import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
 import ua.tc.marketplace.model.entity.Attribute;
@@ -18,7 +17,6 @@ import ua.tc.marketplace.service.AttributeService;
 import ua.tc.marketplace.util.mapper.AttributeMapper;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,7 +44,7 @@ public class AttributeServiceImpl implements AttributeService {
   }
 
   @Override
-  public List<AttributeDto> findAll(Pageable pageable) {
+  public List<AttributeDTO> findAll(Pageable pageable) {
     Page<Attribute> attributes = attributeRepository.findAll(pageable);
     return attributes.stream()
             .map(attributeMapper::toDto)
@@ -54,14 +52,14 @@ public class AttributeServiceImpl implements AttributeService {
   }
 
   @Override
-  public AttributeDto findById(Long id) {
+  public AttributeDTO findById(Long id) {
     Attribute attribute = findAttributeById(id);
     return attributeMapper.toDto(attribute);
   }
 
   @Transactional
   @Override
-  public AttributeDto createAttribute(CreateAttributeDTO attributeDto) {
+  public AttributeDTO createAttribute(CreateAttributeDTO attributeDto) {
     Attribute attribute = attributeMapper.toEntity(attributeDto);
     Attribute savedAttribute = attributeRepository.save(attribute);
     return attributeMapper.toDto(savedAttribute);
@@ -69,7 +67,7 @@ public class AttributeServiceImpl implements AttributeService {
 
   @Transactional
   @Override
-  public AttributeDto update(Long id, UpdateAttributeDTO attributeDto) {
+  public AttributeDTO update(Long id, UpdateAttributeDTO attributeDto) {
     Attribute existingAttribute = findAttributeById(id);
     attributeMapper.updateEntityFromDto(attributeDto, existingAttribute);
     Attribute updatedAttribute = attributeRepository.save(existingAttribute);
@@ -78,21 +76,21 @@ public class AttributeServiceImpl implements AttributeService {
 
   @Transactional
   @Override
-  public void deleteById(Long id) {
-    if (!attributeRepository.existsById(id)) {
-      throw new AttributeNotFoundException(id);
+  public void deleteById(Long attributeId ) {
+    if (!attributeRepository.existsById(attributeId )) {
+      throw new AttributeNotFoundException(attributeId );
     }
 
-    if (isAttributeLinkedToCategory(id)) {
+    if (isAttributeLinkedToCategory(attributeId )) {
       throw new AttributeDeletionException();
     }
 
-    attributeRepository.deleteById(id);
+    attributeRepository.deleteById(attributeId );
   }
 
   private boolean isAttributeLinkedToCategory(Long attributeId) {
 
-    return categoryRepository.existsByAttributes_Id(attributeId);
+    return categoryRepository.existsByAttributesId(attributeId);
   }
 
 
