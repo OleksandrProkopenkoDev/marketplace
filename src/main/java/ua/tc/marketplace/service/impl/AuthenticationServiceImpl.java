@@ -15,7 +15,6 @@ import ua.tc.marketplace.jwtAuth.JwtUtil;
 import ua.tc.marketplace.model.auth.AuthRequest;
 import ua.tc.marketplace.model.auth.AuthResponse;
 import ua.tc.marketplace.model.dto.user.CreateUserDto;
-import ua.tc.marketplace.model.dto.user.UserDto;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.service.UserService;
@@ -56,8 +55,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
   @Override
   public AuthResponse registerUser(CreateUserDto userDto) {
-    UserDto user = userService.createUser(userDto);
-    log.info(user.toString());
-    return authenticate(new AuthRequest(user.email(), user.password()));
+    userService.createUser(userDto);
+    return authenticate(new AuthRequest(userDto.email(), userDto.password()));
   }
 }
