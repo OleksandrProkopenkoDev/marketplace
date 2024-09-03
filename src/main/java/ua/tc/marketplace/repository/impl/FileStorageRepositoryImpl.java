@@ -69,6 +69,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
     }
   }
 
+
   @Override
   public Photo writeFile(MultipartFile file, Path path) {
     try {
@@ -140,7 +141,7 @@ public class FileStorageRepositoryImpl implements FileStorageRepository {
   }
 
   private SimpleFileVisitor<Path> getVisitor() {
-    return new SimpleFileVisitor<Path>() {
+    return new SimpleFileVisitor<>() {
       @Override
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         Files.delete(file);
