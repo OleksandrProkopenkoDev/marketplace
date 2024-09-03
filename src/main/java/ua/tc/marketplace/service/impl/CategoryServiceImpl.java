@@ -5,8 +5,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.tc.marketplace.exception.category.AttributeNotFoundException;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
+import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
@@ -62,29 +62,18 @@ public class CategoryServiceImpl implements CategoryService {
   public CategoryDto createCategory(CreateCategoryDto categoryDto) {
     List<Long> attributeIds = categoryDto.getAttributeIds();
 
-    Set<Long> notFoundIds = attributeIds.stream()
-            .filter(id -> !attributeRepository.existsById(id))
-            .collect(Collectors.toSet());
-
-    if (!notFoundIds.isEmpty()) {
-      throw new AttributeNotFoundException(notFoundIds);
-    }
+    invalidAttribute(attributeIds);
     Category category = categoryMapper.toEntity(categoryDto);
     Category savedCategory = categoryRepository.save(category);
     return categoryMapper.toCategoryDto(savedCategory);
   }
 
+
   @Transactional
   @Override
   public CategoryDto update(Long id, UpdateCategoryDto categoryDto) {
     List<Long> attributeIds = categoryDto.getAttributeIds();
-    Set<Long> notFoundIds = attributeIds.stream()
-            .filter(ids -> !attributeRepository.existsById(ids))
-            .collect(Collectors.toSet());
-
-    if (!notFoundIds.isEmpty()) {
-      throw new AttributeNotFoundException(notFoundIds);
-    }
+    invalidAttribute(attributeIds);
     Category existingCategory = findCategoryById(id);
     categoryMapper.updateEntityFromDto(existingCategory, categoryDto);
     Category updatedCategory = categoryRepository.save(existingCategory);
@@ -99,4 +88,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
     categoryRepository.deleteById(id);
   }
+
+  private void invalidAttribute(List<Long> attributeIds) {
+    Set<Long> notFoundIds = attributeIds.stream()
+            .filter(id -> !attributeRepository.existsById(id))
+            .collect(Collectors.toSet());
+
+    if (!notFoundIds.isEmpty()) {
+      throw new InvalidAttributeIdsException(notFoundIds);
+    }
+  }
+
 }
