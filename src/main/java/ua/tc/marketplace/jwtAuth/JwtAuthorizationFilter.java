@@ -49,7 +49,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             }
 
         } catch (Exception e) {
-            log.info("Authentication error - {}", e.toString());
+            log.error("Authentication error - {}", e.getMessage());
             ErrorResponse errorResponse = new ErrorResponse(
                     HttpServletResponse.SC_UNAUTHORIZED,
                     e.getMessage(),

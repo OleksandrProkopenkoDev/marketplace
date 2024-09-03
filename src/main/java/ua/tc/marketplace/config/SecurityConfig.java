@@ -53,6 +53,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, CREATE_USER_POST_URL)
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/ad", "/api/v1/ad/{adId}")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .formLogin(formLogin -> formLogin.permitAll().defaultSuccessUrl(DEFAULT_SUCCESS_PAGE));

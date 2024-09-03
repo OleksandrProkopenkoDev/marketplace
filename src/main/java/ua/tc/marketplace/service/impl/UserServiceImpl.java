@@ -1,16 +1,20 @@
 package ua.tc.marketplace.service.impl;
 
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.tc.marketplace.exception.auth.BadCredentialsAuthenticationException;
+import ua.tc.marketplace.exception.auth.GeneralAuthenticationException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
 import ua.tc.marketplace.jwtAuth.JwtConfig;
 import ua.tc.marketplace.jwtAuth.JwtUtil;
@@ -23,8 +27,6 @@ import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.UserMapper;
-
-import java.util.stream.Collectors;
 
 /**
  * Implementation of the {@link UserService} interface. Provides methods for creating, retrieving,
@@ -116,17 +118,6 @@ public class UserServiceImpl implements UserService {
   }
 
   /**
-   * Retrieves a user by their ID, throwing a UserNotFoundException if not found.
-   *
-   * @param id The ID of the user to retrieve.
-   * @return The found User entity.
-   * @throws UserNotFoundException If the user is not found.
-   */
-  private User getUser(Long id) {
-    return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
-  }
-
-  /**
    * Retrieves a user by their ID.
    *
    * @param email The email of the user to retrieve.
@@ -147,13 +138,29 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public AuthResponse authentificate(AuthRequest authRequest) {
-    Authentication authentication =
-        authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
-    String email = authentication.getName();
-    User user = findUserByEmail(email);
-    String token = jwtUtil.createToken(user);
-    return new AuthResponse(
-        email, token, "", jwtConfig.getTokenExpirationAfterSeconds());
+    try {
+      Authentication authentication =
+          authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
+      String email = authentication.getName();
+      User user = findUserByEmail(email);
+      String token = jwtUtil.createToken(user);
+      return new AuthResponse(email, token, "", jwtConfig.getTokenExpirationAfterSeconds());
+    } catch (BadCredentialsException e) {
+      throw new BadCredentialsAuthenticationException();
+    } catch (Exception e) {
+      throw new GeneralAuthenticationException(e.getMessage());
+    }
+  }
+
+  /**
+   * Retrieves a user by their ID, throwing a UserNotFoundException if not found.
+   *
+   * @param id The ID of the user to retrieve.
+   * @return The found User entity.
+   * @throws UserNotFoundException If the user is not found.
+   */
+  private User getUser(Long id) {
+    return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
   }
 }

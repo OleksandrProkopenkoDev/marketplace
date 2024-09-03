@@ -40,21 +40,11 @@ public class JwtUtil {
     }
 
     public Claims resolveClaims(HttpServletRequest request) {
-//        try {
         String token = resolveToken(request);
         if (token != null) {
             return parseJwtClaims(token);
         }
         return null;
-//        } catch (ExpiredJwtException ex) {
-//            log.debug("Expired exception - {}", ex.getMessage());
-//            request.setAttribute("expired", ex.getMessage());
-//            throw ex;
-//        } catch (Exception ex) {
-//            log.debug("invalid exception - {}", ex.getMessage());
-//            request.setAttribute("invalid", ex.getMessage());
-//            throw ex;
-//        }
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -67,10 +57,7 @@ public class JwtUtil {
     }
 
     public boolean validateClaims(Claims claims) {
-//        try {
         return claims.getExpiration().after(new Date());
-//        } catch (Exception e) {
-//            throw e;
-//        }
+
     }
 }
