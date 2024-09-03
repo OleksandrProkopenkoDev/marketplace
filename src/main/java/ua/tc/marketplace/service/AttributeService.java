@@ -1,24 +1,22 @@
 package ua.tc.marketplace.service;
 
-import org.springframework.data.domain.Pageable;
-import ua.tc.marketplace.model.dto.attribute.AttributeDTO;
-import ua.tc.marketplace.model.dto.attribute.CreateAttributeDTO;
-import ua.tc.marketplace.model.dto.attribute.UpdateAttributeDTO;
-import ua.tc.marketplace.model.entity.Attribute;
-
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import ua.tc.marketplace.model.dto.attribute.AttributeDto;
+import ua.tc.marketplace.model.dto.attribute.AttributeRequest;
+import ua.tc.marketplace.model.entity.Attribute;
 
 public interface AttributeService {
 
   Attribute findAttributeById(Long attributeId);
 
-  AttributeDTO update(Long id, UpdateAttributeDTO attributeDto);
+  AttributeDto update(Long id, AttributeRequest attributeDto);
 
   void deleteById(Long id);
 
-  AttributeDTO createAttribute(CreateAttributeDTO attributeDto);
+  AttributeDto createAttribute(AttributeRequest attributeDto);
 
-  AttributeDTO findById(Long id);
+  AttributeDto findById(Long id);
 
-  List<AttributeDTO> findAll(Pageable pageable);
+  List<AttributeDto> findAll(Pageable pageable);
 }

@@ -1,6 +1,5 @@
 package ua.tc.marketplace.model.dto.attribute;
 
-
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,7 +14,7 @@ import ua.tc.marketplace.model.enums.ValueType;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateAttributeDTO {
+public class AttributeRequest {
 
 
     @NotNull(message = "Attribute name cannot be null")

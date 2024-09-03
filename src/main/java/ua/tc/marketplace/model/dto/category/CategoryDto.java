@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ua.tc.marketplace.model.dto.attribute.AttributeDTO;
+import ua.tc.marketplace.model.dto.attribute.AttributeDto;
 
 import java.util.List;
 
@@ -38,5 +38,5 @@ public class CategoryDto {
      */
     @NotNull(message = "Classification attributes cannot be null")
     @NotEmpty(message = "Classification attributes cannot be empty")
-    private List<AttributeDTO> attribute = new ArrayList<>();
+    private List<AttributeDto> attribute = new ArrayList<>();
 }
