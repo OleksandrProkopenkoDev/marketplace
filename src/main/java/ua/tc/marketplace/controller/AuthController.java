@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ua.tc.marketplace.model.auth.AuthRequest;
 import ua.tc.marketplace.model.auth.AuthResponse;
 import ua.tc.marketplace.model.dto.user.CreateUserDto;
-import ua.tc.marketplace.model.dto.user.UserDto;
-import ua.tc.marketplace.service.UserService;
+import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.util.openapi.AuthOpenApi;
 
 @RestController
@@ -20,18 +19,18 @@ import ua.tc.marketplace.util.openapi.AuthOpenApi;
 @RequiredArgsConstructor
 public class AuthController implements AuthOpenApi {
 
-  private final UserService userService;
+  private final AuthenticationService authenticationService;
 
   @Override
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody AuthRequest authRequest) {
 
-    return ResponseEntity.ok(userService.authentificate(authRequest));
+    return ResponseEntity.ok(authenticationService.authenticate(authRequest));
   }
 
   @Override
   @PostMapping("/signup")
-  public ResponseEntity<UserDto> createUser(@Valid @RequestBody CreateUserDto userDto) {
-    return ResponseEntity.status(HttpStatus.OK).body(userService.createUser(userDto));
+  public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody CreateUserDto userDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(authenticationService.registerUser(userDto));
   }
 }

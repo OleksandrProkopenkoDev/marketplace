@@ -6,20 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.tc.marketplace.exception.auth.BadCredentialsAuthenticationException;
-import ua.tc.marketplace.exception.auth.GeneralAuthenticationException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
-import ua.tc.marketplace.jwtAuth.JwtConfig;
-import ua.tc.marketplace.jwtAuth.JwtUtil;
-import ua.tc.marketplace.model.auth.AuthRequest;
-import ua.tc.marketplace.model.auth.AuthResponse;
 import ua.tc.marketplace.model.dto.user.CreateUserDto;
 import ua.tc.marketplace.model.dto.user.UpdateUserDto;
 import ua.tc.marketplace.model.dto.user.UserDto;
@@ -39,9 +29,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
-  private final AuthenticationManager authenticationManager;
-  private final JwtUtil jwtUtil;
-  private final JwtConfig jwtConfig;
+
 
   /**
    * Retrieves a paginated list of all users.
@@ -75,18 +63,17 @@ public class UserServiceImpl implements UserService {
     return getUser(id);
   }
 
+
   /**
-   * Creates a new user.
+   * Retrieves a user by their ID.
    *
-   * @param createUserDto The DTO containing user information for creation.
-   * @return The created UserDto.
+   * @param email The email of the user to retrieve.
+   * @return The UserDto representing the found user.
+   * @throws UserNotFoundException If the user is not found.
    */
-  @Transactional
   @Override
-  public UserDto createUser(CreateUserDto createUserDto) {
-    User user = userMapper.toEntity(createUserDto);
-    user.setPassword(passwordEncoder.encode(createUserDto.password()));
-    return userMapper.toDto(userRepository.save(user));
+  public User findUserByEmail(String email) {
+    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
   }
 
   /**
@@ -116,41 +103,18 @@ public class UserServiceImpl implements UserService {
     User existingUser = getUser(id);
     userRepository.deleteById(existingUser.getId());
   }
-
   /**
-   * Retrieves a user by their ID.
+   * Creates a new user.
    *
-   * @param email The email of the user to retrieve.
-   * @return The UserDto representing the found user.
-   * @throws UserNotFoundException If the user is not found.
+   * @param createUserDto The DTO containing user information for creation.
+   * @return The created UserDto.
    */
+  @Transactional
   @Override
-  public User findUserByEmail(String email) {
-    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
-  }
-
-  /**
-   * Authentificats a user/
-   *
-   * @param authRequest The email of the user to retrieve.
-   * @return The UserDto representing the found user.
-   * @throws UserNotFoundException If the user is not found.
-   */
-  @Override
-  public AuthResponse authentificate(AuthRequest authRequest) {
-    try {
-      Authentication authentication =
-          authenticationManager.authenticate(
-              new UsernamePasswordAuthenticationToken(authRequest.email(), authRequest.password()));
-      String email = authentication.getName();
-      User user = findUserByEmail(email);
-      String token = jwtUtil.createToken(user);
-      return new AuthResponse(email, token, "", jwtConfig.getTokenExpirationAfterSeconds());
-    } catch (BadCredentialsException e) {
-      throw new BadCredentialsAuthenticationException();
-    } catch (Exception e) {
-      throw new GeneralAuthenticationException(e.getMessage());
-    }
+  public UserDto createUser(CreateUserDto createUserDto) {
+    User user = userMapper.toEntity(createUserDto);
+    user.setPassword(passwordEncoder.encode(createUserDto.password()));
+    return userMapper.toDto(userRepository.save(user));
   }
 
   /**
