@@ -24,7 +24,6 @@ public class AuthController implements AuthOpenApi {
   @Override
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> authenticate(@Valid @RequestBody AuthRequest authRequest) {
-
     return ResponseEntity.ok(authenticationService.authenticate(authRequest));
   }
 
