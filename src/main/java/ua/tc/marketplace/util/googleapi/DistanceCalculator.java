@@ -7,8 +7,29 @@ import com.google.maps.model.DistanceMatrix;
 public class DistanceCalculator {
   public static void main(String[] args) {
     String apiKey = "AIzaSyB_PrwoGyWWCRmC8kpcJRtBSUn6iGfd4Vo";
-    String originAddress = "1600 Amphitheatre Parkway, Mountain View, CA";
-    String destinationAddress = "Times Square, New York, NY";
+    /*
+        * Kyiv (Capital) Address:
+
+    Ukrainian: "вул. Хрещатик, 22, Київ, Україна, 01001"
+    Transliterated: "Khreshchatyk St, 22, Kyiv, Ukraine, 01001"
+    Lviv Address:
+
+    Ukrainian: "пл. Ринок, 1, Львів, Україна, 79000"
+    Transliterated: "Rynok Square, 1, Lviv, Ukraine, 79000"
+    Odessa Address:
+
+    Ukrainian: "вул. Дерибасівська, 10, Одеса, Україна, 65000"
+    Transliterated: "Deribasivska St, 10, Odessa, Ukraine, 65000"
+    Kharkiv Address:
+
+    Ukrainian: "просп. Науки, 14, Харків, Україна, 61000"
+    Transliterated: "Nauky Ave, 14, Kharkiv, Ukraine, 61000"
+    Dnipro Address:
+
+    Ukrainian: "вул. Дмитра Яворницького, 1, Дніпро, Україна, 49000"
+    Transliterated: "Dmytro Yavornytskoho St, 1, Dnipro, Ukraine, 49000"*/
+    String originAddress = "Одеса";
+    String destinationAddress = "Львів";
 
     try {
       GeoApiContext geoApiContext = new GeoApiContext.Builder().apiKey(apiKey).build();
