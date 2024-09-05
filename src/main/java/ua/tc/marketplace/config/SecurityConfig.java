@@ -44,6 +44,8 @@ public class SecurityConfig {
   public static final String SWAGGER_DOCS = "/v3/api-docs/**";
   public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
   public static final String SWAGGER_UI_MAIN = "/swagger-ui.html";
+  public static final String GET_ALL_PHOTO = "/api/v1/photo/ad/{adId}";
+
   private static final String[] WHITELIST = {
     DEFAULT_SUCCESS_PAGE,
     SWAGGER_DOCS,
@@ -74,7 +76,13 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, CREATE_USER_POST_URL)
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/ad", "/api/v1/ad/{adId}")
+                    .requestMatchers(
+                        HttpMethod.GET,
+                        "/api/v1/ad",
+                        "/api/v1/ad/{adId}",
+                        "/api/v1/photo/ad/{adId}",
+                        "/api/v1/file/ad/{adId}",
+                        "/api/v1/file/ad/{adId}/photo/{photoId}")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -83,7 +91,8 @@ public class SecurityConfig {
             logout ->
                 logout
                     .logoutUrl(LOGOUT_URL)
-//                    .logoutSuccessUrl(LOGOUT_SUCCESS_URL) // Redirect after successful logout
+                    //                    .logoutSuccessUrl(LOGOUT_SUCCESS_URL) // Redirect after
+                    // successful logout
                     .invalidateHttpSession(true) // Invalidate session
                     .clearAuthentication(true) // Clear authentication
                     .deleteCookies("JSESSIONID") // If using cookies
