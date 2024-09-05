@@ -1,7 +1,7 @@
 package ua.tc.marketplace.config;
 
-import lombok.AllArgsConstructor;
 import java.util.List;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,10 +19,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ua.tc.marketplace.jwtAuth.JwtAuthorizationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import ua.tc.marketplace.jwtAuth.JwtAuthorizationFilter;
 import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
 @EnableWebSecurity
@@ -38,6 +38,8 @@ public class SecurityConfig {
   private static final String DEFAULT_SUCCESS_PAGE = GET_ONE_DEMO_URL;
   private static final String CREATE_USER_POST_URL = "/api/v1/user/signup";
   public static final String LOGIN_URL = "/api/v1/user/login";
+  public static final String LOGOUT_URL = "/api/v1/user/logout";
+  public static final String LOGOUT_SUCCESS_URL = LOGIN_URL;
   public static final String GET_ALL_DEMO_URL = "/api/v1/demo/all";
   public static final String SWAGGER_DOCS = "/v3/api-docs/**";
   public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
@@ -76,7 +78,16 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .formLogin(formLogin -> formLogin.permitAll().defaultSuccessUrl(DEFAULT_SUCCESS_PAGE));
+        .formLogin(formLogin -> formLogin.permitAll().defaultSuccessUrl(DEFAULT_SUCCESS_PAGE))
+        .logout(
+            logout ->
+                logout
+                    .logoutUrl(LOGOUT_URL)
+//                    .logoutSuccessUrl(LOGOUT_SUCCESS_URL) // Redirect after successful logout
+                    .invalidateHttpSession(true) // Invalidate session
+                    .clearAuthentication(true) // Clear authentication
+                    .deleteCookies("JSESSIONID") // If using cookies
+                    .permitAll());
     return http.build();
   }
 
