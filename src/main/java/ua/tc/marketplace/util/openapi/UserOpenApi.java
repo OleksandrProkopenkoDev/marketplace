@@ -42,12 +42,6 @@ public interface UserOpenApi {
   ResponseEntity<UserDto> getUserById(@PathVariable Long id);
 
   @Operation(
-      summary = "Create a new user",
-      description = "Creates a new user based on the provided data.")
-  @PostMapping
-  ResponseEntity<UserDto> createUser( @Valid @RequestBody CreateUserDto userDto);
-
-  @Operation(
       summary = "Updates an existing user",
       description = "Updates an existing user with the provided data.")
   @PutMapping()

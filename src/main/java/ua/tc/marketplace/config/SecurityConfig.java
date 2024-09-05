@@ -1,5 +1,6 @@
 package ua.tc.marketplace.config;
 
+import lombok.AllArgsConstructor;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,10 +13,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ua.tc.marketplace.jwtAuth.JwtAuthorizationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -24,6 +28,7 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
+@AllArgsConstructor
 public class SecurityConfig {
 
   private static final String ALL_URL = "/**";
@@ -35,7 +40,10 @@ public class SecurityConfig {
   public static final String SWAGGER_DOCS = "/v3/api-docs/**";
   public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
   public static final String SWAGGER_UI_MAIN = "/swagger-ui.html";
+  private final JwtAuthorizationFilter jwtAuthorizationFilter;
+  private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
   private static final String[] WHITELIST = {
+    "/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE, "/api/v1/user/login"
     SWAGGER_DOCS,
     SWAGGER_UI_PAGES,
     SWAGGER_UI_MAIN,
@@ -44,6 +52,7 @@ public class SecurityConfig {
     LOGIN_URL,
     DEFAULT_SUCCESS_PAGE
   };
+  private static final String CREATE_USER_POST_URL = "/api/v1/user/signup";
 
   @Bean
   public UserDetailsService userDetailsService() {
@@ -52,8 +61,11 @@ public class SecurityConfig {
 
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
     http.csrf(AbstractHttpConfigurer::disable)
+        .cors(Customizer.withDefaults())
+        .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
+        .authenticationProvider(authenticationProvider())
         .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(
             config ->
@@ -84,6 +96,7 @@ public class SecurityConfig {
   }
 
   @Bean
+  AuthenticationManager authenticationManager(
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of("*"));
