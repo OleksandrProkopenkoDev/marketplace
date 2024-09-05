@@ -31,19 +31,19 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @AllArgsConstructor
 public class SecurityConfig {
 
+  private final JwtAuthorizationFilter jwtAuthorizationFilter;
+
   private static final String ALL_URL = "/**";
   public static final String GET_ONE_DEMO_URL = "/api/v1/demo";
   private static final String DEFAULT_SUCCESS_PAGE = GET_ONE_DEMO_URL;
-  private static final String CREATE_USER_POST_URL = "/api/v1/user";
-  public static final String LOGIN_URL = "/api/v1/auth/login";
+  private static final String CREATE_USER_POST_URL = "/api/v1/user/signup";
+  public static final String LOGIN_URL = "/api/v1/user/login";
   public static final String GET_ALL_DEMO_URL = "/api/v1/demo/all";
   public static final String SWAGGER_DOCS = "/v3/api-docs/**";
   public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
   public static final String SWAGGER_UI_MAIN = "/swagger-ui.html";
-  private final JwtAuthorizationFilter jwtAuthorizationFilter;
-  private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
   private static final String[] WHITELIST = {
-    "/v3/api-docs/**", "/swagger-ui/**", DEFAULT_SUCCESS_PAGE, "/api/v1/user/login"
+    DEFAULT_SUCCESS_PAGE,
     SWAGGER_DOCS,
     SWAGGER_UI_PAGES,
     SWAGGER_UI_MAIN,
@@ -52,7 +52,6 @@ public class SecurityConfig {
     LOGIN_URL,
     DEFAULT_SUCCESS_PAGE
   };
-  private static final String CREATE_USER_POST_URL = "/api/v1/user/signup";
 
   @Bean
   public UserDetailsService userDetailsService() {
@@ -62,7 +61,6 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-        .cors(Customizer.withDefaults())
         .sessionManagement(config -> config.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
         .authenticationProvider(authenticationProvider())
@@ -96,7 +94,6 @@ public class SecurityConfig {
   }
 
   @Bean
-  AuthenticationManager authenticationManager(
   public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of("*"));
