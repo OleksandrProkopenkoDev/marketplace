@@ -1,13 +1,12 @@
 package ua.tc.marketplace.config;
 
-import jakarta.annotation.Nonnull;
+import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,8 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
 @EnableWebSecurity
@@ -26,19 +26,24 @@ import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-  private static final String PERMIT_ALL = "/**";
-  private static final String DEFAULT_SUCCESS_PAGE = "/api/v1/demo";
+  private static final String ALL_URL = "/**";
+  public static final String GET_ONE_DEMO_URL = "/api/v1/demo";
+  private static final String DEFAULT_SUCCESS_PAGE = GET_ONE_DEMO_URL;
+  private static final String CREATE_USER_POST_URL = "/api/v1/user";
+  public static final String LOGIN_URL = "/api/v1/auth/login";
+  public static final String GET_ALL_DEMO_URL = "/api/v1/demo/all";
+  public static final String SWAGGER_DOCS = "/v3/api-docs/**";
+  public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
+  public static final String SWAGGER_UI_MAIN = "/swagger-ui.html";
   private static final String[] WHITELIST = {
-    "/v3/api-docs/**",
-    "/swagger-ui/**",
-    "/swagger-ui.html",
-    "/api/v1/demo",
-    "/api/v1/demo/all",
-    "/api/v1/auth/login",
-    PERMIT_ALL,
+    SWAGGER_DOCS,
+    SWAGGER_UI_PAGES,
+    SWAGGER_UI_MAIN,
+    GET_ONE_DEMO_URL,
+    GET_ALL_DEMO_URL,
+    LOGIN_URL,
     DEFAULT_SUCCESS_PAGE
   };
-  private static final String CREATE_USER_POST_URL = "/api/v1/user";
 
   @Bean
   public UserDetailsService userDetailsService() {
@@ -49,13 +54,15 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
     http.csrf(AbstractHttpConfigurer::disable)
-        .cors(Customizer.withDefaults())
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
         .authorizeHttpRequests(
             config ->
                 config
                     .requestMatchers(WHITELIST)
                     .permitAll()
                     .requestMatchers(HttpMethod.POST, CREATE_USER_POST_URL)
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/ad", "/api/v1/ad/{adId}")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
@@ -77,18 +84,16 @@ public class SecurityConfig {
   }
 
   @Bean
-  public WebMvcConfigurer corsConfigurer() {
-    return new WebMvcConfigurer() {
-      @Override
-      public void addCorsMappings(@Nonnull CorsRegistry registry) {
-        registry
-            .addMapping("/**")
-            .allowedOrigins("*")
-            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD")
-            .allowedHeaders("*")
-            .allowCredentials(false);
-      }
-    };
+  public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowedOrigins(List.of("*"));
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD"));
+    configuration.setAllowedHeaders(List.of("*"));
+    configuration.setAllowCredentials(false);
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration(ALL_URL, configuration);
+    return source;
   }
 
   @Bean
