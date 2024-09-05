@@ -6,7 +6,7 @@ import com.google.maps.model.DistanceMatrix;
 
 public class DistanceCalculator {
   public static void main(String[] args) {
-    String apiKey = "AIzaSyB_PrwoGyWWCRmC8kpcJRtBSUn6iGfd4Vo";
+    String apiKey = "key";
     /*
         * Kyiv (Capital) Address:
 
