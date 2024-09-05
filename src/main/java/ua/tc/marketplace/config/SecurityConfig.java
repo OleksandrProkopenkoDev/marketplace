@@ -82,7 +82,8 @@ public class SecurityConfig {
                         "/api/v1/ad/{adId}",
                         "/api/v1/photo/ad/{adId}",
                         "/api/v1/file/ad/{adId}",
-                        "/api/v1/file/ad/{adId}/photo/{photoId}")
+                        "/api/v1/file/ad/{adId}/photo/{photoId}",
+                        "/api/v1/category")
                     .permitAll()
                     .anyRequest()
                     .authenticated())
