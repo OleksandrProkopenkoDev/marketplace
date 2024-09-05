@@ -1,5 +1,6 @@
 package ua.tc.marketplace.service.impl;
 
+import java.util.stream.Collectors;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,10 +18,9 @@ import ua.tc.marketplace.repository.UserRepository;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.UserMapper;
 
-import java.util.stream.Collectors;
 /**
- * Implementation of the {@link UserService} interface.
- * Provides methods for creating, retrieving, updating, and deleting users.
+ * Implementation of the {@link UserService} interface. Provides methods for creating, retrieving,
+ * updating, and deleting users.
  */
 @RequiredArgsConstructor
 @Service
@@ -29,6 +29,7 @@ public class UserServiceImpl implements UserService {
   private final UserRepository userRepository;
   private final UserMapper userMapper;
   private final PasswordEncoder passwordEncoder;
+
 
   /**
    * Retrieves a paginated list of all users.
@@ -62,19 +63,17 @@ public class UserServiceImpl implements UserService {
     return getUser(id);
   }
 
+
   /**
-   * Creates a new user.
+   * Retrieves a user by their ID.
    *
-   * @param createUserDto The DTO containing user information for creation.
-   * @return The created UserDto.
+   * @param email The email of the user to retrieve.
+   * @return The UserDto representing the found user.
+   * @throws UserNotFoundException If the user is not found.
    */
-  @Transactional
   @Override
-  public UserDto createUser(CreateUserDto createUserDto) {
-    User user = userMapper.toEntity(createUserDto);
-    user.setPassword(passwordEncoder.encode(createUserDto.password()));
-    return userMapper.toDto(
-        userRepository.save(user));
+  public User findUserByEmail(String email) {
+    return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email));
   }
 
   /**
@@ -104,6 +103,19 @@ public class UserServiceImpl implements UserService {
     User existingUser = getUser(id);
     userRepository.deleteById(existingUser.getId());
   }
+  /**
+   * Creates a new user.
+   *
+   * @param createUserDto The DTO containing user information for creation.
+   * @return The created UserDto.
+   */
+  @Transactional
+  @Override
+  public UserDto createUser(CreateUserDto createUserDto) {
+    User user = userMapper.toEntity(createUserDto);
+    user.setPassword(passwordEncoder.encode(createUserDto.password()));
+    return userMapper.toDto(userRepository.save(user));
+  }
 
   /**
    * Retrieves a user by their ID, throwing a UserNotFoundException if not found.
@@ -112,10 +124,7 @@ public class UserServiceImpl implements UserService {
    * @return The found User entity.
    * @throws UserNotFoundException If the user is not found.
    */
-  private User getUser (Long id){
-    return userRepository.findById(id)
-        .orElseThrow(() -> new UserNotFoundException(id));
+  private User getUser(Long id) {
+    return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
   }
-
-
 }

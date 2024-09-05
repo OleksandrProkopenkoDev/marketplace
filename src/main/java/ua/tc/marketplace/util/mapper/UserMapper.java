@@ -1,8 +1,10 @@
 package ua.tc.marketplace.util.mapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -23,33 +25,36 @@ import ua.tc.marketplace.model.enums.UserRole;
 @Mapper(config = MapperConfig.class)
 public interface UserMapper {
 
-  @Mapping(target = "favoriteAdIds", source = "favorites", qualifiedByName = "mapAdsToIds")
-  UserDto toDto(User entity);
+    @Mapping(target = "favoriteAdIds", source = "favorites", qualifiedByName = "mapAdsToIds")
+    UserDto toDto(User entity);
 
-  @Mapping(target = "updatedAt", ignore = true)
-  @Mapping(target = "profilePicture", ignore = true)
-  @Mapping(target = "favorites", ignore = true)
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(target = "id", ignore = true)
-  User toEntity(CreateUserDto dto);
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "profilePicture", ignore = true)
+    @Mapping(target = "favorites", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    User toEntity(CreateUserDto dto);
 
-  @Mapping(target = "updatedAt", ignore = true)
-  @Mapping(target = "profilePicture", ignore = true)
-  @Mapping(target = "createdAt", ignore = true)
-  @Mapping(
-      target = "userRole",
-      source = "userRole",
-      qualifiedByName = "mapUserRoleFromStringToEnum")
-  @Mapping(target = "password", ignore = true)
-  void updateEntityFromDto(@MappingTarget User user, UpdateUserDto userDto);
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "profilePicture", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(
+            target = "userRole",
+            source = "userRole",
+            qualifiedByName = "mapUserRoleFromStringToEnum")
+    @Mapping(target = "password", ignore = true)
+    void updateEntityFromDto(@MappingTarget User user, UpdateUserDto userDto);
 
-  @Named("mapUserRoleFromStringToEnum")
-  default UserRole mapUserRoleFromStringToEnum(String userRole) {
-    return UserRole.valueOf(userRole.toUpperCase(Locale.ROOT));
-  }
+    @Named("mapUserRoleFromStringToEnum")
+    default UserRole mapUserRoleFromStringToEnum(String userRole) {
+        return UserRole.valueOf(userRole.toUpperCase(Locale.ROOT));
+    }
 
-  @Named("mapAdsToIds")
-  default List<Long> mapAdsToIds(List<Ad> ads) {
-    return ads.stream().map(Ad::getId).collect(Collectors.toList());
-  }
+    @Named("mapAdsToIds")
+    default List<Long> mapAdsToIds(List<Ad> ads) {
+        if (ads == null) {
+            ads = Collections.emptyList();
+        }
+        return ads.stream().map(Ad::getId).collect(Collectors.toList());
+    }
 }
