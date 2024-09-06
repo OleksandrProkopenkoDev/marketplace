@@ -14,10 +14,14 @@ import ua.tc.marketplace.exception.model.CustomRuntimeException;
  */
 public class UserNotFoundException extends CustomRuntimeException {
 
-  private static final String ERROR_MESSAGE = "User with id %s is not found.";
+  private static final String ERROR_MESSAGE_BY_ID = "User with id %s is not found.";
+  private static final String ERROR_MESSAGE_BY_EMAIL = "User with email %s is not found.";
   private static final HttpStatus STATUS = HttpStatus.NOT_FOUND;
 
   public UserNotFoundException(Long userId) {
-    super(ERROR_MESSAGE.formatted(userId), STATUS);
+    super(ERROR_MESSAGE_BY_ID.formatted(userId), STATUS);
+  }
+  public UserNotFoundException(String email) {
+    super(ERROR_MESSAGE_BY_EMAIL.formatted(email), STATUS);
   }
 }
