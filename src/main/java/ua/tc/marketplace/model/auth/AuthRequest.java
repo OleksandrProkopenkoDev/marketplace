@@ -10,4 +10,14 @@ import jakarta.validation.constraints.Size;
  * characters long and cannot be blank.
  */
 public record AuthRequest(
-    @NotBlank @Email String email, @NotBlank @Size(min = 8, max = 24) String password) {}
+    @NotBlank @Email String email, @NotBlank @Size(min = 8, max = 24) String password) {
+
+  @Override
+  public String toString() {
+    String hiddenPassword = "*".repeat(password.length());
+    return "AuthRequest{" +
+        "email='" + email + '\'' +
+        ", password='" + hiddenPassword + '\'' +
+        '}';
+  }
+}

@@ -1,7 +1,9 @@
 package ua.tc.marketplace.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -25,6 +27,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import ua.tc.marketplace.jwtAuth.JwtAuthorizationFilter;
 import ua.tc.marketplace.service.impl.UserDetailsServiceImpl;
 
+@Slf4j
 @EnableWebSecurity
 @Configuration
 @EnableMethodSecurity
@@ -39,12 +42,10 @@ public class SecurityConfig {
   private static final String CREATE_USER_POST_URL = "/api/v1/user/signup";
   public static final String LOGIN_URL = "/api/v1/user/login";
   public static final String LOGOUT_URL = "/api/v1/user/logout";
-  public static final String LOGOUT_SUCCESS_URL = LOGIN_URL;
   public static final String GET_ALL_DEMO_URL = "/api/v1/demo/all";
   public static final String SWAGGER_DOCS = "/v3/api-docs/**";
   public static final String SWAGGER_UI_PAGES = "/swagger-ui/**";
   public static final String SWAGGER_UI_MAIN = "/swagger-ui.html";
-  public static final String GET_ALL_PHOTO = "/api/v1/photo/ad/{adId}";
 
   private static final String[] WHITELIST = {
     DEFAULT_SUCCESS_PAGE,
@@ -87,16 +88,16 @@ public class SecurityConfig {
                     .permitAll()
                     .anyRequest()
                     .authenticated())
-        .formLogin(formLogin -> formLogin.permitAll().defaultSuccessUrl(DEFAULT_SUCCESS_PAGE))
         .logout(
             logout ->
                 logout
                     .logoutUrl(LOGOUT_URL)
-                    //                    .logoutSuccessUrl(LOGOUT_SUCCESS_URL) // Redirect after
-                    // successful logout
                     .invalidateHttpSession(true) // Invalidate session
                     .clearAuthentication(true) // Clear authentication
                     .deleteCookies("JSESSIONID") // If using cookies
+                    .logoutSuccessHandler(
+                        (request, response, authentication) ->
+                            response.setStatus(HttpServletResponse.SC_OK))
                     .permitAll());
     return http.build();
   }
