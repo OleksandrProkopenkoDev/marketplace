@@ -33,5 +33,17 @@ public record CreateUserDto(
     ContactInfo contactInfo
 ) {
 
+    @Override
+    public String toString() {
+        String hiddenPassword = "*".repeat(password.length());
+        return "CreateUserDto{" +
+            "contactInfo=" + contactInfo +
+            ", email='" + email + '\'' +
+            ", password='" + hiddenPassword + '\'' +
+            ", userRole='" + userRole + '\'' +
+            ", firstName='" + firstName + '\'' +
+            ", lastName='" + lastName + '\'' +
+            '}';
+    }
 }
 
