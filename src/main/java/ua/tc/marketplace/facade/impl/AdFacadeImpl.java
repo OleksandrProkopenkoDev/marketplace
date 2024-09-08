@@ -70,7 +70,7 @@ public class AdFacadeImpl implements AdFacade {
   public Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable) {
     Specification<Ad> specification = filterSpecificationFactory.getSpecification(filterCriteria);
     Page<AdDto> adDtoPage = adService.findAll(specification, pageable).map(adMapper::toAdDto);
-
+    log.info(adDtoPage.getContent().toString());
     Optional<Location> optionalLocation1 =
         locationService.extractLocationFromParams(filterCriteria);
 
