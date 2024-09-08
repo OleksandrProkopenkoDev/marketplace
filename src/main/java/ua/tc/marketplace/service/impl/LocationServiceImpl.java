@@ -51,6 +51,16 @@ public class LocationServiceImpl implements LocationService {
     return locationRepository.save(location);
   }
 
+  @Override
+  public Optional<Location> findByParams(Location location) {
+    return locationRepository.findByStreetAndCityAndCountryAndZipcode(
+        location.getStreet(),
+        location.getCity(),
+        location.getCountry(),
+        location.getZipcode()
+    );
+  }
+
   private Location newLocationFromString(String locationString) {
     // Split the input string by comma and trim whitespace
     List<String> parts =

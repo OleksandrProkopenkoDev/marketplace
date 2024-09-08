@@ -25,10 +25,10 @@ import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
 import ua.tc.marketplace.model.entity.Ad;
-import ua.tc.marketplace.model.entity.Location;
 import ua.tc.marketplace.model.entity.AdAttribute;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.model.entity.Category;
+import ua.tc.marketplace.model.entity.Location;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.service.AdService;
 import ua.tc.marketplace.service.AuthenticationService;
@@ -75,8 +75,17 @@ public class AdFacadeImpl implements AdFacade {
         locationService.extractLocationFromParams(filterCriteria);
 
     if (optionalLocation1.isPresent()) {
-      log.info("Location is present in request params: {}", optionalLocation1.get());
-      adDtoPage = distanceService.calculateDistance(optionalLocation1.get(), adDtoPage);
+      Location location1 = optionalLocation1.get();
+      log.info("Location is present in request params: {}", location1);
+
+      Optional<Location> optionalExistingLocation = locationService.findByParams(location1);
+      if (optionalExistingLocation.isEmpty()) {
+        location1 = locationService.save(location1);
+      } else {
+        location1 = optionalExistingLocation.get();
+      }
+      log.info("Location1 after database existence check : {}", location1);
+      adDtoPage = distanceService.calculateDistance(location1, adDtoPage);
     } else {
       Optional<User> optionalUser = authenticationService.getAuthenticatedUser();
       User authenticatedUser;

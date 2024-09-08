@@ -31,9 +31,7 @@ public class DistanceServiceImpl implements DistanceService {
   @Transactional
   @Override
   public Page<AdDto> calculateDistance(Location location1, Page<AdDto> adDtoPage) {
-    if (location1.getId() == null) {
-      location1 = locationService.save(location1);
-    }
+
 
     final Location finalLocation = location1;
 

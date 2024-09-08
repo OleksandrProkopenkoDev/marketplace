@@ -1,5 +1,6 @@
 package ua.tc.marketplace.model.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -15,6 +16,7 @@ public class Location {
 
   private String country;
 
+  @NotNull
   private String city;
 
   private String street;

@@ -11,4 +11,6 @@ public interface LocationService {
   String getFullAddress(Location location);
 
   Location save(Location location);
+
+  Optional<Location> findByParams(Location location);
 }
