@@ -75,7 +75,7 @@ public class AdFacadeImpl implements AdFacade {
         locationService.extractLocationFromParams(filterCriteria);
 
     if (optionalLocation1.isPresent()) {
-      log.debug("Location is present in request params: {}", optionalLocation1.get());
+      log.info("Location is present in request params: {}", optionalLocation1.get());
       adDtoPage = distanceService.calculateDistance(optionalLocation1.get(), adDtoPage);
     } else {
       Optional<User> optionalUser = authenticationService.getAuthenticatedUser();

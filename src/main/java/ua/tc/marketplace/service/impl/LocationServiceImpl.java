@@ -9,11 +9,14 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.tc.marketplace.model.entity.Location;
+import ua.tc.marketplace.repository.LocationRepository;
 import ua.tc.marketplace.service.LocationService;
 
 @Service
 @RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
+
+  private final LocationRepository locationRepository;
 
   @Override
   public Optional<Location> extractLocationFromParams(Map<String, String> filterCriteria) {
@@ -41,6 +44,11 @@ public class LocationServiceImpl implements LocationService {
     return Arrays.stream(fields)
         .filter(field -> field != null && !field.trim().isEmpty())
         .collect(Collectors.joining(", "));
+  }
+
+  @Override
+  public Location save(Location location) {
+    return locationRepository.save(location);
   }
 
   private Location newLocationFromString(String locationString) {
@@ -72,25 +80,32 @@ public class LocationServiceImpl implements LocationService {
         }
 
         // If now we have remaining parts
-        if (!parts.isEmpty()) {
-          // Last remaining part is assumed to be city
+        if (parts.size() == 4) {
+          // Last remaining part is assumed to be country
+          street = parts.getFirst();
+          houseNumber = parts.get(1);
+          city = parts.get(2);
+          country = parts.getLast();
+        }
+        if (parts.size() == 3) {
+          // Last remaining part is assumed to be country
+          street = parts.getFirst();
+          houseNumber = parts.get(1);
           city = parts.getLast();
-          // All other parts are treated as street and house number
-          if (parts.size() > 1) {
-            street = String.join(", ", parts.subList(0, parts.size() - 1));
-          }
+        }
+        if (parts.size() == 2) {
+          // Last remaining part is assumed to be country
+          city = parts.getFirst();
+          country = parts.getLast();
         }
       }
     }
-
+    if (houseNumber != null) {
+      street = street + ", " + houseNumber;
+    }
     // Construct Location object with corrected fields
     return new Location(
         null, // id is not parsed from the string
-        Optional.ofNullable(country).orElse(null),
-        Optional.ofNullable(city).orElse(null),
-        Optional.ofNullable(street).orElse(null)
-            + " "
-            + Optional.ofNullable(houseNumber).orElse(""),
-        Optional.ofNullable(zipcode).orElse(null));
+        country, city, street, zipcode);
   }
 }

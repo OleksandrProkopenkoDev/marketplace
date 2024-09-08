@@ -18,6 +18,7 @@ import ua.tc.marketplace.repository.DistanceRepository;
 import ua.tc.marketplace.service.DistanceService;
 import ua.tc.marketplace.service.LocationService;
 import ua.tc.marketplace.util.googleapi.DistanceCalculator;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,12 @@ public class DistanceServiceImpl implements DistanceService {
   @Transactional
   @Override
   public Page<AdDto> calculateDistance(Location location1, Page<AdDto> adDtoPage) {
+    if (location1.getId() == null) {
+      location1 = locationService.save(location1);
+    }
+
+    final Location finalLocation = location1;
+
     // 1. Partition ads into those with existing distances in DB and those without
     Map<Boolean, List<AdDto>> distanceExistsMap =
         adDtoPage.getContent().stream()
@@ -38,7 +45,7 @@ public class DistanceServiceImpl implements DistanceService {
                     adDto ->
                         distanceRepository
                             .findByLocation1IdAndLocation2Id(
-                                location1.getId(), adDto.location().getId())
+                                finalLocation.getId(), adDto.location().getId())
                             .isPresent()));
 
     // 2. Get the lists of ads
@@ -52,11 +59,13 @@ public class DistanceServiceImpl implements DistanceService {
                 adDto ->
                     distanceRepository
                         .findByLocation1IdAndLocation2Id(
-                            location1.getId(), adDto.location().getId())
+                            finalLocation.getId(), adDto.location().getId())
                         .map(distance -> getAdDto(adDto, distance.getDistanceInMeters()))
                         .orElse(adDto))
             .toList();
-    log.info("Fetching distances from db: {}", adDtoListExistingLocation.stream().map(AdDto::location).toList());
+    log.info(
+        "Fetching distances from db: {}",
+        adDtoListExistingLocation.stream().map(AdDto::location).toList());
 
     // 4. Check if there are ads to calculate distances for
     List<AdDto> updatedAds = adDtoListToCalculateLocation;
@@ -66,29 +75,32 @@ public class DistanceServiceImpl implements DistanceService {
           adDtoListToCalculateLocation.stream()
               .collect(
                   Collectors.toMap(
-                      AdDto::id,
-                      adDto -> locationService.getFullAddress(adDto.location())));
+                      AdDto::id, adDto -> locationService.getFullAddress(adDto.location())));
 
       log.info("idToAddressMap: {}", adIdToAddressMap);
 
       // Make the Google API call to calculate distances
       Map<Long, Double> calculatedDistances =
           distanceCalculator.calculate(locationService.getFullAddress(location1), adIdToAddressMap);
-      log.info("Make Google API call to get distance from {} to {}", locationService.getFullAddress(location1), adIdToAddressMap);
+      log.info(
+          "Make Google API call to get distance from {} to {}",
+          locationService.getFullAddress(location1),
+          adIdToAddressMap);
 
-      // Set calculated distances and create Distance entities to save in DB using streams
+      // Set calculated distances and create Distance entities to save in DB
       updatedAds =
           adDtoListToCalculateLocation.stream()
-              .map(adDto -> {
-                Double distanceInMeters = calculatedDistances.get(adDto.id());
-                return getAdDto(adDto, distanceInMeters);
-              })
+              .map(
+                  adDto -> {
+                    Double distanceInMeters = calculatedDistances.get(adDto.id());
+                    return getAdDto(adDto, distanceInMeters);
+                  })
               .toList();
 
-      // Save distances to DB using streams
+      // Save distances to DB
       List<Distance> distancesToSave =
           updatedAds.stream()
-              .map(adDto -> new Distance(null, location1, adDto.location(), adDto.distance()))
+              .map(adDto -> new Distance(null, finalLocation, adDto.location(), adDto.distance()))
               .toList();
       distanceRepository.saveAll(distancesToSave);
     } else {

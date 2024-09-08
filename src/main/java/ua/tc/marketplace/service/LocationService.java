@@ -9,4 +9,6 @@ public interface LocationService {
   Optional<Location> extractLocationFromParams(Map<String, String> filterCriteria);
 
   String getFullAddress(Location location);
+
+  Location save(Location location);
 }
