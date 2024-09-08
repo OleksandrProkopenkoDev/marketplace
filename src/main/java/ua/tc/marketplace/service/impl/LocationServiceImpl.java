@@ -81,20 +81,17 @@ public class LocationServiceImpl implements LocationService {
 
         // If now we have remaining parts
         if (parts.size() == 4) {
-          // Last remaining part is assumed to be country
           street = parts.getFirst();
           houseNumber = parts.get(1);
           city = parts.get(2);
           country = parts.getLast();
         }
         if (parts.size() == 3) {
-          // Last remaining part is assumed to be country
           street = parts.getFirst();
           houseNumber = parts.get(1);
           city = parts.getLast();
         }
         if (parts.size() == 2) {
-          // Last remaining part is assumed to be country
           city = parts.getFirst();
           country = parts.getLast();
         }
