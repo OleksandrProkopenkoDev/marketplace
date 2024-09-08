@@ -1,12 +1,15 @@
 package ua.tc.marketplace.service.impl;
 
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import ua.tc.marketplace.config.UserDetailsImpl;
 import ua.tc.marketplace.exception.auth.BadCredentialsAuthenticationException;
 import ua.tc.marketplace.exception.auth.GeneralAuthenticationException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
@@ -57,5 +60,22 @@ public class AuthenticationServiceImpl implements AuthenticationService {
   public AuthResponse registerUser(CreateUserDto userDto) {
     userService.createUser(userDto);
     return authenticate(new AuthRequest(userDto.email(), userDto.password()));
+  }
+
+  @Override
+  public Optional<User> getAuthenticatedUser() {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    if (authentication != null
+        && authentication.getPrincipal() instanceof UserDetailsImpl principal) {
+      return Optional.of(principal.getUser());
+    } else if (authentication instanceof UsernamePasswordAuthenticationToken) {
+      String email = (String) authentication.getPrincipal();
+      User user = userService.findUserByEmail(email);
+
+      return Optional.of(user);
+    }
+    log.info(
+        "Authentication is null or principal is not of type UserDetailsImpl or UsernamePasswordAuthenticationToken");
+    return Optional.empty();
   }
 }

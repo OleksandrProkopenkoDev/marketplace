@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -79,7 +80,8 @@ public class User {
   @JoinColumn(name = "shelter_id")
   private List<Rating> ratings = new ArrayList<>();
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @ManyToOne
+  @JoinColumn(name = "location_id")
   private Location location;
 
   @CreationTimestamp
@@ -107,6 +109,8 @@ public class User {
         + ", lastName='"
         + lastName
         + '\''
+        + ", location="
+        + location
         + ", profilePicture="
         + profilePicture
         + ", contactInfo="

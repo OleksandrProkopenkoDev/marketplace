@@ -13,13 +13,11 @@ public class Location {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private double latitude;
-
-  private double longitude;
-
   private String country;
 
   private String city;
+
+  private String street;
 
   private String zipcode;
 }

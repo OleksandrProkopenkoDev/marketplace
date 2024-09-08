@@ -6,3 +6,8 @@ spring:
 
 file:
   upload-dir: ${PHOTO_PATH}
+
+google:
+  maps:
+    api:
+      key: ${GOOGLE_MAPS_API_KEY}
