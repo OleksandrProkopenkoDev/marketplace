@@ -1,5 +1,6 @@
 package ua.tc.marketplace.exception.distance;
 
+import java.util.Arrays;
 import org.springframework.http.HttpStatus;
 import ua.tc.marketplace.exception.model.CustomRuntimeException;
 
@@ -11,6 +12,6 @@ public class DistanceCalculationException extends CustomRuntimeException {
 
   public DistanceCalculationException(
       String message, String fullAddress, String[] destinationAddresses) {
-    super(MESSAGE.formatted(message, fullAddress, destinationAddresses), STATUS);
+    super(MESSAGE.formatted(message, fullAddress, Arrays.toString(destinationAddresses)), STATUS);
   }
 }

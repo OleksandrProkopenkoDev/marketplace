@@ -7,8 +7,9 @@ import com.google.maps.model.DistanceMatrix;
 import com.google.maps.model.DistanceMatrixElement;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
@@ -53,10 +54,11 @@ public class DistanceCalculator {
   private Map<Long, Double> processDistanceMatrix(
       DistanceMatrix distanceMatrix, Map<Long, String> adIdToAddressMap) {
     if (distanceMatrix.rows.length == 0) {
-      return new HashMap<>();
+      return new LinkedHashMap<>();
     }
 
     DistanceMatrixElement[] elements = distanceMatrix.rows[0].elements;
+    String[] addresses = adIdToAddressMap.values().toArray(new String[0]);
 
     // Create a map to associate each address with its distance
     Map<String, Double> addressToDistanceMap =
@@ -64,16 +66,21 @@ public class DistanceCalculator {
             .boxed()
             .collect(
                 Collectors.toMap(
-                    i -> adIdToAddressMap.values().toArray(new String[0])[i], // Address
-                    i -> (double) elements[i].distance.inMeters // Distance
-                    ));
+                    i -> addresses[i], // Address
+                    i ->
+                        Optional.ofNullable(elements[i].distance)
+                            .map(distance -> (double) distance.inMeters)
+                            .orElse(Double.NaN), // Default value when distance is null
+                    (existing, replacement) -> existing, // Handle duplicate keys
+                    LinkedHashMap::new)); // Use LinkedHashMap to preserve insertion order
 
-    // Create the final map of ad IDs to distances
+    // Create the final map of ad IDs to distances, preserving the order of adIdToAddressMap
     return adIdToAddressMap.entrySet().stream()
         .collect(
             Collectors.toMap(
                 Map.Entry::getKey, // Ad ID
-                entry -> addressToDistanceMap.get(entry.getValue()) // Distance
-                ));
+                entry -> addressToDistanceMap.get(entry.getValue()), // Distance
+                (existing, replacement) -> existing, // Handle duplicate keys
+                LinkedHashMap::new)); // Use LinkedHashMap to preserve insertion order
   }
 }
