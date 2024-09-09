@@ -70,31 +70,33 @@ public class AdFacadeImpl implements AdFacade {
   public Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable) {
     Specification<Ad> specification = filterSpecificationFactory.getSpecification(filterCriteria);
     Page<AdDto> adDtoPage = adService.findAll(specification, pageable).map(adMapper::toAdDto);
-    log.info(adDtoPage.getContent().toString());
+    log.debug("adDtoPage.content : {}", adDtoPage.getContent());
+
     Optional<Location> optionalLocation1 =
         locationService.extractLocationFromParams(filterCriteria);
 
     if (optionalLocation1.isPresent()) {
       Location location1 = optionalLocation1.get();
-      log.info("Location is present in request params: {}", location1);
+      log.debug("Location is present in request params: {}", location1);
 
       Optional<Location> optionalExistingLocation = locationService.findByParams(location1);
-      if (optionalExistingLocation.isEmpty()) {
-        location1 = locationService.save(location1);
-      } else {
-        location1 = optionalExistingLocation.get();
-      }
-      log.info("Location1 after database existence check : {}", location1);
+      Location finalLocation = location1;
+      location1 = optionalExistingLocation.orElseGet(() -> locationService.save(finalLocation));
+      log.debug("Location1 after database existence check : {}", location1);
+
+      // Assign the updated page after distance calculation
       adDtoPage = distanceService.calculateDistance(location1, adDtoPage);
     } else {
       Optional<User> optionalUser = authenticationService.getAuthenticatedUser();
-      User authenticatedUser;
       if (optionalUser.isPresent()) {
-        log.debug("try to extract location from user: {}", optionalUser.get());
-        authenticatedUser = optionalUser.get();
+        User authenticatedUser = optionalUser.get();
+        log.debug("try to extract location from user: {}", authenticatedUser);
+
+        // Assign the updated page after distance calculation
         adDtoPage = distanceService.calculateDistance(authenticatedUser.getLocation(), adDtoPage);
       }
     }
+
     return adDtoPage;
   }
 
