@@ -54,11 +54,7 @@ public class LocationServiceImpl implements LocationService {
   @Override
   public Optional<Location> findByParams(Location location) {
     return locationRepository.findByStreetAndCityAndCountryAndZipcode(
-        location.getStreet(),
-        location.getCity(),
-        location.getCountry(),
-        location.getZipcode()
-    );
+        location.getStreet(), location.getCity(), location.getCountry(), location.getZipcode());
   }
 
   private Location newLocationFromString(String locationString) {
@@ -96,10 +92,14 @@ public class LocationServiceImpl implements LocationService {
           city = parts.get(2);
           country = parts.getLast();
         }
-        if (parts.size() == 3) {
+        if (parts.size() == 3 && parts.get(1).matches("\\d+")) {
           street = parts.getFirst();
           houseNumber = parts.get(1);
           city = parts.getLast();
+        } else if(parts.size() == 3){
+          street = parts.getFirst();
+          city = parts.get(1);
+          country = parts.getLast();
         }
         if (parts.size() == 2) {
           city = parts.getFirst();

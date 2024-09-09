@@ -43,7 +43,10 @@ import ua.tc.marketplace.model.entity.AdAttribute;
 import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.service.AdService;
+import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.service.CategoryService;
+import ua.tc.marketplace.service.DistanceService;
+import ua.tc.marketplace.service.LocationService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.ad_filtering.FilterSpecificationFactory;
@@ -64,6 +67,10 @@ class AdFacadeImplTest {
   @Mock private UserService userService;
   @Mock private CategoryService categoryService;
   @Mock private FilterSpecificationFactory filterSpecificationFactory;
+  @Mock private  DistanceService distanceService;
+  @Mock private  AuthenticationService authenticationService;
+  @Mock private  LocationService locationService;
+
 
   @InjectMocks private AdFacadeImpl adFacade;
 

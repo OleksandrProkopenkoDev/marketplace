@@ -1,12 +1,12 @@
 package ua.tc.marketplace.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
@@ -31,88 +31,78 @@ public class DistanceServiceImpl implements DistanceService {
   @Transactional
   @Override
   public Page<AdDto> calculateDistance(Location location1, Page<AdDto> adDtoPage) {
+    // 1. Fetch existing distances
+    Map<Long, Distance> existingDistances = fetchExistingDistances(location1, adDtoPage);
 
-
-    final Location finalLocation = location1;
-
-    // 1. Partition ads into those with existing distances in DB and those without
-    Map<Boolean, List<AdDto>> distanceExistsMap =
+    // 2. Separate ads with and without existing distances
+    List<AdDto> adsWithExistingDistances =
         adDtoPage.getContent().stream()
-            .collect(
-                Collectors.partitioningBy(
-                    adDto ->
-                        distanceRepository
-                            .findByLocation1IdAndLocation2Id(
-                                finalLocation.getId(), adDto.location().getId())
-                            .isPresent()));
-
-    // 2. Get the lists of ads
-    List<AdDto> adDtoListExistingLocation = distanceExistsMap.get(true);
-    List<AdDto> adDtoListToCalculateLocation = distanceExistsMap.get(false);
-
-    // 3. Fetch existing distances and set them in AdDto using streams
-    adDtoListExistingLocation =
-        adDtoListExistingLocation.stream()
             .map(
                 adDto ->
-                    distanceRepository
-                        .findByLocation1IdAndLocation2Id(
-                            finalLocation.getId(), adDto.location().getId())
-                        .map(distance -> getAdDto(adDto, distance.getDistanceInMeters()))
-                        .orElse(adDto))
+                    existingDistances.containsKey(adDto.location().getId())
+                        ? setDistanceInAdDto(
+                            adDto,
+                            existingDistances.get(adDto.location().getId()).getDistanceInMeters())
+                        : adDto)
             .toList();
-    log.info(
-        "Fetching distances from db: {}",
-        adDtoListExistingLocation.stream().map(AdDto::location).toList());
 
-    // 4. Check if there are ads to calculate distances for
-    List<AdDto> updatedAds = adDtoListToCalculateLocation;
-    if (!adDtoListToCalculateLocation.isEmpty()) {
-      // Prepare addresses for Google API using streams
-      Map<Long, String> adIdToAddressMap =
-          adDtoListToCalculateLocation.stream()
-              .collect(
-                  Collectors.toMap(
-                      AdDto::id, adDto -> locationService.getFullAddress(adDto.location())));
+    List<AdDto> adsToCalculate =
+        adDtoPage.getContent().stream()
+            .filter(adDto -> !existingDistances.containsKey(adDto.location().getId()))
+            .toList();
 
-      log.info("idToAddressMap: {}", adIdToAddressMap);
+    // 3. Calculate and persist new distances
+    List<AdDto> updatedAds =
+        adsToCalculate.isEmpty()
+            ? List.of()
+            : calculateAndPersistDistances(location1, adsToCalculate);
 
-      // Make the Google API call to calculate distances
-      Map<Long, Double> calculatedDistances =
-          distanceCalculator.calculate(locationService.getFullAddress(location1), adIdToAddressMap);
-      log.info(
-          "Make Google API call to get distance from {} to {}",
-          locationService.getFullAddress(location1),
-          adIdToAddressMap);
+    // 4. Combine the results, ensuring no null distances
+    Map<Long, AdDto> adDtoMap = new HashMap<>();
+    adsWithExistingDistances.forEach(adDto -> adDtoMap.put(adDto.id(), adDto));
+    updatedAds.forEach(adDto -> adDtoMap.put(adDto.id(), adDto));
 
-      // Set calculated distances and create Distance entities to save in DB
-      updatedAds =
-          adDtoListToCalculateLocation.stream()
-              .map(
-                  adDto -> {
-                    Double distanceInMeters = calculatedDistances.get(adDto.id());
-                    return getAdDto(adDto, distanceInMeters);
-                  })
-              .toList();
-
-      // Save distances to DB
-      List<Distance> distancesToSave =
-          updatedAds.stream()
-              .map(adDto -> new Distance(null, finalLocation, adDto.location(), adDto.distance()))
-              .toList();
-      distanceRepository.saveAll(distancesToSave);
-    } else {
-      log.info("No ads to calculate distances for.");
-    }
-
-    // 5. Combine the lists and return the result as a Page object
-    List<AdDto> allAds =
-        Stream.concat(adDtoListExistingLocation.stream(), updatedAds.stream()).toList();
+    List<AdDto> allAds = new ArrayList<>(adDtoMap.values());
 
     return new PageImpl<>(allAds, adDtoPage.getPageable(), adDtoPage.getTotalElements());
   }
 
-  private @NotNull AdDto getAdDto(AdDto adDto, Double distanceInMeters) {
+  private Map<Long, Distance> fetchExistingDistances(Location location1, Page<AdDto> adDtoPage) {
+    List<Long> location2Ids =
+        adDtoPage.getContent().stream().map(adDto -> adDto.location().getId()).toList();
+
+    return distanceRepository
+        .findByLocation1IdAndLocation2IdIn(location1.getId(), location2Ids)
+        .stream()
+        .collect(
+            Collectors.toMap(distance -> distance.getLocation2().getId(), distance -> distance));
+  }
+
+  private List<AdDto> calculateAndPersistDistances(Location location1, List<AdDto> adsToCalculate) {
+    Map<Long, String> adIdToAddressMap =
+        adsToCalculate.stream()
+            .collect(
+                Collectors.toMap(
+                    AdDto::id, adDto -> locationService.getFullAddress(adDto.location())));
+
+    Map<Long, Double> calculatedDistances =
+        distanceCalculator.calculate(locationService.getFullAddress(location1), adIdToAddressMap);
+
+    List<AdDto> updatedAds =
+        adsToCalculate.stream()
+            .map(adDto -> setDistanceInAdDto(adDto, calculatedDistances.get(adDto.id())))
+            .toList();
+
+    List<Distance> distancesToSave =
+        updatedAds.stream()
+            .map(adDto -> new Distance(null, location1, adDto.location(), adDto.distance()))
+            .toList();
+
+    distanceRepository.saveAll(distancesToSave);
+    return updatedAds;
+  }
+
+  private AdDto setDistanceInAdDto(AdDto adDto, Double distanceInMeters) {
     return new AdDto(
         adDto.id(),
         adDto.authorId(),
