@@ -37,8 +37,8 @@ class DistanceServiceImplTest {
   @Test
   void calculateDistance_shouldReturnAdsWithExistingDistances() {
     // Given
-    Location location1 = new Location(1L, "USA", "City1", "Street1", "12345");
-    Location location2 = new Location(2L, "USA", "City2", "Street2", "67890");
+    Location location1 = new Location(1L, "USA, City1, Street1, 12345");
+    Location location2 = new Location(2L, "USA, City2, Street2, 67890");
 
     AdDto adDto =
         new AdDto(
@@ -75,8 +75,8 @@ class DistanceServiceImplTest {
   @Test
   void calculateDistance_shouldCalculateAndPersistDistances() {
     // Given
-    Location location1 = new Location(1L, "USA", "City1", "Street1", "12345");
-    Location location2 = new Location(2L, "USA", "City2", "Street2", "67890");
+    Location location1 = new Location(1L, "USA, City1, Street1, 12345");
+    Location location2 = new Location(2L, "USA, City2, Street2, 67890");
 
     AdDto adDto =
         new AdDto(
@@ -99,8 +99,6 @@ class DistanceServiceImplTest {
     when(distanceRepository.findByLocation1IdAndLocation2IdIn(eq(location1.getId()), anyList()))
         .thenReturn(List.of()); // No existing distances
 
-    when(locationService.getFullAddress(location1)).thenReturn("Street1, City1, USA, 12345");
-    when(locationService.getFullAddress(location2)).thenReturn("Street2, City2, USA, 67890");
 
     when(distanceCalculator.calculate(anyString(), anyMap()))
         .thenReturn(Map.of(1L, 10000.0)); // Calculated distance

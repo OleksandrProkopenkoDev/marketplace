@@ -91,7 +91,7 @@ class AdFacadeImplTest {
   @MethodSource("filterCriteriaProvider")
   void testFindAll_LocationInRequestParams(Map<String, String> filterCriteria) {
     // Setup mock data
-    Location location = new Location(null, "Ukraine", "Kyiv", null, null);
+    Location location = new Location(null, "Ukraine, Kyiv");
     when(locationService.extractLocationFromParams(filterCriteria))
         .thenReturn(Optional.of(location));
     when(locationService.findByParams(location)).thenReturn(Optional.of(location));
@@ -121,7 +121,7 @@ class AdFacadeImplTest {
     // Setup mock data
     User user = mock(User.class);
     Page<AdDto> adDtoPage = new PageImpl<>(List.of());
-    Location userLocation = new Location(null, "Ukraine", "Lviv", null, null);
+    Location userLocation = new Location(null, "Ukraine, Lviv");
     when(user.getLocation()).thenReturn(userLocation);
     when(authenticationService.getAuthenticatedUser()).thenReturn(Optional.of(user));
 

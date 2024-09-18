@@ -83,10 +83,10 @@ public class DistanceServiceImpl implements DistanceService {
         adsToCalculate.stream()
             .collect(
                 Collectors.toMap(
-                    AdDto::id, adDto -> locationService.getFullAddress(adDto.location())));
+                    AdDto::id, adDto -> adDto.location().getAddress()));
 
     Map<Long, Double> calculatedDistances =
-        distanceCalculator.calculate(locationService.getFullAddress(location1), adIdToAddressMap);
+        distanceCalculator.calculate(location1.getAddress(), adIdToAddressMap);
 
     List<AdDto> updatedAds =
         adsToCalculate.stream()

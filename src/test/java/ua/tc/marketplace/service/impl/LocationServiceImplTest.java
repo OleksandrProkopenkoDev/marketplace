@@ -34,28 +34,20 @@ class LocationServiceImplTest {
 
     // Then
     assertTrue(result.isPresent());
-    assertEquals(expectedLocation.getStreet(), result.get().getStreet());
-    assertEquals(expectedLocation.getCity(), result.get().getCity());
-    assertEquals(expectedLocation.getCountry(), result.get().getCountry());
-    assertEquals(expectedLocation.getZipcode(), result.get().getZipcode());
+    assertEquals(expectedLocation.getAddress(), result.get().getAddress());
   }
 
   static Stream<Arguments> locationData() {
     return Stream.of(
         Arguments.of(
-            Map.of("location", "Main St, 123, Springfield, USA, 12345"),
-            new Location(null, "USA", "Springfield", "Main St, 123", "12345")),
+            Map.of("location", "USA, Springfield, Main St, 123, 12345"),
+            new Location(null, "USA, Springfield, Main St, 123, 12345")),
         Arguments.of(
-            Map.of("location", "Main St, Springfield, USA"),
-            new Location(null, "USA", "Springfield", "Main St", null)),
+            Map.of("location", "USA, Springfield, Main St"),
+            new Location(null, "USA, Springfield, Main St")),
         Arguments.of(
-            Map.of("location", "Springfield, USA"),
-            new Location(null, "USA", "Springfield", null, null)),
-        Arguments.of(
-            Map.of("location", "Springfield"), new Location(null, null, "Springfield", null, null)),
-        Arguments.of(
-            Map.of("location", "Springfield"),
-            new Location(null, null, "Springfield", null, null)));
+            Map.of("location", "USA, Springfield"), new Location(null, "USA, Springfield")),
+        Arguments.of(Map.of("location", "Springfield"), new Location(null, "Springfield")));
   }
 
   @Test
@@ -82,29 +74,5 @@ class LocationServiceImplTest {
 
     // Then
     assertFalse(result.isPresent());
-  }
-
-  @ParameterizedTest
-  @MethodSource("provideLocationDataForFullAddress")
-  void getFullAddress_shouldReturnCorrectAddress(Location location, String expectedAddress) {
-    // When
-    String fullAddress = underTest.getFullAddress(location);
-
-    // Then
-    assertEquals(expectedAddress, fullAddress);
-  }
-
-  static Stream<Arguments> provideLocationDataForFullAddress() {
-    return Stream.of(
-        Arguments.of(
-            new Location(null, "USA", "Springfield", "Main St, 123", "12345"),
-            "Main St, 123, Springfield, USA, 12345"),
-        Arguments.of(
-            new Location(null, "USA", "Springfield", null, "12345"), "Springfield, USA, 12345"),
-        Arguments.of(
-            new Location(null, "USA", "Springfield", "", "12345"), "Springfield, USA, 12345"),
-        Arguments.of(new Location(null, null, null, null, null), ""),
-        Arguments.of(new Location(null, null, "Springfield", "Main St", null), "Main St, Springfield"),
-        Arguments.of(new Location(null, null, "Springfield", "", null), "Springfield"));
   }
 }
