@@ -40,10 +40,7 @@ class Distance{
 
 class Location {
   Long id
-  String country
-  String city
-  String street
-  String zipcode
+  String address
 }
 
 class User {
