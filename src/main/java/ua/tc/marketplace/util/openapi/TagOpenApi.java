@@ -48,8 +48,8 @@ public interface TagOpenApi {
   ResponseEntity<TagDto> updateTag(@PathVariable Long tagId, @RequestBody @Valid TagDto tagDto);
 
   @Operation(
-      summary = "Delete a user",
-      description = "Deletes a user by its unique identifier.")
+      summary = "Delete a tag",
+      description = "Deletes a tag by its unique identifier.")
   @DeleteMapping("/{id}")
   ResponseEntity<Void> deleteTag(@PathVariable Long id);
 }

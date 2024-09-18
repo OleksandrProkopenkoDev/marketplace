@@ -42,8 +42,8 @@ public class TagController implements TagOpenApi {
 
   @Override
   @PutMapping("/{id}")
-  public ResponseEntity<TagDto> updateTag(@PathVariable Long tagId, @RequestBody @Valid TagDto tagDto) {
-    return ResponseEntity.status(HttpStatus.OK).body(tagService.updateTag(tagId, tagDto));
+  public ResponseEntity<TagDto> updateTag(@PathVariable Long id, @RequestBody @Valid TagDto tagDto) {
+    return ResponseEntity.status(HttpStatus.OK).body(tagService.updateTag(id, tagDto));
   }
 
   @Override
