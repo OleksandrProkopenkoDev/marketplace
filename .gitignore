@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/application-local.yml
+/docs/postman/Category Controller.postman_collection.json
+/docs/postman/Marketplace.postman_collection.json

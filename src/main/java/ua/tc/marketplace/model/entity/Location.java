@@ -1,5 +1,6 @@
 package ua.tc.marketplace.model.entity;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -13,14 +14,7 @@ public class Location {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  private double latitude;
-
-  private double longitude;
-
-  private String country;
-
-  private String city;
-
-  private String zipcode;
+  @NotNull
+  private String address;
 }
 

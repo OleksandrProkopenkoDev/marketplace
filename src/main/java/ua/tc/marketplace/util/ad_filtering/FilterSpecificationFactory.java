@@ -24,6 +24,7 @@ public class FilterSpecificationFactory {
   public Specification<Ad> getSpecification(Map<String, String> filterCriteria) {
     return filterCriteria.entrySet().stream()
         .filter(entry -> entry.getValue() != null)
+        .filter(entry-> !entry.getKey().equals("location"))
         .map(
             entry -> {
               String key = entry.getKey();
