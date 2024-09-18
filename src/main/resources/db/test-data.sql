@@ -189,7 +189,7 @@ VALUES
 
 -- Insert records into 'location' table
 
-INSERT INTO location (address)
+INSERT INTO "location" (address)
 VALUES ('Kyiv, Khreshchatyk St, 01001'),
        ('Lviv,79000'),
        ('Odessa, Deribasivska St, 65000'),
