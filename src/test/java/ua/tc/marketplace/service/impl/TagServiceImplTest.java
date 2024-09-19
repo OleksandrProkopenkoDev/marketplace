@@ -1,6 +1,5 @@
 package ua.tc.marketplace.service.impl;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,20 +8,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tc.marketplace.exception.TagNotFoundException;
-import ua.tc.marketplace.exception.Tag.TagNotFoundException;
-import ua.tc.marketplace.model.dto.CreateTagDto;
-import ua.tc.marketplace.model.dto.TagDto;
-import ua.tc.marketplace.model.dto.Tag.CreateTagDto;
-import ua.tc.marketplace.model.dto.Tag.UpdateTagDto;
-import ua.tc.marketplace.model.dto.Tag.TagDto;
+import ua.tc.marketplace.model.dto.tag.CreateTagDto;
+import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.model.entity.Tag;
-import ua.tc.marketplace.model.entity.Tag;
-import ua.tc.marketplace.model.enums.TagRole;
 import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.util.mapper.TagMapper;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,9 +30,10 @@ class TagServiceImplTest {
 
   private Long tagId;
   private TagDto tagDto;
-  private TagDto updatedTagDto;
+  private TagDto updateTagDto;
   private CreateTagDto createTagDto;
   private Tag tag;
+  private Tag updatedTag;
 
   @BeforeEach
   void setUp(){
@@ -49,9 +41,11 @@ class TagServiceImplTest {
 
     tagDto = new TagDto(tagId,"tag_name");
 
-    updatedTagDto = new TagDto(tagId,"updated_tag_name");
+    updateTagDto = new TagDto(tagId,"updated_tag_name");
 
     tag = new Tag(tagId,"tag_name");
+
+    updatedTag = new Tag(tagId,"updated_tag_name");
 
     createTagDto = new CreateTagDto("new_tag");
 
@@ -121,81 +115,41 @@ class TagServiceImplTest {
   @Test
   void updateTag_shouldUpdate_whenValidInput() {
 
-    // entity of existing Tag, found in database
-    Tag existingTag = tag;
-
-    // entity of updated Tag
-    Tag updatedTag =
-        new Tag(
-            1L,
-            "taras@shevchenko.ua",
-            "password",
-            TagRole.INDIVIDUAL,
-            "Taras",
-            "Shevchenko",
-            null,
-            null,
-            Collections.emptyList(),
-            Collections.emptyList(),
-            Collections.emptyList(),
-            null,
-            null,
-            null);
-
-    // Tag Dto after mapping from updated entity
-    TagDto updatedTagDto =
-        new TagDto(
-            1L,
-            "taras@shevchenko.ua",
-            "password",
-            "INDIVIDUAL",
-            "Taras",
-            "Shevchenko",
-            null,
-            null,
-            Collections.emptyList(),
-            LocalDateTime.now(),
-            null);
 
     // Mock TagRepository to return existingTag when findById is called
-    when(tagRepository.findById(updateTagDto.id())).thenReturn(Optional.of(existingTag));
+    when(tagRepository.findById(updateTagDto.id())).thenReturn(Optional.of(tag));
 
     // Mock TagMapper to return updatedTag when updateEntityFromDto is called
     doAnswer(
             invocation -> {
-              UpdateTagDto dto = invocation.getArgument(1);
+              TagDto dto = invocation.getArgument(1);
               Tag TagToUpdate = invocation.getArgument(0);
-              TagToUpdate.setEmail(dto.email());
-              TagToUpdate.setTagRole(TagRole.valueOf(dto.TagRole()));
-              TagToUpdate.setFirstName(dto.firstName());
-              TagToUpdate.setLastName(dto.lastName());
-              TagToUpdate.setContactInfo(dto.contactInfo());
-              TagToUpdate.setFavorites(dto.favorites()); // Setting the updated category
+              TagToUpdate.setName(dto.name());
               return null;
             })
         .when(tagMapper)
-        .updateEntityFromDto(existingTag, updateTagDto);
+        .updateEntityFromDto(tag, updateTagDto);
 
     // Mock repository
-    when(tagRepository.save(existingTag)).thenReturn(updatedTag);
+    when(tagRepository.save(tag)).thenReturn(updatedTag);
 
     // Mock mapper
-    when(tagMapper.toDto(updatedTag)).thenReturn(updatedTagDto);
+    when(tagMapper.toDto(updatedTag)).thenReturn(updateTagDto);
 
     // Act
-    TagDto result = tagService.updateTag(updateTagDto);
+    TagDto result = tagService.updateTag(tagId, updateTagDto);
 
     // Assert
-    assertEquals(updatedTagDto, result);
+    assertEquals(updateTagDto, result);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).findById(updatedTagDto.id());
+    verify(tagRepository, times(1)).findById(updateTagDto.id());
 
     // Verify that adMapper method was called with correct argument
-    verify(tagMapper, times(1)).updateEntityFromDto(existingTag, updateTagDto);
+    verify(tagMapper, times(1)).updateEntityFromDto(tag, updateTagDto);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).save(existingTag);
+    verify(tagRepository, times(1)).save(tag);
 
     // Verify that adMapper method was called with correct argument
     verify(tagMapper, times(1)).toDto(updatedTag);
@@ -203,21 +157,9 @@ class TagServiceImplTest {
 
   @Test
   void updateTag_shouldThrow_whenTagNotExists() {
-    // Arrange
-    // dto with updated info
-    UpdateTagDto updateTagDto =
-        new UpdateTagDto(
-            1L,
-            "taras@shevchenko.ua",
-            "password",
-            "INDIVIDUAL",
-            "Taras",
-            "Shevchenko",
-            null,
-            Collections.emptyList());
 
     assertThrows(
-        TagNotFoundException.class, () -> tagService.findTagDtoById(updateTagDto.id()));
+        TagNotFoundException.class, () -> tagService.findTagById(tagId));
 
     // Verify that repository method was called with correct argument
     verify(tagRepository, times(1)).findById(ArgumentMatchers.anyLong());
@@ -225,55 +167,33 @@ class TagServiceImplTest {
 
   @Test
   void deleteTag_shouldDelete() {
-    // Arrange
-    Long TagId = 1L;
-
-    // entity of existing Tag, found in database
-    Tag existingTag =
-        new Tag(
-            1L,
-            "taras@shevchenko.ua",
-            "password",
-            TagRole.INDIVIDUAL,
-            "Taras",
-            null,
-            null,
-            null,
-            Collections.emptyList(),
-            Collections.emptyList(),
-            Collections.emptyList(),
-            null,
-            null,
-            null);
 
     // Mock TagRepository to return existingTag when findById is called
-    when(tagRepository.findById(TagId)).thenReturn(Optional.of(existingTag));
+    when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
 
     // Act
-    tagService.deleteTagById(TagId);
+    tagService.deleteTagById(tagId);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).findById(TagId);
+    verify(tagRepository, times(1)).findById(tagId);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).deleteById(TagId);
+    verify(tagRepository, times(1)).deleteById(tagId);
   }
 
   @Test
   public void deleteTag_shouldThrowException_whenTagNotExists() {
-    // Arrange
-    Long TagId = 1L;
 
     // Mock TagRepository to throw AdNotFoundException when findById is called
-    when(tagRepository.findById(TagId)).thenReturn(Optional.empty());
+    when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
 
     // Act
-    assertThrows(TagNotFoundException.class, () -> tagService.deleteTagById(TagId));
+    assertThrows(TagNotFoundException.class, () -> tagService.deleteTagById(tagId));
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).findById(TagId);
+    verify(tagRepository, times(1)).findById(tagId);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, never()).deleteById(TagId);
+    verify(tagRepository, never()).deleteById(tagId);
   }
 }

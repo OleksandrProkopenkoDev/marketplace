@@ -1,13 +1,7 @@
-package ua.tc.marketplace.model.dto;
+package ua.tc.marketplace.model.dto.tag;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import ua.tc.marketplace.model.entity.ContactInfo;
-import ua.tc.marketplace.model.entity.Photo;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Data Transfer Object (DTO) representing a tag.

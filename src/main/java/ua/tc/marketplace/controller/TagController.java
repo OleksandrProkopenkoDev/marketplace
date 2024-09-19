@@ -8,10 +8,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.tc.marketplace.model.dto.CreateTagDto;
-import ua.tc.marketplace.model.dto.TagDto;
-import ua.tc.marketplace.model.dto.ad.AdDto;
-import ua.tc.marketplace.model.dto.ad.CreateAdDto;
+import ua.tc.marketplace.model.dto.tag.CreateTagDto;
+import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.service.TagService;
 import ua.tc.marketplace.util.openapi.TagOpenApi;
 

@@ -8,12 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.tc.marketplace.model.dto.CreateTagDto;
-import ua.tc.marketplace.model.dto.TagDto;
-import ua.tc.marketplace.model.dto.ad.AdDto;
-import ua.tc.marketplace.model.dto.ad.CreateAdDto;
-import ua.tc.marketplace.model.dto.user.UpdateUserDto;
-import ua.tc.marketplace.model.dto.user.UserDto;
+import ua.tc.marketplace.model.dto.tag.CreateTagDto;
+import ua.tc.marketplace.model.dto.tag.TagDto;
 
 /**
  * This interface defines the OpenAPI annotations for the {@link ua.tc.marketplace.controller.TagController} class. It provides endpoints

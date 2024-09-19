@@ -2,8 +2,8 @@ package ua.tc.marketplace.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import ua.tc.marketplace.model.dto.CreateTagDto;
-import ua.tc.marketplace.model.dto.TagDto;
+import ua.tc.marketplace.model.dto.tag.CreateTagDto;
+import ua.tc.marketplace.model.dto.tag.TagDto;
 
 public interface TagService {
 
