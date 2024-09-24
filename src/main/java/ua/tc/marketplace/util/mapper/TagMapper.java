@@ -5,6 +5,7 @@ import org.mapstruct.MappingTarget;
 import ua.tc.marketplace.config.MapperConfig;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
+import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.model.entity.Tag;
 
 /**
@@ -16,8 +17,7 @@ public interface TagMapper {
 
     TagDto toDto(Tag entity);
 
-//    @Mapping(target = "id", ignore = true)
     Tag toEntity(CreateTagDto dto);
 
-    void updateEntityFromDto(@MappingTarget Tag tag, TagDto tagDto);
+    void updateEntityFromDto(@MappingTarget Tag tag, UpdateTagDto tagDto);
 }

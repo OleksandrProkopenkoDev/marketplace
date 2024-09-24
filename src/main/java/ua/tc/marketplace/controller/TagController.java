@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
+import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.service.TagService;
 import ua.tc.marketplace.util.openapi.TagOpenApi;
 
@@ -40,7 +41,7 @@ public class TagController implements TagOpenApi {
 
   @Override
   @PutMapping("/{id}")
-  public ResponseEntity<TagDto> updateTag(@PathVariable Long id, @RequestBody @Valid TagDto tagDto) {
+  public ResponseEntity<TagDto> updateTag(@PathVariable Long id, @RequestBody @Valid UpdateTagDto tagDto) {
     return ResponseEntity.status(HttpStatus.OK).body(tagService.updateTag(id, tagDto));
   }
 

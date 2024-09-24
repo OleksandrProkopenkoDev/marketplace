@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tc.marketplace.exception.TagNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
+import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.model.entity.Tag;
 import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.util.mapper.TagMapper;
@@ -30,7 +31,8 @@ class TagServiceImplTest {
 
   private Long tagId;
   private TagDto tagDto;
-  private TagDto updateTagDto;
+  private UpdateTagDto updateTagDto;
+  private TagDto updatedTagDto;
   private CreateTagDto createTagDto;
   private Tag tag;
   private Tag updatedTag;
@@ -41,11 +43,13 @@ class TagServiceImplTest {
 
     tagDto = new TagDto(tagId,"tag_name");
 
-    updateTagDto = new TagDto(tagId,"updated_tag_name");
+    updateTagDto = new UpdateTagDto("updated_tag_name");
+
+    updatedTagDto = new TagDto(tagId,"updated_tag_name");
 
     tag = new Tag(tagId,"tag_name");
 
-    updatedTag = new Tag(tagId,"updated_tag_name");
+    updatedTag = new Tag(tagId, "updated_tag_name");
 
     createTagDto = new CreateTagDto("new_tag");
 
@@ -117,12 +121,12 @@ class TagServiceImplTest {
 
 
     // Mock TagRepository to return existingTag when findById is called
-    when(tagRepository.findById(updateTagDto.id())).thenReturn(Optional.of(tag));
+    when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
 
     // Mock TagMapper to return updatedTag when updateEntityFromDto is called
     doAnswer(
             invocation -> {
-              TagDto dto = invocation.getArgument(1);
+              UpdateTagDto dto = invocation.getArgument(1);
               Tag TagToUpdate = invocation.getArgument(0);
               TagToUpdate.setName(dto.name());
               return null;
@@ -134,16 +138,16 @@ class TagServiceImplTest {
     when(tagRepository.save(tag)).thenReturn(updatedTag);
 
     // Mock mapper
-    when(tagMapper.toDto(updatedTag)).thenReturn(updateTagDto);
+    when(tagMapper.toDto(updatedTag)).thenReturn(updatedTagDto);
 
     // Act
     TagDto result = tagService.updateTag(tagId, updateTagDto);
 
     // Assert
-    assertEquals(updateTagDto, result);
+    assertEquals(updatedTagDto, result);
 
     // Verify that TagRepository method was called with correct argument
-    verify(tagRepository, times(1)).findById(updateTagDto.id());
+    verify(tagRepository, times(1)).findById(tagId);
 
     // Verify that adMapper method was called with correct argument
     verify(tagMapper, times(1)).updateEntityFromDto(tag, updateTagDto);

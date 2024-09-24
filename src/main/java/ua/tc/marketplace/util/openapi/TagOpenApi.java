@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
+import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 
 /**
  * This interface defines the OpenAPI annotations for the {@link ua.tc.marketplace.controller.TagController} class. It provides endpoints
@@ -41,7 +42,7 @@ public interface TagOpenApi {
       summary = "Updates an existing tag",
       description = "Updates an existing tag with the provided data.")
   @PutMapping()
-  ResponseEntity<TagDto> updateTag(@PathVariable Long tagId, @RequestBody @Valid TagDto tagDto);
+  ResponseEntity<TagDto> updateTag(@PathVariable Long tagId, @RequestBody @Valid UpdateTagDto tagDto);
 
   @Operation(
       summary = "Delete a tag",

@@ -183,3 +183,7 @@ VALUES
     (5, 7, 'Healthy'),         -- health condition
     (5, 8, 'Bubbles');         -- pet name
 
+INSERT INTO article_tag (article_id, tag_id)
+VALUES
+  (1, 1),
+  (1, 2);
