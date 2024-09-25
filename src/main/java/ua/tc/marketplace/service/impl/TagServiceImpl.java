@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
-    private final ArticleRepository articleRepository;
     private final TagMapper tagMapper;
 
     /**
@@ -88,8 +87,11 @@ public class TagServiceImpl implements TagService {
     @Override
     public void deleteTagById(Long id) {
         log.info("Deleting tag with id={}", id);
-        log.info("This tag is used {} times", articleRepository.getTagCountById(id));
         Tag existingTag = getTag(id);
+        log.info("This tag is used {} times", existingTag.getArticles().size());
+        if (existingTag.getArticles().size()>0){
+            throw new Exception();
+        }
         try {
             tagRepository.deleteById(existingTag.getId());
         } catch (DataIntegrityViolationException  e) {

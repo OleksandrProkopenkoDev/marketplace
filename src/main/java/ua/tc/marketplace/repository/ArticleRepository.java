@@ -12,6 +12,6 @@ import ua.tc.marketplace.model.entity.Tag;
  * providing the CRUD operations for {@link Article} entities with {@code Long} as the ID type.
  */
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-    @Query("select count(*) from article_tag where tag_id =:id")
-    Integer getTagCountById(Long id);
+//    @Query("select count(*) from article_tag where tag_id =:id")
+//    Integer getTagCountById(Long id);
 }
