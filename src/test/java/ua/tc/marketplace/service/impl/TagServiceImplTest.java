@@ -7,7 +7,7 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ua.tc.marketplace.exception.TagNotFoundException;
+import ua.tc.marketplace.exception.tag.TagNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.model.dto.tag.UpdateTagDto;

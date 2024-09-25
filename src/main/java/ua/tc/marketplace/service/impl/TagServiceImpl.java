@@ -3,19 +3,18 @@ package ua.tc.marketplace.service.impl;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.tc.marketplace.exception.TagNotFoundException;
+import ua.tc.marketplace.exception.tag.TagInUseException;
+import ua.tc.marketplace.exception.tag.TagNotFoundException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.model.entity.Tag;
-import ua.tc.marketplace.repository.ArticleRepository;
 import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.service.TagService;
 import ua.tc.marketplace.util.mapper.TagMapper;
@@ -88,17 +87,11 @@ public class TagServiceImpl implements TagService {
     public void deleteTagById(Long id) {
         log.info("Deleting tag with id={}", id);
         Tag existingTag = getTag(id);
-        log.info("This tag is used {} times", existingTag.getArticles().size());
-        if (existingTag.getArticles().size()>0){
-            throw new Exception();
-        }
-        try {
+        if (!existingTag.getArticles().isEmpty()){
+            throw new TagInUseException(id);
+        } else {
             tagRepository.deleteById(existingTag.getId());
-        } catch (DataIntegrityViolationException  e) {
-            log.info("Constraints");
-            throw new RuntimeException(e);
         }
-
     }
 
     /**
