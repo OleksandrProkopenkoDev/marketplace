@@ -93,6 +93,8 @@ class TagServiceImplTest {
 
   @Test
   void createTag_shouldCreate_whenValidInput() {
+    // Mock TagRepository to return existingTag when getByName is called
+    when(tagRepository.getByName(createTagDto.name())).thenReturn(Optional.ofNullable(null));
 
     // Mock mapper from createTagDto to entity
     when(tagMapper.toEntity(createTagDto)).thenReturn(tag);
@@ -109,11 +111,35 @@ class TagServiceImplTest {
     // Assert
     assertEquals(tagDto, result);
 
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(1)).getByName(createTagDto.name());
+
     // Verify that TagMapper method was called with correct argument
     verify(tagMapper, times(1)).toEntity(createTagDto);
 
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, times(1)).save(tag);
+
+    // Verify that TagMapper method was called with correct argument
+    verify(tagMapper, times(1)).toDto(tag);
+  }
+
+@Test
+  void createTag_shouldReturnExistingTag_whenTagNameExists() {
+    // Mock TagRepository to return existingTag when getByName is called
+    when(tagRepository.getByName(createTagDto.name())).thenReturn(Optional.of(tag));
+
+       // Mock mapper from existing entity back to Dto
+    when(tagMapper.toDto(tag)).thenReturn(tagDto);
+
+    // Act
+    TagDto result = tagService.createTag(createTagDto);
+
+    // Assert
+    assertEquals(tagDto, result);
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(1)).getByName(createTagDto.name());
 
     // Verify that TagMapper method was called with correct argument
     verify(tagMapper, times(1)).toDto(tag);

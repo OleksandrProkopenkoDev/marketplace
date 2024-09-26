@@ -10,13 +10,7 @@ import java.util.Set;
 @Table(name = "tag")
 @Data
 @NoArgsConstructor
-//@RequiredArgsConstructor
 public class Tag {
-  public Tag(Long id, String name) {
-    this.id = id;
-    this.name = name;
-  }
-
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -26,5 +20,10 @@ public class Tag {
 
   @ManyToMany(mappedBy = "tags")
   private Set<Article> articles = new HashSet<>();
+
+  public Tag(Long id, String name) {
+    this.id = id;
+    this.name = name;
+  }
 }
 

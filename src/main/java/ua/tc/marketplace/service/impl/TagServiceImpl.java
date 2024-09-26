@@ -20,6 +20,7 @@ import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.service.TagService;
 import ua.tc.marketplace.util.mapper.TagMapper;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -103,6 +104,8 @@ public class TagServiceImpl implements TagService {
     @Transactional
     @Override
     public TagDto createTag(CreateTagDto createTagDto) {
+        Optional<Tag> existingTag = tagRepository.getByName(createTagDto.name());
+        if (!existingTag.isEmpty()) return tagMapper.toDto(existingTag.get());
         Tag tag = tagMapper.toEntity(createTagDto);
         return tagMapper.toDto(tagRepository.save(tag));
     }
