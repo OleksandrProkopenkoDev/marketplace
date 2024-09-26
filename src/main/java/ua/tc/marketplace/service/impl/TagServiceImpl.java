@@ -15,6 +15,7 @@ import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.model.entity.Tag;
+import ua.tc.marketplace.repository.ArticleRepository;
 import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.service.TagService;
 import ua.tc.marketplace.util.mapper.TagMapper;
@@ -32,6 +33,7 @@ public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
     private final TagMapper tagMapper;
+    private final ArticleRepository articleRepository;
 
     /**
      * Retrieves a paginated list of all tags.
@@ -42,9 +44,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public Page<TagDto> findAll(Pageable pageable) {
         Page<Tag> tags = tagRepository.findAll(pageable);
-        return tags.stream()
-                .collect(Collectors.collectingAndThen(Collectors.toList(), PageImpl::new))
-                .map(tagMapper::toDto);
+        return tags.map(tagMapper::toDto);
     }
 
     /**
@@ -87,7 +87,7 @@ public class TagServiceImpl implements TagService {
     public void deleteTagById(Long id) {
         log.info("Deleting tag with id={}", id);
         Tag existingTag = getTag(id);
-        if (!existingTag.getArticles().isEmpty()){
+        if (articleRepository.getTagCountById(id)>0){
             throw new TagInUseException(id);
         } else {
             tagRepository.deleteById(existingTag.getId());

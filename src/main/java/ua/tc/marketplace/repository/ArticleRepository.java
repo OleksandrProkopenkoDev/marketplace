@@ -2,6 +2,7 @@ package ua.tc.marketplace.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import ua.tc.marketplace.model.entity.Article;
 import ua.tc.marketplace.model.entity.Tag;
 
@@ -12,6 +13,7 @@ import ua.tc.marketplace.model.entity.Tag;
  * providing the CRUD operations for {@link Article} entities with {@code Long} as the ID type.
  */
 public interface ArticleRepository extends JpaRepository<Article, Long> {
-//    @Query("select count(*) from article_tag where tag_id =:id")
-//    Integer getTagCountById(Long id);
+    @Query(nativeQuery = true,
+            value = "SELECT COUNT(*) FROM article_tag WHERE tag_id = :tagId")
+    Integer getTagCountById(@Param("tagId") Long id);
 }

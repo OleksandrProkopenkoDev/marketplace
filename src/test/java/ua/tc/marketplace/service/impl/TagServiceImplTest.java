@@ -7,11 +7,13 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ua.tc.marketplace.exception.tag.TagInUseException;
 import ua.tc.marketplace.exception.tag.TagNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
 import ua.tc.marketplace.model.dto.tag.UpdateTagDto;
 import ua.tc.marketplace.model.entity.Tag;
+import ua.tc.marketplace.repository.ArticleRepository;
 import ua.tc.marketplace.repository.TagRepository;
 import ua.tc.marketplace.util.mapper.TagMapper;
 
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.*;
 class TagServiceImplTest {
 
   @Mock private TagRepository tagRepository;
+  @Mock private ArticleRepository articleRepository;
   @Mock private TagMapper tagMapper;
 
   @InjectMocks private TagServiceImpl tagService;
@@ -175,11 +178,17 @@ class TagServiceImplTest {
     // Mock TagRepository to return existingTag when findById is called
     when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
 
+    // Mock ArticleRepository to return number of tagId occurrences
+    when(articleRepository.getTagCountById(tagId)).thenReturn(0);
+
     // Act
     tagService.deleteTagById(tagId);
 
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, times(1)).findById(tagId);
+
+    // Verify that ArticleRepository method was called with correct argument
+    verify(articleRepository, times(1)).getTagCountById(tagId);
 
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, times(1)).deleteById(tagId);
@@ -196,6 +205,31 @@ class TagServiceImplTest {
 
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, times(1)).findById(tagId);
+
+    // Verify that ArticleRepository method was called with correct argument
+    verify(articleRepository, times(0)).getTagCountById(tagId);
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, never()).deleteById(tagId);
+  }
+
+  @Test
+  public void deleteTag_shouldThrowException_whenTagIsInUse() {
+
+    // Mock TagRepository to return existingTag when findById is called
+    when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+
+    // Mock ArticleRepository to return number of tagId occurrences
+    when(articleRepository.getTagCountById(tagId)).thenReturn(1);
+
+    // Act
+    assertThrows(TagInUseException.class, () -> tagService.deleteTagById(tagId));
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(1)).findById(tagId);
+
+    // Verify that ArticleRepository method was called with correct argument
+    verify(articleRepository, times(1)).getTagCountById(tagId);
 
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, never()).deleteById(tagId);
