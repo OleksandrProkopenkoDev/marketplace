@@ -104,6 +104,8 @@ public final class AdTestData {
         "Sample Ad",
         "This is a sample ad",
         BigDecimal.valueOf(100.00),
+        null,
+        null,
         Collections.emptyList(),
         null,
         1L,
@@ -136,6 +138,8 @@ public final class AdTestData {
         updateAdDto.title(),
         updateAdDto.description(),
         updateAdDto.price(),
+        null,
+        null,
         null, // Assuming no photos in this test case
         null, // Assuming no thumbnail in this test case
         updateAdDto.categoryId(),

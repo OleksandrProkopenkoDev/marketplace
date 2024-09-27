@@ -6,9 +6,11 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -26,9 +28,13 @@ import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.AdAttribute;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.model.entity.Category;
+import ua.tc.marketplace.model.entity.Location;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.service.AdService;
+import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.service.CategoryService;
+import ua.tc.marketplace.service.DistanceService;
+import ua.tc.marketplace.service.LocationService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.ad_filtering.FilterSpecificationFactory;
@@ -42,6 +48,7 @@ import ua.tc.marketplace.util.mapper.AdMapper;
  * handle ad-related operations, including creation, update, retrieval, and deletion of ads. It also
  * manages ad attributes and performs filtering based on criteria provided in the form of DTOs.
  */
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class AdFacadeImpl implements AdFacade {
@@ -54,12 +61,43 @@ public class AdFacadeImpl implements AdFacade {
   private final UserService userService;
   private final CategoryService categoryService;
   private final FilterSpecificationFactory filterSpecificationFactory;
+  private final DistanceService distanceService;
+  private final AuthenticationService authenticationService;
+  private final LocationService locationService;
 
   @Override
-  @Transactional(readOnly = true)
+  @Transactional
   public Page<AdDto> findAll(Map<String, String> filterCriteria, Pageable pageable) {
     Specification<Ad> specification = filterSpecificationFactory.getSpecification(filterCriteria);
-    return adService.findAll(specification, pageable).map(adMapper::toAdDto);
+    Page<AdDto> adDtoPage = adService.findAll(specification, pageable).map(adMapper::toAdDto);
+    log.debug("adDtoPage.content : {}", adDtoPage.getContent());
+
+    Optional<Location> optionalLocation1 =
+        locationService.extractLocationFromParams(filterCriteria);
+
+    if (optionalLocation1.isPresent() && !optionalLocation1.get().getAddress().isEmpty()) {
+      Location location1 = optionalLocation1.get();
+      log.debug("Location is present in request params: {}", location1);
+
+      Optional<Location> optionalExistingLocation = locationService.findByParams(location1);
+      Location finalLocation = location1;
+      location1 = optionalExistingLocation.orElseGet(() -> locationService.save(finalLocation));
+      log.debug("Location1 after database existence check : {}", location1);
+
+      // Assign the updated page after distance calculation
+      adDtoPage = distanceService.calculateDistance(location1, adDtoPage);
+    } else {
+      Optional<User> optionalUser = authenticationService.getAuthenticatedUser();
+      if (optionalUser.isPresent()) {
+        User authenticatedUser = optionalUser.get();
+        log.debug("try to extract location from user: {}", authenticatedUser);
+
+        // Assign the updated page after distance calculation
+        adDtoPage = distanceService.calculateDistance(authenticatedUser.getLocation(), adDtoPage);
+      }
+    }
+
+    return adDtoPage;
   }
 
   @Transactional(readOnly = true)

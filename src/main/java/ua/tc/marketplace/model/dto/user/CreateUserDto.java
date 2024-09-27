@@ -1,7 +1,9 @@
 package ua.tc.marketplace.model.dto.user;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import ua.tc.marketplace.model.entity.ContactInfo;
 
 /**
@@ -13,10 +15,12 @@ import ua.tc.marketplace.model.entity.ContactInfo;
 public record CreateUserDto(
     @Schema(example = "taras@shevchenko.ua")
     @NotBlank
+    @Email
     String email,
 
     @Schema(example = "strong_secure_password_with_bigAndSmallLetters_and_digits_and_symbols")
     @NotBlank
+    @Size(min = 8, max = 24)
     String password,
 
     @Schema(example = "INDIVIDUAL")

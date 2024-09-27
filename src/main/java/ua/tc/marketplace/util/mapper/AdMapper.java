@@ -17,10 +17,12 @@ import ua.tc.marketplace.model.entity.Ad;
 @Mapper(config = MapperConfig.class, uses = AdAttributeMapper.class)
 public interface AdMapper {
 
+  @Mapping(target = "distance", ignore = true)
   @Mapping(target = "categoryId", source = "category.id")
   @Mapping(target = "authorId", source = "author.id")
   AdDto toAdDto(Ad ad);
 
+  @Mapping(target = "location", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "thumbnail", ignore = true)
   @Mapping(target = "photos", ignore = true)
@@ -31,6 +33,7 @@ public interface AdMapper {
   @Mapping(target = "adAttributes", ignore = true)
   Ad getPrimitiveFields(CreateAdDto dto);
 
+  @Mapping(target = "location", ignore = true)
   @Mapping(target = "updatedAt", ignore = true)
   @Mapping(target = "thumbnail", ignore = true)
   @Mapping(target = "photos", ignore = true)
@@ -40,5 +43,4 @@ public interface AdMapper {
   @Mapping(target = "author", ignore = true)
   @Mapping(target = "adAttributes", ignore = true)
   void updateAd(UpdateAdDto dto, @MappingTarget Ad ad);
-
 }

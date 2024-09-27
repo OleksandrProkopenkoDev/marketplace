@@ -1,0 +1,39 @@
+@startuml
+start
+
+:Filter Ads;
+
+if (Is location in request parameters?) then (Yes)
+    :Extract location;
+    :Check if location exists in DB;
+    if (Location exists in DB?) then (Yes)
+        :Use existing location;
+    else (No)
+        :Save new location in DB;
+    endif
+else (No)
+    :Check user authentication;
+    if (User is authenticated?) then (Yes)
+        :Extract user location;
+    else (No)
+        :Proceed without distance calculation;
+        :Return final ads as Page<AdDto>;
+        stop
+    endif
+endif
+
+:Partition ads;
+
+if (Ads with distances exist in DB?) then (Yes)
+    :Fetch existing distances;
+else (No)
+    :Prepare ads for distance calculation;
+    :<back:yellow>Call Google API to calculate distances;
+    :Save new distances to DB;
+endif
+
+:Combine ads with existing and new distances;
+:Return final ads as Page<AdDto>;
+stop
+
+@enduml

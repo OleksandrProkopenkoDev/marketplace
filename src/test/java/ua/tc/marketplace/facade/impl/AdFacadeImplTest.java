@@ -22,8 +22,12 @@ import static ua.tc.marketplace.data.AdTestData.getUpdatedAdAttributes;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,9 +45,13 @@ import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
 import ua.tc.marketplace.model.entity.Ad;
 import ua.tc.marketplace.model.entity.AdAttribute;
 import ua.tc.marketplace.model.entity.Category;
+import ua.tc.marketplace.model.entity.Location;
 import ua.tc.marketplace.model.entity.User;
 import ua.tc.marketplace.service.AdService;
+import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.service.CategoryService;
+import ua.tc.marketplace.service.DistanceService;
+import ua.tc.marketplace.service.LocationService;
 import ua.tc.marketplace.service.PhotoStorageService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.ad_filtering.FilterSpecificationFactory;
@@ -64,8 +72,96 @@ class AdFacadeImplTest {
   @Mock private UserService userService;
   @Mock private CategoryService categoryService;
   @Mock private FilterSpecificationFactory filterSpecificationFactory;
+  @Mock private DistanceService distanceService;
+  @Mock private AuthenticationService authenticationService;
+  @Mock private LocationService locationService;
+
+  private final Pageable pageable = PageRequest.of(0, 10);
 
   @InjectMocks private AdFacadeImpl adFacade;
+
+  static Stream<Map<String, String>> filterCriteriaProvider() {
+    return Stream.of(
+        Map.of("location", "Kyiv"),
+        Map.of("category", "Pets"),
+        Map.of("location", "Kyiv", "category", "Pets"));
+  }
+
+  @ParameterizedTest
+  @MethodSource("filterCriteriaProvider")
+  void testFindAll_LocationInRequestParams(Map<String, String> filterCriteria) {
+    // Setup mock data
+    Location location = new Location(null, "Ukraine, Kyiv");
+    when(locationService.extractLocationFromParams(filterCriteria))
+        .thenReturn(Optional.of(location));
+    when(locationService.findByParams(location)).thenReturn(Optional.of(location));
+
+    // Mock the findAll service method
+    Page<Ad> adPage = new PageImpl<>(List.of()); // Adjust based on your test data
+    Page<AdDto> adDtoPage = new PageImpl<>(List.of()); // Adjust based on your test data
+    when(adService.findAll(any(), any(Pageable.class))).thenReturn(adPage);
+
+    // Ensure distanceService uses the correct input/output
+    when(distanceService.calculateDistance(any(Location.class), any()))
+        .thenReturn(new PageImpl<>(List.of())); // Adjust as needed
+
+    // Act
+    Page<AdDto> result = adFacade.findAll(filterCriteria, pageable);
+
+    // Verify behavior and assert
+    verify(locationService).extractLocationFromParams(filterCriteria);
+    verify(locationService).findByParams(location);
+    verify(distanceService)
+        .calculateDistance(location, adDtoPage); // Use adPage as it's the original page
+    assertEquals(0, result.getContent().size());
+  }
+
+  @Test
+  void testFindAll_UserAuthenticatedLocationNotInRequestParams() {
+    // Setup mock data
+    User user = mock(User.class);
+    Page<AdDto> adDtoPage = new PageImpl<>(List.of());
+    Location userLocation = new Location(null, "Ukraine, Lviv");
+    when(user.getLocation()).thenReturn(userLocation);
+    when(authenticationService.getAuthenticatedUser()).thenReturn(Optional.of(user));
+
+    // Mock the findAll service method
+    Page<Ad> adPage = new PageImpl<>(List.of()); // Adjust based on your test data
+    when(adService.findAll(any(), any(Pageable.class))).thenReturn(adPage);
+
+    // Ensure distanceService uses the correct input/output
+    when(distanceService.calculateDistance(any(Location.class), any()))
+        .thenReturn(new PageImpl<>(List.of())); // Adjust as needed
+
+    // Act
+    Page<AdDto> result = adFacade.findAll(Map.of(), pageable);
+
+    // Verify behavior and assert
+    verify(authenticationService).getAuthenticatedUser();
+    verify(distanceService)
+        .calculateDistance(userLocation, adDtoPage); // Use adPage as it's the original page
+    assertEquals(0, result.getContent().size());
+  }
+
+  @Test
+  void testFindAll_NoLocationInParamsOrUserAuthenticated() {
+    // Setup mock data
+    when(locationService.extractLocationFromParams(anyMap())).thenReturn(Optional.empty());
+    when(authenticationService.getAuthenticatedUser()).thenReturn(Optional.empty());
+
+    // Mock the findAll service method
+    Page<Ad> adPage = new PageImpl<>(List.of()); // Adjust based on your test data
+    when(adService.findAll(any(), any(Pageable.class))).thenReturn(adPage);
+
+    // Act
+    Page<AdDto> result = adFacade.findAll(Map.of(), pageable);
+
+    // Verify behavior and assert
+    verify(locationService).extractLocationFromParams(anyMap());
+    verify(authenticationService).getAuthenticatedUser();
+    verify(distanceService, never()).calculateDistance(any(Location.class), any());
+    assertEquals(0, result.getContent().size());
+  }
 
   @Test
   public void testGetAds() {
@@ -79,7 +175,7 @@ class AdFacadeImplTest {
     Specification<Ad> specification = mock(Specification.class);
 
     when(filterSpecificationFactory.getSpecification(anyMap())).thenReturn(specification);
-    when(adService.findAll(any(Specification.class), any(Pageable.class))).thenReturn(adPage);
+    when(adService.findAll(any(), any(Pageable.class))).thenReturn(adPage);
     when(adMapper.toAdDto(any(Ad.class))).thenReturn(adDto);
 
     // Act

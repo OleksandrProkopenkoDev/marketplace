@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import ua.tc.marketplace.model.entity.Location;
 import ua.tc.marketplace.model.entity.Photo;
 
 /**
@@ -28,6 +29,8 @@ public record AdDto(
     @NotNull(message = "Price cannot be null")
         @DecimalMin(value = "0.0", message = "Price must be zero or positive")
         BigDecimal price,
+    Location location,
+    Double distance,
     List<Photo> photos,
     Photo thumbnail,
     @NotNull(message = "Category ID cannot be null") Long categoryId,
