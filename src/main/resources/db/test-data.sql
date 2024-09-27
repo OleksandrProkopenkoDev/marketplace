@@ -189,27 +189,3 @@ VALUES
 
 -- Insert records into 'location' table
 
-INSERT INTO "location" (address)
-VALUES ('Kyiv, Khreshchatyk St, 01001'),
-       ('Lviv,79000'),
-       ('Odessa, Deribasivska St, 65000'),
-       ('Kharkiv, 61000'),
-       ('Dnipro, Dmytro Yavornytskoho St'),
-       ('Uzhhorod'),
-       ('Ukraine,Vinnytsia'),
-       ('Ukraine, Chernihiv'),
-       ('Poltava'),
-       ('Mykolaiv'),
-       ('Khmelnytskyi, 29000'),
-       ('Ukraine, Sumy'),
-       ('Ukraine, Zaporizhzhia, 69000'),
-       ('Ivano-Frankivsk, Nezalezhnosti St'),
-       ('Kremenchuk'),
-       ('Ukraine, Lutsk'),
-       ('Zhytomyr'),
-       ('Ukraine, Cherkasy'),
-       ('Ukraine, Rivne'),
-       ('Ukraine, Kropivnytskyi, 25000'),
-       ('Poltava');
-
--- Note: The 'id' field is auto-generated, so it's not included in the insert statements.
