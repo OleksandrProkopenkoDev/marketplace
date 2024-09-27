@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.tag.TagInUseException;
+import ua.tc.marketplace.exception.tag.TagNameInUseException;
 import ua.tc.marketplace.exception.tag.TagNotFoundException;
 import ua.tc.marketplace.exception.user.UserNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
@@ -73,6 +74,8 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto updateTag(Long id, @NonNull UpdateTagDto updateTagDto) {
         Tag existingTag = getTag(id);
+        Optional<Tag> sameNameTag = tagRepository.getByName(updateTagDto.name());
+        if (sameNameTag.isPresent()) throw new TagNameInUseException(updateTagDto.name());
         tagMapper.updateEntityFromDto(existingTag, updateTagDto);
         return tagMapper.toDto(tagRepository.save(existingTag));
     }
@@ -105,7 +108,7 @@ public class TagServiceImpl implements TagService {
     @Override
     public TagDto createTag(CreateTagDto createTagDto) {
         Optional<Tag> existingTag = tagRepository.getByName(createTagDto.name());
-        if (!existingTag.isEmpty()) return tagMapper.toDto(existingTag.get());
+        if (existingTag.isPresent()) return tagMapper.toDto(existingTag.get());
         Tag tag = tagMapper.toEntity(createTagDto);
         return tagMapper.toDto(tagRepository.save(tag));
     }

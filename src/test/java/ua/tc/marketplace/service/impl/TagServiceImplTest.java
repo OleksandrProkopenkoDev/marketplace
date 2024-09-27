@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ua.tc.marketplace.exception.tag.TagInUseException;
+import ua.tc.marketplace.exception.tag.TagNameInUseException;
 import ua.tc.marketplace.exception.tag.TagNotFoundException;
 import ua.tc.marketplace.model.dto.tag.CreateTagDto;
 import ua.tc.marketplace.model.dto.tag.TagDto;
@@ -147,10 +148,11 @@ class TagServiceImplTest {
 
   @Test
   void updateTag_shouldUpdate_whenValidInput() {
-
-
     // Mock TagRepository to return existingTag when findById is called
     when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+
+    // Mock TagRepository to return existingTag with the name from updateDto
+    when(tagRepository.getByName(updateTagDto.name())).thenReturn(Optional.empty());
 
     // Mock TagMapper to return updatedTag when updateEntityFromDto is called
     doAnswer(
@@ -178,6 +180,9 @@ class TagServiceImplTest {
     // Verify that TagRepository method was called with correct argument
     verify(tagRepository, times(1)).findById(tagId);
 
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(1)).getByName(updateTagDto.name());
+
     // Verify that adMapper method was called with correct argument
     verify(tagMapper, times(1)).updateEntityFromDto(tag, updateTagDto);
 
@@ -189,13 +194,53 @@ class TagServiceImplTest {
   }
 
   @Test
-  void updateTag_shouldThrow_whenTagNotExists() {
+  void updateTag_shouldThrow_whenTagIdNotExists() {
+    // Mock TagRepository to throw AdNotFoundException when findById is called
+    when(tagRepository.findById(tagId)).thenReturn(Optional.empty());
 
     assertThrows(
-        TagNotFoundException.class, () -> tagService.findTagById(tagId));
+        TagNotFoundException.class, () -> tagService.updateTag(tagId,updateTagDto));
 
     // Verify that repository method was called with correct argument
     verify(tagRepository, times(1)).findById(ArgumentMatchers.anyLong());
+
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(0)).getByName(updateTagDto.name());
+    // Verify that adMapper method was called with correct argument
+    verify(tagMapper, times(0)).updateEntityFromDto(tag, updateTagDto);
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(0)).save(tag);
+
+    // Verify that adMapper method was called with correct argument
+    verify(tagMapper, times(0)).toDto(updatedTag);
+  }
+
+  @Test
+  void updateTag_shouldThrow_whenTagNameIsInUse() {
+    // Mock TagRepository to return existingTag when findById is called
+    when(tagRepository.findById(tagId)).thenReturn(Optional.of(tag));
+
+    // Mock TagRepository to return existingTag with the name from updateDto
+    when(tagRepository.getByName(updateTagDto.name())).thenReturn(Optional.of(tag));
+
+    assertThrows(
+        TagNameInUseException.class, () -> tagService.updateTag(tagId,updateTagDto));
+
+    // Verify that repository method was called with correct argument
+    verify(tagRepository, times(1)).findById(ArgumentMatchers.anyLong());
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(1)).getByName(updateTagDto.name());
+    // Verify that adMapper method was called with correct argument
+    verify(tagMapper, times(0)).updateEntityFromDto(tag, updateTagDto);
+
+    // Verify that TagRepository method was called with correct argument
+    verify(tagRepository, times(0)).save(tag);
+
+    // Verify that adMapper method was called with correct argument
+    verify(tagMapper, times(0)).toDto(updatedTag);
   }
 
   @Test
