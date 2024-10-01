@@ -7,13 +7,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.tc.marketplace.exception.comment.CommentCreationErrorWrongShelterRole;
 import ua.tc.marketplace.exception.comment.CommentNotFoundException;
 import ua.tc.marketplace.model.dto.comment.CommentDto;
 import ua.tc.marketplace.model.dto.comment.CreateCommentDto;
 import ua.tc.marketplace.model.dto.comment.UpdateCommentDto;
 import ua.tc.marketplace.model.entity.Comment;
+import ua.tc.marketplace.model.entity.User;
+import ua.tc.marketplace.model.enums.UserRole;
 import ua.tc.marketplace.repository.CommentRepository;
 import ua.tc.marketplace.service.CommentService;
+import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.CommentMapper;
 
 import java.util.Optional;
@@ -26,7 +30,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class CommentServiceImpl implements CommentService {
-
+    private final UserService userService;
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
@@ -94,6 +98,9 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     @Override
     public CommentDto createComment(CreateCommentDto createCommentDto) {
+        User author = userService.findUserById(createCommentDto.authorId());
+        User shelter = userService.findUserById(createCommentDto.shelterId());
+        if (shelter.getUserRole()!= UserRole.SHELTER) throw new CommentCreationErrorWrongShelterRole(createCommentDto.shelterId());
         Comment comment = commentMapper.toEntity(createCommentDto);
         return commentMapper.toDto(commentRepository.save(comment));
     }
