@@ -2,9 +2,6 @@ package ua.tc.marketplace.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ua.tc.marketplace.model.entity.Comment;
-import ua.tc.marketplace.model.entity.Tag;
-
-import java.util.Optional;
 
 /**
  * Repository interface for managing {@link Comment} entities.
@@ -14,7 +11,4 @@ import java.util.Optional;
  */
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    void existsByName(String name);
-
-    Optional<Comment> getByName(String name);
 }

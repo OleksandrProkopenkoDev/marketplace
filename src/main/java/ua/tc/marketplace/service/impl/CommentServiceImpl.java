@@ -20,8 +20,6 @@ import ua.tc.marketplace.service.CommentService;
 import ua.tc.marketplace.service.UserService;
 import ua.tc.marketplace.util.mapper.CommentMapper;
 
-import java.util.Optional;
-
 /**
  * Implementation of the {@link CommentService} interface. Provides methods for creating, retrieving,
  * updating, and deleting comments.
