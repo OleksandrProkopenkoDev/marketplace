@@ -15,7 +15,7 @@ import ua.tc.marketplace.exception.model.CustomRuntimeException;
 public class CommentCreationErrorWrongShelterRole extends CustomRuntimeException {
 
   private static final String ERROR_MESSAGE = "Comment cannot be created, userId %s has no Shelter role";
-  private static final HttpStatus STATUS = HttpStatus.NOT_FOUND;
+  private static final HttpStatus STATUS = HttpStatus.BAD_REQUEST;
 
   public CommentCreationErrorWrongShelterRole(Long commentId) {
     super(ERROR_MESSAGE.formatted(commentId), STATUS);

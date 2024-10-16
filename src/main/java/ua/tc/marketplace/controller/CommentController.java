@@ -1,20 +1,25 @@
 package ua.tc.marketplace.controller;
 
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.comment.CommentDto;
 import ua.tc.marketplace.model.dto.comment.CreateCommentDto;
 import ua.tc.marketplace.model.dto.comment.UpdateCommentDto;
+import ua.tc.marketplace.service.AuthenticationService;
 import ua.tc.marketplace.service.CommentService;
 import ua.tc.marketplace.util.openapi.CommentOpenApi;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/comment")
 public class CommentController implements CommentOpenApi {
@@ -51,9 +56,11 @@ public class CommentController implements CommentOpenApi {
    * @param dto The CreateCommentDto containing the new comment data.
    * @return A ResponseEntity containing the created CommentDto.
    */
+  @PreAuthorize("hasAnyRole('INDIVIDUAL','SHELTER') and @authentication.principal.id == #dto.id")
   @Override
   @PostMapping
   public ResponseEntity<CommentDto> createComment(@RequestBody @Valid CreateCommentDto dto) {
+    //    SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(dto));
   }
 
