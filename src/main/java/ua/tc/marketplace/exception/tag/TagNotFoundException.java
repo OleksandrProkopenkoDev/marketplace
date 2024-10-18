@@ -17,7 +17,7 @@ public class TagNotFoundException extends CustomRuntimeException {
   private static final String ERROR_MESSAGE = "Tag with id %s is not found.";
   private static final HttpStatus STATUS = HttpStatus.NOT_FOUND;
 
-  public TagNotFoundException(Long userId) {
-    super(ERROR_MESSAGE.formatted(userId), STATUS);
+  public TagNotFoundException(Long tagId) {
+    super(ERROR_MESSAGE.formatted(tagId), STATUS);
   }
 }

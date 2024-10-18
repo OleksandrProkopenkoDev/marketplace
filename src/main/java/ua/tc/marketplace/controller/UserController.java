@@ -23,17 +23,10 @@ public class UserController implements UserOpenApi {
 
   @Override
   @GetMapping("/all")
-  @PreAuthorize("hasAuthority('INDIVIDUAL')")
   public ResponseEntity<Page<UserDto>> getAllUsers(@PageableDefault Pageable pageable) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.findAll(pageable));
   }
 
-  //@PreAuthorize("hasRole('ROLE_ADMIN) or #authUser.id == #userId")
-  //  @PostMapping("/user/{id}/edit")
-  //  public boolean editUser(@PathVariable("id") long userId, @RequestBody User newUserObj, @CurrentUser authUser) {}
-  //saving example for later
-  //seen at https://stackoverflow.com/questions/54156564/spring-boot-preauthorize-allow-operation-only-for-admin-or-if-the-authenticated
-  //should give access to admin and user with id, same as parameter
   @GetMapping("/{id}")
   public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
     return ResponseEntity.status(HttpStatus.OK).body(userService.findUserDtoById(id));
