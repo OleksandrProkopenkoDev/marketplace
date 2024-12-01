@@ -2,6 +2,7 @@ package ua.tc.marketplace.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import ua.tc.marketplace.model.dto.category.CategoryCountedDto;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
@@ -34,4 +35,6 @@ public interface CategoryService {
     CategoryDto update(Long id, UpdateCategoryDto categoryDto);
 
     void deleteById(Long id);
+
+    Page<CategoryCountedDto> findAllCounted(Pageable pageable);
 }

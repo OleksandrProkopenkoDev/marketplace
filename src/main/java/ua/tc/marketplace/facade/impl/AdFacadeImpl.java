@@ -152,6 +152,11 @@ public class AdFacadeImpl implements AdFacade {
     adService.delete(ad);
   }
 
+  @Override
+  public Long countAdsByCategory(Category category) {
+    return adService.countAdsByCategory(category);
+  }
+
   private AdAttribute getAdAttribute(Entry<Long, String> entry, Ad finalAd, Category category) {
     return new AdAttribute(
         null,

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.model.dto.ad.AdDto;
 import ua.tc.marketplace.model.dto.ad.CreateAdDto;
 import ua.tc.marketplace.model.dto.ad.UpdateAdDto;
+import ua.tc.marketplace.model.entity.Category;
 
 /**
  * AdFacade defines the interface for operations related to ads within the system.
@@ -24,4 +25,6 @@ public interface AdFacade {
   AdDto updateAd(Long adId, UpdateAdDto dto);
 
   void deleteAd(Long adId);
+
+  Long countAdsByCategory(Category category);
 }

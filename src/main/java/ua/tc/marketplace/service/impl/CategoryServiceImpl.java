@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
 import ua.tc.marketplace.exception.attribute.InvalidAttributeIdsException;
+import ua.tc.marketplace.model.dto.category.CategoryCountedDto;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
@@ -49,6 +50,12 @@ public class CategoryServiceImpl implements CategoryService {
   public Page<CategoryDto> findAll(Pageable pageable) {
     Page<Category> categories = categoryRepository.findAll(pageable);
     return categories.map(categoryMapper::toCategoryDto);
+  }
+
+  @Override
+  public Page<CategoryCountedDto> findAllCounted(Pageable pageable) {
+    Page<Category> categories = categoryRepository.findAll(pageable);
+    return categories.map(categoryMapper::toCategoryCountedDto);
   }
 
   @Override

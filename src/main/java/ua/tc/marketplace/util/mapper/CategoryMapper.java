@@ -7,17 +7,22 @@ import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import ua.tc.marketplace.config.MapperConfig;
+import ua.tc.marketplace.model.dto.category.CategoryCountedDto;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
 import ua.tc.marketplace.model.entity.Attribute;
 import ua.tc.marketplace.model.entity.Category;
 
-@Mapper(config = MapperConfig.class, uses = AttributeMapper.class)
+@Mapper(config = MapperConfig.class, uses = {AttributeMapper.class, CategoryCountResolver.class})
 public interface CategoryMapper {
 
   @Mapping(source = "attributes", target = "attribute")
   CategoryDto toCategoryDto(Category entity);
+
+  @Mapping(source = "attributes", target = "attribute")
+  @Mapping(source = "entity", target = "adsCount", qualifiedByName = "countAllCategoryAds")
+  CategoryCountedDto toCategoryCountedDto(Category entity);
 
   @Mapping(source = "attribute", target = "attributes")
   Category toEntity(CategoryDto dto);

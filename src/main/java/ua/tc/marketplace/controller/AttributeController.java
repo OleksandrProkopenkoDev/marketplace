@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.tc.marketplace.model.dto.attribute.AttributeDto;
 import ua.tc.marketplace.model.dto.attribute.AttributeRequest;
 import ua.tc.marketplace.service.AttributeService;
+import ua.tc.marketplace.util.openapi.AttributeOpenApi;
 
 /**
  * AttributeController handles HTTP requests related to CRUD operations for the Attribute entity. It
@@ -20,7 +21,7 @@ import ua.tc.marketplace.service.AttributeService;
 @RequestMapping("/api/v1/attribute")
 @RequiredArgsConstructor
 @Slf4j
-public class AttributeController {
+public class AttributeController implements AttributeOpenApi {
 
   private final AttributeService attributeService;
 

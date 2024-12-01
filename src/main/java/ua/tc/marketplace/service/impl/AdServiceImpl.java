@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.tc.marketplace.exception.ad.AdNotFoundException;
 import ua.tc.marketplace.model.entity.Ad;
+import ua.tc.marketplace.model.entity.Category;
 import ua.tc.marketplace.repository.AdRepository;
 import ua.tc.marketplace.service.AdService;
 
@@ -43,5 +44,10 @@ public class AdServiceImpl implements AdService {
   @Override
   public Ad findAdById(Long adId) {
     return adRepository.findById(adId).orElseThrow(() -> new AdNotFoundException(adId));
+  }
+
+  @Override
+  public Long countAdsByCategory(Category category) {
+    return adRepository.countByCategoryId(category.getId());
   }
 }

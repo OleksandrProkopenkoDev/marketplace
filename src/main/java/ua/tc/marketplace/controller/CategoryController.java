@@ -8,10 +8,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.tc.marketplace.model.dto.category.CategoryCountedDto;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
 import ua.tc.marketplace.service.CategoryService;
+import ua.tc.marketplace.util.openapi.CategoryOpenApi;
 
 /**
  * CategoryController handles HTTP requests related to CRUD operations for the Category entity. It
@@ -21,7 +23,7 @@ import ua.tc.marketplace.service.CategoryService;
 @RequestMapping("/api/v1/category")
 @RequiredArgsConstructor
 @Slf4j
-public class CategoryController {
+public class CategoryController implements CategoryOpenApi {
 
   private final CategoryService categoryService;
 
@@ -30,6 +32,14 @@ public class CategoryController {
     log.info("Request to get all categories");
     Page<CategoryDto> categories = categoryService.findAll(pageable);
     log.info("Categories was get successfully");
+    return ResponseEntity.ok(categories);
+  }
+
+  @GetMapping("/counted")
+  public ResponseEntity<Page<CategoryCountedDto>> getAllCountedCategories(Pageable pageable) {
+    log.info("Request to get all categories with ads counts");
+    Page<CategoryCountedDto> categories = categoryService.findAllCounted(pageable) ;
+    log.info("Categories with ads counts was get successfully");
     return ResponseEntity.ok(categories);
   }
 

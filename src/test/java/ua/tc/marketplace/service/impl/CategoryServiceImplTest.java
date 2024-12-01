@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ua.tc.marketplace.exception.category.CategoryNotFoundException;
+import ua.tc.marketplace.model.dto.category.CategoryCountedDto;
 import ua.tc.marketplace.model.dto.category.CategoryDto;
 import ua.tc.marketplace.model.dto.category.CreateCategoryDto;
 import ua.tc.marketplace.model.dto.category.UpdateCategoryDto;
@@ -147,5 +148,22 @@ class CategoryServiceImplTest {
     assertEquals(categoryDto, result.getContent().get(0));
     verify(categoryRepository, times(1)).findAll(pageable);
     verify(categoryMapper, times(1)).toCategoryDto(any(Category.class));
+  }
+
+  @Test
+  void findAllCounted_shouldReturnPagedCategories() {
+    Pageable pageable = PageRequest.of(0, 10);
+    Page<Category> categoryPage = new PageImpl<>(Collections.singletonList(new Category()));
+    CategoryCountedDto categoryCountedDto = new CategoryCountedDto();
+
+    when(categoryRepository.findAll(pageable)).thenReturn(categoryPage);
+    when(categoryMapper.toCategoryCountedDto(any(Category.class))).thenReturn(categoryCountedDto);
+
+    Page<CategoryCountedDto> result = categoryService.findAllCounted(pageable);
+
+    assertEquals(1, result.getTotalElements());
+    assertEquals(categoryCountedDto, result.getContent().get(0));
+    verify(categoryRepository, times(1)).findAll(pageable);
+    verify(categoryMapper, times(1)).toCategoryCountedDto(any(Category.class));
   }
 }

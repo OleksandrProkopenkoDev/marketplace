@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import ua.tc.marketplace.model.entity.Ad;
+import ua.tc.marketplace.model.entity.Category;
 
 /**
  * Service interface defining operations for managing advertisements. Includes methods for
@@ -18,4 +19,6 @@ public interface AdService {
   void delete(Ad ad);
 
   Ad findAdById(Long adId);
+
+  Long countAdsByCategory(Category category);
 }
